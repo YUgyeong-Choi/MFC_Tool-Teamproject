@@ -201,6 +201,7 @@
     <ClInclude Include="CMiniView.h" />
     <ClInclude Include="CMultiTexture.h" />
     <ClInclude Include="CMyForm.h" />
+    <ClInclude Include="CPlayerTool.h" />
     <ClInclude Include="CSingleTexture.h" />
     <ClInclude Include="CTerrain.h" />
     <ClInclude Include="CTexture.h" />
@@ -222,6 +223,7 @@
     <ClCompile Include="CMiniView.cpp" />
     <ClCompile Include="CMultiTexture.cpp" />
     <ClCompile Include="CMyForm.cpp" />
+    <ClCompile Include="CPlayerTool.cpp" />
     <ClCompile Include="CSingleTexture.cpp" />
     <ClCompile Include="CTerrain.cpp" />
     <ClCompile Include="CTexture.cpp" />

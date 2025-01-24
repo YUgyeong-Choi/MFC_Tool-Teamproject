@@ -29,9 +29,7 @@ void CMyForm::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CMyForm, CFormView)
-	ON_BN_CLICKED(IDC_BUTTON1, &CMyForm::OnUnitTool)
-	ON_BN_CLICKED(IDC_BUTTON7, &CMyForm::OnMapTool)
-	ON_BN_CLICKED(IDC_CHECK1, &CMyForm::OnBnClickedCheck1)
+	ON_BN_CLICKED(IDC_BUTTON4, &CMyForm::OnPlayerClick)
 END_MESSAGE_MAP()
 
 
@@ -63,36 +61,12 @@ void CMyForm::OnInitialUpdate()
 
 	m_Font.CreatePointFont(180, L"궁서");
 
-	GetDlgItem(IDC_BUTTON1)->SetFont(&m_Font);
-	GetDlgItem(IDC_BUTTON7)->SetFont(&m_Font);
 }
 
-
-void CMyForm::OnUnitTool()
+void CMyForm::OnPlayerClick()
 {
-	//GetSafeHwnd : 현재 다이얼로그 윈도우의 핸들을 반환
-	if(nullptr == m_UnitTool.GetSafeHwnd())
-		m_UnitTool.Create(IDD_CUnitTool);	// 해당 id에 맞는 다이얼로그 생성
+	if (nullptr == m_PlayerTool.GetSafeHwnd())
+		m_PlayerTool.Create(IDD_CMapTool);	// 해당 id에 맞는 다이얼로그 생성
 
-	m_UnitTool.ShowWindow(SW_SHOW);
-}
-
-
-void CMyForm::OnMapTool()
-{
-	if (nullptr == m_MapTool.GetSafeHwnd())
-		m_MapTool.Create(IDD_CMapTool);	// 해당 id에 맞는 다이얼로그 생성
-
-	m_MapTool.ShowWindow(SW_SHOW);
-
-}
-
-
-void CMyForm::OnBnClickedCheck1()
-{
-	CMainFrame* pMainFrm = (CMainFrame*)AfxGetMainWnd();
-	CToolView* pView = dynamic_cast<CToolView*>(pMainFrm->m_MainSplitter.GetPane(0, 1));
-
-	pView->m_bGrid = !pView->m_bGrid;
-	pView->Invalidate(FALSE);
+	m_PlayerTool.ShowWindow(SW_SHOW);
 }
