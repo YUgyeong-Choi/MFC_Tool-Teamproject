@@ -26,13 +26,13 @@ HWND	g_hWnd;
 
 // CToolView
 
-IMPLEMENT_DYNCREATE(CToolView, CScrollView)
+IMPLEMENT_DYNCREATE(CToolView, CView)
 
-BEGIN_MESSAGE_MAP(CToolView, CScrollView)
+BEGIN_MESSAGE_MAP(CToolView, CView)
 	// 표준 인쇄 명령입니다.
-	ON_COMMAND(ID_FILE_PRINT, &CScrollView::OnFilePrint)
-	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CScrollView::OnFilePrint)
-	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CScrollView::OnFilePrintPreview)
+	ON_COMMAND(ID_FILE_PRINT, &CView::OnFilePrint)
+	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CView::OnFilePrint)
+	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CView::OnFilePrintPreview)
 	ON_WM_DESTROY()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_MOUSEMOVE()
@@ -55,12 +55,7 @@ CToolView::~CToolView()
 
 void CToolView::OnInitialUpdate()
 {
-	CScrollView::OnInitialUpdate();
-
-	// SetScrollSizes : 스크롤 바의 사이즈를 지정
-	// MM_TEXT : 픽셀 단위로 조정하겠다는 옵션
-
-	SetScrollSizes(MM_TEXT, CSize(TILECX * TILEX, TILECY * TILEY / 2));
+	CView::OnInitialUpdate();
 
 
 	// AfxGetMainWnd : 현재 메인 윈도우의 값을 반환하는 전역함수
@@ -121,7 +116,7 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// point.x, point.y
 
-	CScrollView::OnLButtonDown(nFlags, point);
+	CView::OnLButtonDown(nFlags, point);
 
 	m_pTerrain->Tile_Change(D3DXVECTOR3(float(point.x) + GetScrollPos(0),
 										float(point.y) + GetScrollPos(1),
@@ -149,7 +144,7 @@ void CToolView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 
-	CScrollView::OnMouseMove(nFlags, point);
+	CView::OnMouseMove(nFlags, point);
 
 	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
 	{
@@ -173,31 +168,30 @@ void CToolView::OnDraw(CDC* pDC)
 
 	m_pDevice->Render_End();
 
-	//CPoint scrollPos = GetScrollPosition();
-	////그리드 그리는 곳
-	//if (m_bGrid) {
-	//	CPen pen(PS_SOLID, 1, RGB(255, 255, 255));
-	//	CPen* pOldPen = pDC->SelectObject(&pen);
+	//그리드 그리는 곳
+	if (m_bGrid) {
+		CPen pen(PS_SOLID, 1, RGB(255, 255, 255));
+		CPen* pOldPen = pDC->SelectObject(&pen);
 
-	//	// 그리드의 가로선 그리기
-	//	for (int i = 0; i <= TILEY; ++i) {
-	//		pDC->MoveTo(0 - scrollPos.x, i * TILECY - scrollPos.y);
-	//		pDC->LineTo(TILEY * TILECY - scrollPos.x, i * TILECY - scrollPos.y);
-	//	}
+		// 그리드의 가로선 그리기
+		for (int i = 0; i <= TILEY; ++i) {
+			pDC->MoveTo(0 , i * TILECY);
+			pDC->LineTo(TILEY * TILECY , i * TILECY);
+		}
 
-	//	// 그리드의 세로선 그리기
-	//	for (int i = 0; i <= TILEX; ++i) {
-	//		pDC->MoveTo(i * TILECX - scrollPos.x, 0 - scrollPos.y);
-	//		pDC->LineTo(i * TILECX - scrollPos.x, TILEX * TILECX - scrollPos.y);
-	//	}
+		// 그리드의 세로선 그리기
+		for (int i = 0; i <= TILEX; ++i) {
+			pDC->MoveTo(i * TILECX , 0 );
+			pDC->LineTo(i * TILECX, TILEX * TILECX );
+		}
 
-	//	pDC->SelectObject(pOldPen);
-	//}
+		pDC->SelectObject(pOldPen);
+	}
 }
 
 void CToolView::OnDestroy()
 {
-	CScrollView::OnDestroy();
+	CView::OnDestroy();
 
 	Safe_Delete(m_pTerrain);
 
@@ -213,7 +207,7 @@ BOOL CToolView::PreCreateWindow(CREATESTRUCT& cs)
 	// TODO: CREATESTRUCT cs를 수정하여 여기에서
 	//  Window 클래스 또는 스타일을 수정합니다.
 
-	return CScrollView::PreCreateWindow(cs);
+	return CView::PreCreateWindow(cs);
 }
 
 // CToolView 인쇄
@@ -240,12 +234,12 @@ void CToolView::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 #ifdef _DEBUG
 void CToolView::AssertValid() const
 {
-	CScrollView::AssertValid();
+	CView::AssertValid();
 }
 
 void CToolView::Dump(CDumpContext& dc) const
 {
-	CScrollView::Dump(dc);
+	CView::Dump(dc);
 }
 
 CToolDoc* CToolView::GetDocument() const // 디버그되지 않은 버전은 인라인으로 지정됩니다.

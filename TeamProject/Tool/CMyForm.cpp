@@ -31,6 +31,7 @@ void CMyForm::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CMyForm, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON4, &CMyForm::OnPlayerClick)
 	ON_BN_CLICKED(IDC_BUTTON2, &CMyForm::OnMapTool)
+	ON_BN_CLICKED(IDC_CHECK1, &CMyForm::OnGrid)
 END_MESSAGE_MAP()
 
 
@@ -81,4 +82,14 @@ void CMyForm::OnMapTool()
 	}
 
 	m_MapTool.ShowWindow(SW_SHOW);
+}
+
+
+void CMyForm::OnGrid()
+{
+	CMainFrame* pMainFrm = (CMainFrame*)AfxGetMainWnd();
+	CToolView* _view = dynamic_cast<CToolView*>(pMainFrm->m_MainSplitter.GetPane(0, 0));
+
+	_view->m_bGrid = !_view->m_bGrid;
+	pMainFrm->Invalidate(FALSE);
 }

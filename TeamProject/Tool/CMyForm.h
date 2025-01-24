@@ -37,6 +37,7 @@ public:
 	virtual void OnInitialUpdate();
 	afx_msg void OnPlayerClick();
 	afx_msg void OnMapTool();
+	afx_msg void OnGrid();
 };
 
 
