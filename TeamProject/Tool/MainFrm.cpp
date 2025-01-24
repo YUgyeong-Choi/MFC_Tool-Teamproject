@@ -13,8 +13,7 @@
 #define new DEBUG_NEW
 #endif
 
-// CMainFrame
-
+// CMainFrame 
 IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
@@ -116,5 +115,7 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	//SetColumnInfo(열 번호, 열의 크기 지정, 허용 가능한 최소크기)
 	m_MainSplitter.SetColumnInfo(0, 300, 10);
 
+
+	//test
 	return TRUE;
 }
