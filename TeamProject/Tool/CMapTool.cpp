@@ -48,6 +48,7 @@ void CMapTool::OnInitialUpdate()
 void CMapTool::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_LIST1, m_ListBox);
 	DDX_Control(pDX, IDC_COMBO1, m_ctrlCMapType);
 	DDX_Control(pDX, IDC_COMBO3, m_crtlCType);
 }
@@ -57,11 +58,11 @@ BEGIN_MESSAGE_MAP(CMapTool, CDialog)
 	ON_LBN_SELCHANGE(IDC_LIST1, &CMapTool::OnListBox)
 	ON_WM_DROPFILES()
 	ON_WM_DESTROY()
+	ON_BN_CLICKED(IDC_BUTTON1, &CMapTool::OnLoadTileAssets)
 END_MESSAGE_MAP()
 
 
 // CMapTool 메시지 처리기
-
 
 void CMapTool::OnListBox()
 {
@@ -80,56 +81,6 @@ void CMapTool::OnListBox()
 		return;
 
 	m_Picture.SetBitmap(*(iter->second));
-
-	UpdateData(FALSE);
-}
-
-void CMapTool::OnDropFiles(HDROP hDropInfo)
-{
-	UpdateData(TRUE);
-
-	CDialog::OnDropFiles(hDropInfo);
-
-	TCHAR	szFilePath[MAX_PATH] = L"";
-
-	TCHAR	szFileName[MAX_STR] = L"";
-
-	// DragQueryFile :  드롭된 파일으 정보를 얻어오는 함수
-	// 
-	// 두 번째 매개 변수 : 0xffffffff(-1)인 경우 드롭된 파일의 개수를 반환
-	int	iFileCnt = DragQueryFile(hDropInfo, 0xffffffff, nullptr, 0);
-
-	for (int i = 0; i < iFileCnt; ++i)
-	{
-		DragQueryFile(hDropInfo, i, szFilePath, MAX_PATH);
-
-		CString strRelative = CFileInfo::Convert_RelativePath(szFilePath);
-
-		// PathFindFileName : 경로 중 파일 이름만 추출
-
-		CString strFileName = PathFindFileName(strRelative);
-
-		lstrcpy(szFileName, strFileName.GetString());
-
-		// 확장자 명을 제거하는 함수
-		PathRemoveExtension(szFileName);
-
-		strFileName = szFileName;
-
-		auto	iter = m_mapPngImage.find(strFileName);
-
-		if(iter == m_mapPngImage.end())
-		{
-			CImage* pPngImage = new CImage;
-			pPngImage->Load(strRelative);
-
-			m_mapPngImage.insert({ strFileName, pPngImage });
-			m_ListBox.AddString(szFileName);
-
-		}
-	}
-
-	Horizontal_Scroll();
 
 	UpdateData(FALSE);
 }
@@ -175,4 +126,32 @@ void CMapTool::OnDestroy()
 		});
 
 	m_mapPngImage.clear();
+}
+
+void CMapTool::OnLoadTileAssets()
+{
+	UpdateData(TRUE);
+
+	TCHAR szFullPath[MAX_PATH] = L"../Assets/Map/dirt_tileset/";
+	TCHAR pFilePath[MAX_STR] = L"dirt_tileset";
+	const int iCnt = 86;
+
+	for (int i = 0; i < 86; ++i)
+	{
+		swprintf_s(szFullPath, MAX_PATH, L"../Assets/Map/dirt_tileset/%s%d.png", pFilePath, i + 1);
+		CImage* pPngImage = new CImage;
+		pPngImage->Load(szFullPath); 
+
+		CString strTileName;
+		strTileName.Format(L"%s%d", pFilePath, i + 1);
+		TCHAR pFilePath2[MAX_STR];
+		swprintf_s(pFilePath2, MAX_STR, L"%s%d", pFilePath, i + 1);
+
+		m_mapPngImage.insert({ strTileName, pPngImage});
+		m_ListBox.AddString(pFilePath2);
+	}
+
+	//Horizontal_Scroll();
+
+	UpdateData(FALSE);
 }
