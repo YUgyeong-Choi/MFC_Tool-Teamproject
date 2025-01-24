@@ -32,10 +32,12 @@ public:
 	map<CString, CImage*>		m_mapPngImage;
 
 	afx_msg void OnDestroy();
-	CStatic m_Picture;
 private:
+	// 지형 콤보 박스
 	CComboBox m_ctrlCMapType;
+	// 유형 콤보 박스
 	CComboBox m_crtlCType;
 public:
 	afx_msg void OnLoadTileAssets();
+	CStatic MapToolPreviewImg;
 };

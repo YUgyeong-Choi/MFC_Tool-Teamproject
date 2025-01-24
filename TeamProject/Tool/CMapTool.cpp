@@ -51,6 +51,7 @@ void CMapTool::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST1, m_ListBox);
 	DDX_Control(pDX, IDC_COMBO1, m_ctrlCMapType);
 	DDX_Control(pDX, IDC_COMBO3, m_crtlCType);
+	DDX_Control(pDX, IDC_PICTURE, MapToolPreviewImg);
 }
 
 
@@ -64,6 +65,7 @@ END_MESSAGE_MAP()
 
 // CMapTool 메시지 처리기
 
+// 리스트 선택
 void CMapTool::OnListBox()
 {
 	UpdateData(TRUE);
@@ -80,11 +82,13 @@ void CMapTool::OnListBox()
 	if (iter == m_mapPngImage.end())
 		return;
 
-	m_Picture.SetBitmap(*(iter->second));
+	MapToolPreviewImg.SetBitmap(*(iter->second));
 
 	UpdateData(FALSE);
 }
 
+
+// 리스트 가로 길이가 텍스트보다 짧을 경우 스크롤 추가
 void CMapTool::Horizontal_Scroll()
 {
 	CString		strName;
@@ -114,7 +118,6 @@ void CMapTool::Horizontal_Scroll()
 
 }
 
-
 void CMapTool::OnDestroy()
 {
 	CDialog::OnDestroy();
@@ -128,6 +131,8 @@ void CMapTool::OnDestroy()
 	m_mapPngImage.clear();
 }
 
+
+// 로드 버튼 선택
 void CMapTool::OnLoadTileAssets()
 {
 	UpdateData(TRUE);
@@ -140,7 +145,10 @@ void CMapTool::OnLoadTileAssets()
 	{
 		swprintf_s(szFullPath, MAX_PATH, L"../Assets/Map/dirt_tileset/%s%d.png", pFilePath, i + 1);
 		CImage* pPngImage = new CImage;
-		pPngImage->Load(szFullPath); 
+		if (FAILED(pPngImage->Load(szFullPath)))
+		{
+			AfxMessageBox(L"pPngImage->Load Failed");
+		}
 
 		CString strTileName;
 		strTileName.Format(L"%s%d", pFilePath, i + 1);

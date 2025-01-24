@@ -176,11 +176,11 @@
     <ClCompile Include="CMapTool.cpp">
       <Filter>04. Etc\03. Dialog\03. MapTool</Filter>
     </ClCompile>
-    <ClCompile Include="CFileInfo.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="CPlayerTool.cpp">
       <Filter>04. Etc\03. Dialog\04.PlayerTool</Filter>
+    </ClCompile>
+    <ClCompile Include="CFileInfo.cpp">
+      <Filter>04. Etc\04. FileInfo</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

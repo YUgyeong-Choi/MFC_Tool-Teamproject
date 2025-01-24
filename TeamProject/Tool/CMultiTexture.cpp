@@ -14,7 +14,7 @@ CMultiTexture::~CMultiTexture()
 const TEXINFO* CMultiTexture::Get_Texture(const TCHAR* pStateKey, 
                                             const int& iCnt)
 {
-    auto        iter = find_if(m_MapMultiTex.begin(), m_MapMultiTex.end(), [&](auto& MyPair)->bool
+    auto    iter = find_if(m_MapMultiTex.begin(), m_MapMultiTex.end(), [&](auto& MyPair)->bool
         {
             if (pStateKey == MyPair.first)
                 return true;
@@ -71,7 +71,6 @@ HRESULT CMultiTexture::Insert_Texture(const TCHAR* pFilePath, const TCHAR* pStat
             return E_FAIL;
         }
 
-
         m_MapMultiTex[pStateKey].push_back(pTexInfo);
     }
     
@@ -89,5 +88,3 @@ void CMultiTexture::Release()
 
         m_MapMultiTex.clear();
 }
-
-
