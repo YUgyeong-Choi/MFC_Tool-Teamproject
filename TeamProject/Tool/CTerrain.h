@@ -26,9 +26,11 @@ private:
 	bool	Picking_Dot(const D3DXVECTOR3& vPos, const int& iIndex);
 	int		Get_TileIdx(const D3DXVECTOR3& vPos);
 
-
+public:
+	bool m_bGrid;
 private:
 	vector<TILE*>		m_vecTile;
 	CToolView*			m_pMainView;
+	
 };
 

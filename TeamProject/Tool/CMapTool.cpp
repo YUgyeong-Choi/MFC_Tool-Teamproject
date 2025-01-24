@@ -21,11 +21,35 @@ CMapTool::~CMapTool()
 {
 }
 
+void CMapTool::OnInitialUpdate()  
+{
+	m_ctrlCMapType.AddString(_T("Dirt"));
+	m_ctrlCMapType.AddString(_T("Sand"));
+	m_ctrlCMapType.AddString(_T("Nature"));
+	m_ctrlCMapType.AddString(_T("Stone"));
+	m_ctrlCMapType.AddString(_T("Water"));
+
+	m_crtlCType.AddString(_T("Ground"));
+	m_crtlCType.AddString(_T("Wall"));
+	m_crtlCType.AddString(_T("Deco"));
+
+	//기본값 0
+	if (m_ctrlCMapType.GetCount() > 0)
+	{
+		m_ctrlCMapType.SetCurSel(0);
+	}
+
+	if (m_crtlCType.GetCount() > 0)
+	{
+		m_crtlCType.SetCurSel(0);
+	}
+}
+
 void CMapTool::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LIST1, m_ListBox);
-	DDX_Control(pDX, IDC_PICTURE, m_Picture);
+	DDX_Control(pDX, IDC_COMBO1, m_ctrlCMapType);
+	DDX_Control(pDX, IDC_COMBO3, m_crtlCType);
 }
 
 
@@ -59,7 +83,6 @@ void CMapTool::OnListBox()
 
 	UpdateData(FALSE);
 }
-
 
 void CMapTool::OnDropFiles(HDROP hDropInfo)
 {

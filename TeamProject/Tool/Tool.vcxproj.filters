@@ -64,6 +64,9 @@
     <Filter Include="04. Etc\04. FileInfo">
       <UniqueIdentifier>{f7394afc-9cc8-40f0-82b1-4ba2722b682e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Etc\03. Dialog\04.PlayerTool">
+      <UniqueIdentifier>{6ebcb019-133e-4955-a46f-dbfa3545541b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tool.h">
@@ -123,6 +126,9 @@
     <ClInclude Include="CFileInfo.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="CPlayerTool.h">
+      <Filter>04. Etc\03. Dialog\04.PlayerTool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tool.cpp">
@@ -172,6 +178,9 @@
     </ClCompile>
     <ClCompile Include="CFileInfo.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerTool.cpp">
+      <Filter>04. Etc\03. Dialog\04.PlayerTool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

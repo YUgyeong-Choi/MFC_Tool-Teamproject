@@ -9,6 +9,7 @@
 #define IDD_CMyForm                     310
 #define IDD_CUnitTool                   311
 #define IDD_CMapTool                    312
+#define IDD_CPlayerTool                 313
 #define IDC_BUTTON1                     1000
 #define IDC_EDIT1                       1001
 #define IDC_BUTTON7                     1001
@@ -30,6 +31,8 @@
 #define IDC_BUTTON6                     1018
 #define IDC_EDIT6                       1019
 #define IDC_PICTURE                     1020
+#define IDC_COMBO1                      1021
+#define IDC_COMBO3                      1023
 
 // Next default values for new objects
 // 
@@ -37,7 +40,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        313
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1021
-#define _APS_NEXT_SYMED_VALUE           313
+#define _APS_NEXT_CONTROL_VALUE         1024
+#define _APS_NEXT_SYMED_VALUE           314
 #endif
 #endif

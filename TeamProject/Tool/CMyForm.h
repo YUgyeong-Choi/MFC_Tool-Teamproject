@@ -2,6 +2,7 @@
 
 #include "CUnitTool.h"
 #include "CMapTool.h"
+#include "CPlayerTool.h"
 
 class CMyForm : public CFormView
 {
@@ -25,16 +26,16 @@ public:
 private:
 	CFont		m_Font;
 public:
-	CUnitTool	m_UnitTool;
+	//CUnitTool	m_UnitTool;
 	CMapTool	m_MapTool;
-
+	CPlayerTool m_PlayerTool;
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual void OnInitialUpdate();
-	afx_msg void OnUnitTool();
+	afx_msg void OnPlayerClick();
 	afx_msg void OnMapTool();
 };
 

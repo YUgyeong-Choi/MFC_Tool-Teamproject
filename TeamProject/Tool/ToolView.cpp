@@ -42,7 +42,7 @@ END_MESSAGE_MAP()
 
 CToolView::CToolView() noexcept
 	: m_pDevice(CDevice::Get_Instance())
-	, m_pTerrain(nullptr)
+	, m_pTerrain(nullptr), m_bGrid(false)
 
 {
 	// TODO: 여기에 생성 코드를 추가합니다.
@@ -143,10 +143,6 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 	// CMainFrame* pMainFrm = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd())
 
 	// GetParentFrame : 현재 View창을 둘러싸고 있는 상위 FrameWnd
-	CMainFrame* pMainFrm = dynamic_cast<CMainFrame*>(GetParentFrame());
-	CMiniView* pMiniView = dynamic_cast<CMiniView*>(pMainFrm->m_SecondSplitter.GetPane(0, 0));
-
-	pMiniView->Invalidate(FALSE);
 }
 
 void CToolView::OnMouseMove(UINT nFlags, CPoint point)
@@ -161,15 +157,10 @@ void CToolView::OnMouseMove(UINT nFlags, CPoint point)
 											float(point.y) + GetScrollPos(1), 
 											0.f), 0);
 		Invalidate(FALSE);
-
-		CMainFrame* pMainFrm = dynamic_cast<CMainFrame*>(GetParentFrame());
-		CMiniView* pMiniView = dynamic_cast<CMiniView*>(pMainFrm->m_SecondSplitter.GetPane(0, 0));
-
-		pMiniView->Invalidate(FALSE);
 	}
 }
 
-void CToolView::OnDraw(CDC* /*pDC*/)
+void CToolView::OnDraw(CDC* pDC)
 {
 	CToolDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
@@ -182,7 +173,26 @@ void CToolView::OnDraw(CDC* /*pDC*/)
 
 	m_pDevice->Render_End();
 
+	//CPoint scrollPos = GetScrollPosition();
+	////그리드 그리는 곳
+	//if (m_bGrid) {
+	//	CPen pen(PS_SOLID, 1, RGB(255, 255, 255));
+	//	CPen* pOldPen = pDC->SelectObject(&pen);
 
+	//	// 그리드의 가로선 그리기
+	//	for (int i = 0; i <= TILEY; ++i) {
+	//		pDC->MoveTo(0 - scrollPos.x, i * TILECY - scrollPos.y);
+	//		pDC->LineTo(TILEY * TILECY - scrollPos.x, i * TILECY - scrollPos.y);
+	//	}
+
+	//	// 그리드의 세로선 그리기
+	//	for (int i = 0; i <= TILEX; ++i) {
+	//		pDC->MoveTo(i * TILECX - scrollPos.x, 0 - scrollPos.y);
+	//		pDC->LineTo(i * TILECX - scrollPos.x, TILEX * TILECX - scrollPos.y);
+	//	}
+
+	//	pDC->SelectObject(pOldPen);
+	//}
 }
 
 void CToolView::OnDestroy()

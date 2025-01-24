@@ -3,7 +3,7 @@
 #include "CTextureMgr.h"
 #include "CDevice.h"
 
-CTerrain::CTerrain()
+CTerrain::CTerrain():m_bGrid(false), m_pMainView(nullptr)
 {
 	m_vecTile.reserve(TILEX * TILEY);
 }
@@ -16,10 +16,10 @@ CTerrain::~CTerrain()
 HRESULT CTerrain::Initialize()
 {
 	if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
-		L"../Texture/Stage/Terrain/Tile/Tile%d.png",
-		TEX_MULTI, L"Terrain", L"Tile", 36)))
+		L"../Assets/Map//back/dark.png",
+		TEX_SINGLE, L"Back", L"Tile", 1)))
 	{
-		AfxMessageBox(L"Terrain Texture Insert Failed");
+		AfxMessageBox(L"Back Texture Insert Failed");
 		return E_FAIL;
 	}
 
@@ -54,7 +54,7 @@ void CTerrain::Render()
 	D3DXMATRIX	matWorld, matScale, matTrans;
 
 	TCHAR	szBuf[MIN_STR] = L"";
-	int		iIndex(0);
+	//int		iIndex(0);
 
 	for (auto pTile : m_vecTile)
 	{
@@ -78,7 +78,7 @@ void CTerrain::Render()
 
 		CDevice::Get_Instance()->Get_Sprite()->SetTransform(&matWorld);
 
-		const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(L"Terrain", L"Tile", pTile->byDrawID);
+		const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(L"Back", L"Tile", pTile->byDrawID);
 
 		float	fCenterX = pTexInfo->tImgInfo.Width / 2.f;
 		float	fCenterY = pTexInfo->tImgInfo.Height / 2.f;
@@ -91,18 +91,17 @@ void CTerrain::Render()
 			nullptr,		// 위치 좌표에 대한 vec3 주소, null인 경우 스크린 상 0, 0 좌표 출력	
 			D3DCOLOR_ARGB(255, 255, 255, 255)); // 출력할 이미지와 섞을 색상 값, 0xffffffff를 넘겨주면 섞지 않고 원본 색상 유지
 			
-		swprintf_s(szBuf, L"%d", iIndex);
+		//swprintf_s(szBuf, L"%d", iIndex);
 
-		CDevice::Get_Instance()->Get_Font()->DrawTextW(CDevice::Get_Instance()->Get_Sprite(),
-			szBuf,		// 출력할 문자열
-			lstrlen(szBuf),  // 문자열 버퍼의 크기
-			nullptr,	// 출력할 렉트 위치
-			0,			// 정렬 기준(옵션)
-			D3DCOLOR_ARGB(255, 255, 255, 255));
+		//CDevice::Get_Instance()->Get_Font()->DrawTextW(CDevice::Get_Instance()->Get_Sprite(),
+		//	szBuf,		// 출력할 문자열
+		//	lstrlen(szBuf),  // 문자열 버퍼의 크기
+		//	nullptr,	// 출력할 렉트 위치
+		//	0,			// 정렬 기준(옵션)
+		//	D3DCOLOR_ARGB(255, 255, 255, 255));
 
-		iIndex++;
-	}	
-	
+		//iIndex++;
+	}		
 }
 
 void CTerrain::Release()
@@ -135,7 +134,7 @@ void CTerrain::Mini_Render()
 
 		CDevice::Get_Instance()->Get_Sprite()->SetTransform(&matWorld);
 
-		const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(L"Terrain", L"Tile", pTile->byDrawID);
+		const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(L"Back", L"Tile", pTile->byDrawID);
 
 		float	fCenterX = pTexInfo->tImgInfo.Width / 2.f;
 		float	fCenterY = pTexInfo->tImgInfo.Height / 2.f;
