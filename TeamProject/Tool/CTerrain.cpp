@@ -29,8 +29,8 @@ HRESULT CTerrain::Initialize()
 		{
 			TILE* pTile = new TILE;
 
-			float	fY = (TILECY / 2.f) * i;
-			float	fX = (TILECX * j) + (i % 2) * (TILECX / 2.f);
+			float    fY = TILECY * i + (TILECY / 2.f);
+			float    fX = TILECX * j + (TILECX / 2.f);
 
 			pTile->vPos = { fX, fY, 0.f };
 			pTile->vSize = { (float)TILECX, (float)TILECY };
@@ -61,8 +61,8 @@ void CTerrain::Render()
 		D3DXMatrixIdentity(&matWorld);
 		D3DXMatrixScaling(&matScale, 1.f, 1.f, 1.f);
 		D3DXMatrixTranslation(&matTrans, 
-			pTile->vPos.x - m_pMainView->GetScrollPos(0),
-			pTile->vPos.y - m_pMainView->GetScrollPos(1),
+			pTile->vPos.x ,
+			pTile->vPos.y ,
 			pTile->vPos.z);
 
 		matWorld = matScale * matTrans;
