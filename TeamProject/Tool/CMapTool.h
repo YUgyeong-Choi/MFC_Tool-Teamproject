@@ -19,7 +19,6 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
-
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnListBox();
@@ -27,7 +26,7 @@ public:
 
 public:
 	void	Horizontal_Scroll();
-
+	void OnInitialUpdate();
 public:
 	CListBox m_ListBox;
 
@@ -35,4 +34,7 @@ public:
 
 	afx_msg void OnDestroy();
 	CStatic m_Picture;
+private:
+	CComboBox m_ctrlCMapType;
+	CComboBox m_crtlCType;
 };

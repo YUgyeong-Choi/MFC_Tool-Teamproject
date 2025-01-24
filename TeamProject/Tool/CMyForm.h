@@ -27,7 +27,7 @@ private:
 	CFont		m_Font;
 public:
 	//CUnitTool	m_UnitTool;
-	//CMapTool	m_MapTool;
+	CMapTool	m_MapTool;
 	CPlayerTool m_PlayerTool;
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
@@ -36,6 +36,7 @@ protected:
 public:
 	virtual void OnInitialUpdate();
 	afx_msg void OnPlayerClick();
+	afx_msg void OnMapTool();
 };
 
 

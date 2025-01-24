@@ -30,6 +30,7 @@ void CMyForm::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CMyForm, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON4, &CMyForm::OnPlayerClick)
+	ON_BN_CLICKED(IDC_BUTTON2, &CMyForm::OnMapTool)
 END_MESSAGE_MAP()
 
 
@@ -66,7 +67,18 @@ void CMyForm::OnInitialUpdate()
 void CMyForm::OnPlayerClick()
 {
 	if (nullptr == m_PlayerTool.GetSafeHwnd())
-		m_PlayerTool.Create(IDD_CMapTool);	// 해당 id에 맞는 다이얼로그 생성
+		m_PlayerTool.Create(IDD_CPlayerTool);	// 해당 id에 맞는 다이얼로그 생성
 
 	m_PlayerTool.ShowWindow(SW_SHOW);
+}
+
+
+void CMyForm::OnMapTool()
+{
+	if (nullptr == m_MapTool.GetSafeHwnd()){
+		m_MapTool.Create(IDD_CMapTool);	// 해당 id에 맞는 다이얼로그 생성
+		m_MapTool.OnInitialUpdate();
+	}
+
+	m_MapTool.ShowWindow(SW_SHOW);
 }
