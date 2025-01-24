@@ -22,7 +22,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnListBox();
-	afx_msg void OnDropFiles(HDROP hDropInfo);
 
 public:
 	void	Horizontal_Scroll();
@@ -37,4 +36,6 @@ public:
 private:
 	CComboBox m_ctrlCMapType;
 	CComboBox m_crtlCType;
+public:
+	afx_msg void OnLoadTileAssets();
 };
