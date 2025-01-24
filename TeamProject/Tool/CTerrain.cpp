@@ -23,6 +23,16 @@ HRESULT CTerrain::Initialize()
 		return E_FAIL;
 	}
 
+
+	//if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
+	//	L"../Assets/Map/dirt_tileset/ground",
+	//	TEX_MULTI, L"Dirt", L"Ground", 28)))
+	//{
+	//	AfxMessageBox(L"Dirt Ground Texture Insert Failed");
+	//	return E_FAIL;
+	//}
+
+
 	for (int i = 0; i < TILEY; ++i)
 	{
 		for (int j = 0; j < TILEX; ++j)
