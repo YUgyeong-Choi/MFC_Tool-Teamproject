@@ -51,7 +51,7 @@ private:
 
 public:
 	CTerrain* m_pTerrain;
-
+	bool m_bGrid;
 public:
 	virtual void OnInitialUpdate();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);

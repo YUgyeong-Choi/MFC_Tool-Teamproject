@@ -36,6 +36,7 @@ public:
 	virtual void OnInitialUpdate();
 	afx_msg void OnUnitTool();
 	afx_msg void OnMapTool();
+	afx_msg void OnBnClickedCheck1();
 };
 
 

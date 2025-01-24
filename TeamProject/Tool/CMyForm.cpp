@@ -4,6 +4,9 @@
 #include "pch.h"
 #include "Tool.h"
 #include "CMyForm.h"
+#include "MainFrm.h"
+#include "ToolView.h"
+#include "CTerrain.h"
 
 
 // CMyForm
@@ -28,6 +31,7 @@ void CMyForm::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CMyForm, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON1, &CMyForm::OnUnitTool)
 	ON_BN_CLICKED(IDC_BUTTON7, &CMyForm::OnMapTool)
+	ON_BN_CLICKED(IDC_CHECK1, &CMyForm::OnBnClickedCheck1)
 END_MESSAGE_MAP()
 
 
@@ -81,4 +85,14 @@ void CMyForm::OnMapTool()
 
 	m_MapTool.ShowWindow(SW_SHOW);
 
+}
+
+
+void CMyForm::OnBnClickedCheck1()
+{
+	CMainFrame* pMainFrm = (CMainFrame*)AfxGetMainWnd();
+	CToolView* pView = dynamic_cast<CToolView*>(pMainFrm->m_MainSplitter.GetPane(0, 1));
+
+	pView->m_bGrid = !pView->m_bGrid;
+	pView->Invalidate(FALSE);
 }
