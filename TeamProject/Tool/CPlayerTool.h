@@ -23,10 +23,10 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	void OnInitialUpdate();
-	void RenderDeco();
 private:
 	void Ui_Silder_Set(CSliderCtrl* silder);
-	void OnLoadHair();
+	void OnLoadData();
+	void ChangeImageColor(CImage* image, CEdit* R, CEdit* G, CEdit* B);
 private:
 	CEdit m_hairR;
 	CEdit m_hairG;
