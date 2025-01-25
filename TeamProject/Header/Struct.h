@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Enum.h"
+
 typedef struct tagInfo
 {
 	D3DXVECTOR3		vPos;
@@ -20,16 +22,22 @@ typedef struct tagTexture
 }TEXINFO;
 
 
-
 typedef struct tagTile
 {
 	D3DXVECTOR3	vPos;				// 타일의 중점 좌표
 	D3DXVECTOR2 vSize;				// 타일의 가로, 세로 사이즈
 
 	BYTE		byOption;			// 0, 1번(장애물)
-	BYTE		byDrawID;			// 몇 번 타일 이미지
+	BYTE		byDrawID[OPT_END];	// 몇 번 타일 이미지, 유형 갯수 만큼 배열 추가
 
+	TILEOPTION	eTileType;			// 유형 (땅 벽 장식 ...)
+	TILETERRAIN eTileTerrain;		// 지형 (흙 모래 ... )
 }TILE;
+
+typedef struct tagWall
+{
+	// 추가할 수도 있고 아닐 수도 있음..
+};
 
 typedef	struct tagUnitData
 {

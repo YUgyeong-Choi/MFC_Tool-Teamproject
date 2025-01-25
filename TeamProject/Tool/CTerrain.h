@@ -17,7 +17,7 @@ public:
 	void		Mini_Render();
 
 public:
-	void	Tile_Change(const D3DXVECTOR3& vPos, const BYTE& byDrawID);
+	void	Tile_Change(const D3DXVECTOR3& vPos, const BYTE& byDrawID, const int byOption);
 	void	Set_MainView(CToolView* pMainView) { m_pMainView = pMainView;  }
 	void	Set_Ratio(D3DXMATRIX* pOut, float _fX, float _fY);
 
