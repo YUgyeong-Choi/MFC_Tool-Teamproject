@@ -67,8 +67,11 @@ void CMyForm::OnInitialUpdate()
 
 void CMyForm::OnPlayerClick()
 {
-	if (nullptr == m_PlayerTool.GetSafeHwnd())
-		m_PlayerTool.Create(IDD_CPlayerTool);	// 해당 id에 맞는 다이얼로그 생성
+	if (nullptr == m_PlayerTool.GetSafeHwnd()) {
+		m_PlayerTool.Create(IDD_CPlayerTool);
+		m_PlayerTool.OnInitialUpdate();
+	}
+		
 
 	m_PlayerTool.ShowWindow(SW_SHOW);
 }

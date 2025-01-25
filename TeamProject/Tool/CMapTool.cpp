@@ -84,7 +84,8 @@ void CMapTool::OnListBox()
 	if (iter == m_mapPngImage.end())
 		return;
 
-	MapToolPreviewImg.SetBitmap(*(iter->second));
+	//선택한 이미지 종류 보여주는 곳
+	MapToolPreviewImg.SetBitmap(*(iter->second)); 
 		
 	UpdateData(FALSE);
 }
