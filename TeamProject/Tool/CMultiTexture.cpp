@@ -38,7 +38,7 @@ HRESULT CMultiTexture::Insert_Texture(const TCHAR* pFilePath, const TCHAR* pStat
 
     for (int i = 0; i < iCnt; ++i)
     {
-        swprintf_s(szFullPath, pFilePath,i);
+        swprintf_s(szFullPath, pFilePath,i + 1);
 
         TEXINFO* pTexInfo = new TEXINFO;
         ZeroMemory(pTexInfo, sizeof(TEXINFO));

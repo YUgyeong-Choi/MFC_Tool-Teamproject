@@ -24,13 +24,13 @@ HRESULT CTerrain::Initialize()
 	}
 
 
-	//if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
-	//	L"../Assets/Map/dirt_tileset/ground",
-	//	TEX_MULTI, L"Dirt", L"Ground", 28)))
-	//{
-	//	AfxMessageBox(L"Dirt Ground Texture Insert Failed");
-	//	return E_FAIL;
-	//}
+	if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
+		L"../Assets/Map/dirt_tileset/ground/dirt_tileset_ground%d.png",
+		TEX_MULTI, L"Dirt", L"Ground", 28)))
+	{
+		AfxMessageBox(L"Dirt Ground Texture Insert Failed");
+		return E_FAIL;
+	}
 
 
 	for (int i = 0; i < TILEY; ++i)
@@ -45,7 +45,7 @@ HRESULT CTerrain::Initialize()
 			pTile->vPos = { fX, fY, 0.f };
 			pTile->vSize = { (float)TILECX, (float)TILECY };
 			pTile->byOption = 0;
-			pTile->byDrawID = 3;
+			pTile->byDrawID = 1;
 
 			m_vecTile.push_back(pTile);
 		}
@@ -88,7 +88,7 @@ void CTerrain::Render()
 
 		CDevice::Get_Instance()->Get_Sprite()->SetTransform(&matWorld);
 
-		const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(L"Back", L"Tile", pTile->byDrawID);
+		const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(L"Dirt", L"Ground", pTile->byDrawID);
 
 		float	fCenterX = pTexInfo->tImgInfo.Width / 2.f;
 		float	fCenterY = pTexInfo->tImgInfo.Height / 2.f;
