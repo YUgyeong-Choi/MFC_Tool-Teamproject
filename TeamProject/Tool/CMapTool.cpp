@@ -53,7 +53,7 @@ void CMapTool::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST1, m_ListBox);
 	DDX_Control(pDX, IDC_COMBO1, m_ctrlCMapType);
 	DDX_Control(pDX, IDC_COMBO3, m_crtlCType);
-	DDX_Control(pDX, IDC_PICTURE, MapToolPreviewImg);
+	DDX_Control(pDX, IDC_PICTURE1, MapToolPreviewImg);
 }
 
 

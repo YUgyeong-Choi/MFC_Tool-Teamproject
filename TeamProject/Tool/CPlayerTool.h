@@ -3,7 +3,7 @@
 
 
 // CPlayerTool 대화 상자
-
+#include "Include.h"
 class CPlayerTool : public CDialog
 {
 	DECLARE_DYNAMIC(CPlayerTool)
@@ -23,8 +23,10 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	void OnInitialUpdate();
+	void RenderDeco();
 private:
 	void Ui_Silder_Set(CSliderCtrl* silder);
+	void OnLoadHair();
 private:
 	CEdit m_hairR;
 	CEdit m_hairG;
@@ -50,10 +52,16 @@ private:
 	CSliderCtrl m_silderPantR;
 	CSliderCtrl m_silderPantG;
 	CSliderCtrl m_silderPantB;
+	CStatic PlayerPreviewImg;
+	CImage* image;
+	CImage* image2;
+	CImage* image3;
+	vector<CImage*> m_vecHair;
 public:
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg void OnHairColor();
 	afx_msg void OnPantColor();
 	afx_msg void OnShirtColor();
 	afx_msg void OnEyeColor();
+	afx_msg void OnDestroy();
 };

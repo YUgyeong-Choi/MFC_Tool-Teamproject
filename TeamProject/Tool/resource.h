@@ -39,7 +39,7 @@
 #define IDC_BUTTON5                     1017
 #define IDC_BUTTON6                     1018
 #define IDC_EDIT6                       1019
-#define IDC_PICTURE                     1020
+#define IDC_PICTURE1                     1020
 #define IDC_COMBO1                      1021
 #define IDC_COMBO3                      1023
 #define IDC_SPIN1                       1028
@@ -62,6 +62,7 @@
 #define IDC_SLIDER10                    1049
 #define IDC_SLIDER11                    1050
 #define IDC_SLIDER12                    1051
+#define IDC_PICTURE2                    1055
 
 // Next default values for new objects
 // 
