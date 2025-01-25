@@ -45,7 +45,9 @@ HRESULT CTerrain::Initialize()
 			pTile->vPos = { fX, fY, 0.f };
 			pTile->vSize = { (float)TILECX, (float)TILECY };
 			pTile->byOption = 0;
-			pTile->byDrawID[OPT_GROUND] = 1;
+			pTile->byDrawID[OPT_GROUND] = 27;
+			pTile->eTileTerrain = TRN_DIRT;
+			pTile->eTileType = OPT_GROUND;
 			m_vecTile.push_back(pTile);
 		}
 	}
@@ -192,7 +194,7 @@ void CTerrain::Tile_Change(const D3DXVECTOR3& vPos, const BYTE& byDrawID, const 
 	if (-1 == iIndex)
 		return;
 
-	m_vecTile[iIndex]->byDrawID = byDrawID;
+	m_vecTile[iIndex]->byDrawID[0] = byDrawID;
 	m_vecTile[iIndex]->byOption = byOption;
 }
 
