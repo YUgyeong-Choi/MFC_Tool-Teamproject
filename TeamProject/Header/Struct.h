@@ -22,14 +22,13 @@ typedef struct tagTexture
 }TEXINFO;
 
 
-
 typedef struct tagTile
 {
 	D3DXVECTOR3	vPos;				// 타일의 중점 좌표
 	D3DXVECTOR2 vSize;				// 타일의 가로, 세로 사이즈
 
 	BYTE		byOption;			// 0, 1번(장애물)
-	BYTE		byDrawID;			// 몇 번 타일 이미지
+	BYTE		byDrawID[OPT_END];	// 몇 번 타일 이미지
 
 	TILEOPTION	eTileType;
 	TILETERRAIN eTileTerrain;

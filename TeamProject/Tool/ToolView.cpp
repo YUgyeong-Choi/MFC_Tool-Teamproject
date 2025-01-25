@@ -142,13 +142,15 @@ void CToolView::OnMouseMove(UINT nFlags, CPoint point)
 
 	CView::OnMouseMove(nFlags, point);
 
-	//if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
-	//{
-	//	m_pTerrain->Tile_Change(D3DXVECTOR3(float(point.x) + GetScrollPos(0), 
-	//										float(point.y) + GetScrollPos(1), 
-	//										0.f), 20);
-	//	Invalidate(FALSE);
-	//}
+	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+	{
+		//m_pTerrain->Tile_Change(D3DXVECTOR3(float(point.x) + GetScrollPos(0), 
+		//									float(point.y) + GetScrollPos(1), 
+		//									0.f), 20);
+
+		Check_TileSettings(point);
+		Invalidate(FALSE);
+	}
 }
 
 void CToolView::Check_TileSettings(CPoint point)
@@ -172,6 +174,32 @@ void CToolView::Check_TileSettings(CPoint point)
 			pMyForm->m_MapTool.m_ListBox.GetCurSel(), 0
 		);
 	}
+	else
+	{
+		switch (eTerrain)
+		{
+		case TRN_DIRT:
+
+			break;
+		case TRN_SAND:
+
+			break;
+		case TRN_NATURE:
+
+			break;
+		case TRN_STONE:
+
+			break;
+		case TRN_WATER:
+
+			break;
+		case TRN_END:
+			break;
+		default:
+			break;
+		}
+	}
+
 }
 
 void CToolView::OnDraw(CDC* pDC)
