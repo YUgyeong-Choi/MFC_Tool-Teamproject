@@ -53,10 +53,8 @@ void CPlayerTool::DoDataExchange(CDataExchange* pDX)
 
 void CPlayerTool::OnInitialUpdate()
 {
-	image = new CImage;
-	TCHAR szFullPath[MAX_PATH] = L"../Assets/Player/skin/idle/front/idle_front1.png"; //스킨
-	image->Load(szFullPath);
-	PlayerPreviewImg.SetBitmap(*image);
+	m_hairIndex = 0;
+	OnLoadHair();
 
 	Ui_Silder_Set(&m_silderHairR);
 	Ui_Silder_Set(&m_silderHairG);
@@ -98,6 +96,22 @@ void CPlayerTool::Ui_Silder_Set(CSliderCtrl* silder)
 
 void CPlayerTool::OnLoadHair()
 {
+	m_vecHair.push_back(new CImage());
+	TCHAR szHairPath1[MAX_PATH] = L"../Assets/Player/hair/hair1/Miner_hair1_1.png";
+	m_vecHair[0]->Load(szHairPath1);
+	m_vecHair[0]->SetTransparentColor(RGB(255, 255, 255));
+
+	m_vecHair.push_back(new CImage());
+	TCHAR szHairPath2[MAX_PATH] = L"../Assets/Player/hair/hair2/Miner_hair2_1.png";
+	m_vecHair[1]->Load(szHairPath2);
+	m_vecHair[1]->SetTransparentColor(RGB(255, 255, 255));
+
+	m_vecHair.push_back(new CImage());
+	TCHAR szHairPath3[MAX_PATH] = L"../Assets/Player/hair/hair3/Miner_hair3_1.png";
+	m_vecHair[2]->Load(szHairPath3);
+	m_vecHair[2]->SetTransparentColor(RGB(255, 255, 255));
+
+
 	//UpdateData(TRUE);
 
 	//TCHAR szFullPath[MAX_PATH] = L"../Assets/Player/hair/har1/Miner_hair1_1";
@@ -205,6 +219,8 @@ BEGIN_MESSAGE_MAP(CPlayerTool, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON8, &CPlayerTool::OnEyeColor)
 	ON_BN_CLICKED(IDC_BUTTON9, &CPlayerTool::OnShirtColor)
 	ON_WM_DESTROY()
+	ON_BN_CLICKED(IDC_BUTTON4, &CPlayerTool::OnLoadPlayerBasic)
+	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN3, &CPlayerTool::OnChangeHairType)
 END_MESSAGE_MAP()
 
 
@@ -280,29 +296,33 @@ void CPlayerTool::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
 void CPlayerTool::OnHairColor()
 {
-	image2 = new CImage;
-	TCHAR szFullPath2[MAX_PATH] = L"../Assets/Player/hair/hair1/Miner_hair1_1.png"; //머리
-	image2->Load(szFullPath2);
 
-	CRect rect;
-	PlayerPreviewImg.GetClientRect(&rect);
-	int centerX = rect.Width() * 0.5;
-	int centerY = rect.Height() * 0.5;
-	int leftX = centerX - image2->GetWidth() * 0.5;
-	int leftY = centerY - image2->GetHeight() * 0.5;
 
-	CDC* _dc = PlayerPreviewImg.GetDC();
-	
-	image2->Draw(_dc->m_hDC, leftX, leftY, image2->GetWidth(), image2->GetHeight());
-	image2->SetTransparentColor(RGB(255, 255, 255));
 
-	image3 = new CImage;
-	TCHAR szFullPath3[MAX_PATH] = L"../Assets/Player/pant/Miner_pants_1.png"; //머리
-	image3->Load(szFullPath3);
 
-	image3->Draw(_dc->m_hDC, leftX, leftY, image3->GetWidth(), image3->GetHeight());
-	image3->SetTransparentColor(RGB(255, 255, 255));
-	PlayerPreviewImg.ReleaseDC(_dc);
+	//image2 = new CImage;
+	//TCHAR szFullPath2[MAX_PATH] = L"../Assets/Player/hair/hair1/Miner_hair1_1.png"; //머리
+	//image2->Load(szFullPath2);
+
+	//CRect rect;
+	//PlayerPreviewImg.GetClientRect(&rect);
+	//int centerX = rect.Width() * 0.5;
+	//int centerY = rect.Height() * 0.5;
+	//int leftX = centerX - image2->GetWidth() * 0.5;
+	//int leftY = centerY - image2->GetHeight() * 0.5;
+
+	//CDC* _dc = PlayerPreviewImg.GetDC();
+	//
+	//image2->Draw(_dc->m_hDC, leftX, leftY, image2->GetWidth(), image2->GetHeight());
+	//image2->SetTransparentColor(RGB(255, 255, 255));
+
+	//image3 = new CImage;
+	//TCHAR szFullPath3[MAX_PATH] = L"../Assets/Player/pant/Miner_pants_1.png"; //머리
+	//image3->Load(szFullPath3);
+
+	//image3->Draw(_dc->m_hDC, leftX, leftY, image3->GetWidth(), image3->GetHeight());
+	//image3->SetTransparentColor(RGB(255, 255, 255));
+	//PlayerPreviewImg.ReleaseDC(_dc);
 }
 
 void CPlayerTool::OnPantColor()
@@ -322,8 +342,90 @@ void CPlayerTool::OnEyeColor()
 void CPlayerTool::OnDestroy()
 {
 	CDialog::OnDestroy();
-	Safe_Delete(image);
-	Safe_Delete(image2);
-	Safe_Delete(image3);
-	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
+	for (size_t i = 0; i < m_vecSkin.size(); ++i) {
+		Safe_Delete(m_vecSkin[i]);
+	}
+	for (size_t i = 0; i < m_vecHair.size(); ++i) {
+		Safe_Delete(m_vecHair[i]);
+	}
+
+	Safe_Delete(m_eye);
+	Safe_Delete(m_shirt);
+	Safe_Delete(m_pant);
+}
+
+
+void CPlayerTool::OnLoadPlayerBasic()
+{
+	//스킨
+	m_vecSkin.push_back(new CImage());
+	TCHAR szSkinPath[MAX_PATH] = L"../Assets/Player/skin/idle/front/idle_front1.png"; 
+	m_vecSkin[0]->Load(szSkinPath);
+	COLORREF transparentColor = RGB(255, 255, 255);
+	m_vecSkin[0]->SetTransparentColor(transparentColor);
+
+	//눈
+	m_eye = new CImage();
+	TCHAR szEyePath[MAX_PATH] = L"../Assets/Player/eye/Miner_eyes_1.png";
+	m_eye->Load(szEyePath);
+	m_eye->SetTransparentColor(transparentColor);
+
+	//셔츠
+	m_shirt = new CImage();
+	TCHAR szShirtPath[MAX_PATH] = L"../Assets/Player/shirt/Miner_shirt_1.png";
+	m_shirt->Load(szShirtPath);
+	m_shirt->SetTransparentColor(transparentColor);
+
+	//바지
+	m_pant = new CImage();
+	TCHAR szPantPath[MAX_PATH] = L"../Assets/Player/pant/Miner_pants_1.png";
+	m_pant->Load(szPantPath);
+	m_pant->SetTransparentColor(transparentColor);
+
+	CClientDC dc(&PlayerPreviewImg);
+	CRect rect;
+	PlayerPreviewImg.GetClientRect(&rect);
+	dc.FillSolidRect(rect, RGB(255, 255, 255));
+
+	m_vecSkin[0]->Draw(dc, rect);
+	m_vecHair[0]->Draw(dc, rect);
+	m_eye->Draw(dc, rect);
+	m_shirt->Draw(dc, rect);
+	m_pant->Draw(dc, rect);
+}
+
+
+void CPlayerTool::OnChangeHairType(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+
+	if (pNMUpDown->iDelta < 0) {
+		//오른쪽 누름
+		m_hairIndex++;
+		if (m_hairIndex == m_vecHair.size()) {
+			m_hairIndex = 0;
+		}
+	}
+	else {
+		//왼쪽 누름
+		m_hairIndex--;
+		if (m_hairIndex < 0) {
+			m_hairIndex = m_vecHair.size() - 1;
+		}
+	}
+
+	Invalidate(FALSE);
+	CClientDC dc(&PlayerPreviewImg);
+	CRect rect;
+	PlayerPreviewImg.GetClientRect(&rect);
+	dc.FillSolidRect(rect, RGB(255, 255, 255));
+
+	m_vecSkin[0]->Draw(dc, rect);
+	m_vecHair[m_hairIndex]->Draw(dc, rect);
+	m_eye->Draw(dc, rect);
+	m_shirt->Draw(dc, rect);
+	m_pant->Draw(dc, rect);
+
+
+	*pResult = 0;
 }

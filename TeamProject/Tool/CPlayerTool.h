@@ -53,10 +53,15 @@ private:
 	CSliderCtrl m_silderPantG;
 	CSliderCtrl m_silderPantB;
 	CStatic PlayerPreviewImg;
-	CImage* image;
-	CImage* image2;
-	CImage* image3;
+
+	// 옷 관련
+	vector<CImage*> m_vecSkin;
 	vector<CImage*> m_vecHair;
+	CImage* m_eye;
+	CImage* m_shirt;
+	CImage* m_pant;
+
+	int m_hairIndex;
 public:
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg void OnHairColor();
@@ -64,4 +69,6 @@ public:
 	afx_msg void OnShirtColor();
 	afx_msg void OnEyeColor();
 	afx_msg void OnDestroy();
+	afx_msg void OnLoadPlayerBasic();
+	afx_msg void OnChangeHairType(NMHDR* pNMHDR, LRESULT* pResult);
 };
