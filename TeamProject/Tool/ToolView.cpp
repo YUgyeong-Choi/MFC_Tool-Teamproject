@@ -114,8 +114,9 @@ void CToolView::OnInitialUpdate()
 
 void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 {
+	CView::OnLButtonDown(nFlags, point);
 
-	Check_TileSettings();
+	Check_TileSettings(point);
 
 	// Invalidate : 호출 시 윈도우에 WM_PAINT와 WM_ERASEBKGND 메세지를 발생시킴
 	// WM_PAINT 메세지 발생 시, OnDraw함수가 다시 호출
@@ -150,52 +151,27 @@ void CToolView::OnMouseMove(UINT nFlags, CPoint point)
 	//}
 }
 
-void CToolView::Check_TileSettings()
+void CToolView::Check_TileSettings(CPoint point)
 {
-	CView::OnLButtonDown(nFlags, point);
-
 	CMainFrame* pMainFrm = (CMainFrame*)AfxGetMainWnd();
 	CMyForm* pMyForm = dynamic_cast<CMyForm*>(pMainFrm->m_MainSplitter.GetPane(0, 1));
 
+	if (nullptr == pMyForm->m_MapTool.GetSafeHwnd())
+		return;
 	TILETERRAIN eTerrain = (TILETERRAIN)(pMyForm->m_MapTool.m_ctrlCMapType.GetCurSel());
 	TILEOPTION eOption = (TILEOPTION)(pMyForm->m_MapTool.m_crtlCType.GetCurSel());
 
 	if (eOption == OPT_GROUND)
 	{
-		pMyForm->m_MapTool.m_ListBox.GetCurSel();
-
+		int iDrawID = pMyForm->m_MapTool.m_ListBox.GetCurSel();
+		if (iDrawID == -1)
+			return;
 		m_pTerrain->Tile_Change(D3DXVECTOR3(float(point.x) + GetScrollPos(0),
 			float(point.y) + GetScrollPos(1),
 			0.f),
 			pMyForm->m_MapTool.m_ListBox.GetCurSel(), 0
 		);
 	}
-	else
-	{
-		switch (eTerrain)
-		{
-		case TRN_DIRT:
-
-			break;
-		case TRN_SAND:
-
-			break;
-		case TRN_NATURE:
-
-			break;
-		case TRN_STONE:
-
-			break;
-		case TRN_WATER:
-
-			break;
-		case TRN_END:
-			break;
-		default:
-			break;
-		}
-	}
-
 }
 
 void CToolView::OnDraw(CDC* pDC)

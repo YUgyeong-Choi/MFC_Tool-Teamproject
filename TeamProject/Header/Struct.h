@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Enum.h"
+
 typedef struct tagInfo
 {
 	D3DXVECTOR3		vPos;
@@ -29,6 +31,8 @@ typedef struct tagTile
 	BYTE		byOption;			// 0, 1번(장애물)
 	BYTE		byDrawID;			// 몇 번 타일 이미지
 
+	TILEOPTION	eTileType;
+	TILETERRAIN eTileTerrain;
 }TILE;
 
 typedef	struct tagUnitData

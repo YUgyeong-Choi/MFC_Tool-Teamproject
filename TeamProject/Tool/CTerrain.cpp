@@ -46,17 +46,16 @@ HRESULT CTerrain::Initialize()
 			pTile->vSize = { (float)TILECX, (float)TILECY };
 			pTile->byOption = 0;
 			pTile->byDrawID = 1;
-
+			pTile->eTileType = OPT_GROUND;
+			pTile->eTileTerrain = TRN_DIRT;
 			m_vecTile.push_back(pTile);
 		}
 	}
-
 	return S_OK;
 }
 
 void CTerrain::Update()
 {
-	
 }
 
 void CTerrain::Render()
@@ -88,7 +87,36 @@ void CTerrain::Render()
 
 		CDevice::Get_Instance()->Get_Sprite()->SetTransform(&matWorld);
 
-		const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(L"Dirt", L"Ground", pTile->byDrawID);
+		TCHAR	szTexTerrain[MAX_STR] = L"";
+		TCHAR	szTexType[MAX_STR] = L"";
+
+		switch (pTile->eTileTerrain){
+		case TRN_DIRT:
+			lstrcpy(szTexTerrain, L"Dirt");break;
+		case TRN_SAND:
+			lstrcpy(szTexTerrain, L"Sand");break;
+		case TRN_NATURE:
+			lstrcpy(szTexTerrain, L"Nature");break;
+		case TRN_STONE:
+			lstrcpy(szTexTerrain, L"Stone");break;
+		case TRN_WATER:
+			lstrcpy(szTexTerrain, L"Water");break;
+		default:break;
+		}
+
+		switch (pTile->eTileType){
+		case OPT_GROUND:
+			lstrcpy(szTexType, L"Ground");break;
+		case OPT_WALL:
+			lstrcpy(szTexType, L"Wall");break;
+		case OPT_ORE:
+			lstrcpy(szTexType, L"Ore");	break;
+		case OPT_DECO:
+			lstrcpy(szTexType, L"Deco");break;
+		default:break;
+		}
+
+		const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(szTexTerrain, szTexType, pTile->byDrawID);
 
 		float	fCenterX = pTexInfo->tImgInfo.Width / 2.f;
 		float	fCenterY = pTexInfo->tImgInfo.Height / 2.f;
