@@ -20,24 +20,23 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 	DECLARE_MESSAGE_MAP()
-public:
-	afx_msg void OnListBox();
 
 public:
 	void	Horizontal_Scroll();
 	void OnInitialUpdate();
-public:
-	CListBox m_ListBox;
-
-	map<CString, CImage*>		m_mapPngImage;
-
 	afx_msg void OnDestroy();
-private:
+	afx_msg void OnLoadTileAssets();
+	afx_msg void OnListBox();
+
+public:
+	// 리스트 박스
+	CListBox m_ListBox;
 	// 지형 콤보 박스
 	CComboBox m_ctrlCMapType;
 	// 유형 콤보 박스
 	CComboBox m_crtlCType;
+
 public:
-	afx_msg void OnLoadTileAssets();
+	map<CString, CImage*>		m_mapPngImage;
 	CStatic MapToolPreviewImg;
 };

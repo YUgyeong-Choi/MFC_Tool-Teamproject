@@ -23,6 +23,9 @@ extern HWND		g_hWnd;
 #define		DIAMOND			0x02		// -> 0010
 #define		SAPPHIRE		0x04		// -> 0100
 
+#define		OPTION_NOCOLLISION	0
+#define		OPTION_COLLISION	1
+
 
 
 
