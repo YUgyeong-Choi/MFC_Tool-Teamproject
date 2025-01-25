@@ -56,7 +56,7 @@ void CMapTool::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST1, m_ListBox);
 	DDX_Control(pDX, IDC_COMBO1, m_ctrlCMapType);
 	DDX_Control(pDX, IDC_COMBO3, m_crtlCType);
-	DDX_Control(pDX, IDC_PICTURE, MapToolPreviewImg);
+	DDX_Control(pDX, IDC_PICTURE1, MapToolPreviewImg);
 }
 
 
@@ -87,7 +87,8 @@ void CMapTool::OnListBox()
 	if (iter == m_mapPngImage.end())
 		return;
 
-	MapToolPreviewImg.SetBitmap(*(iter->second));
+	//선택한 이미지 종류 보여주는 곳
+	MapToolPreviewImg.SetBitmap(*(iter->second)); 
 		
 	UpdateData(FALSE);
 }
