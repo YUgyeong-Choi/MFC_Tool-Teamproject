@@ -6,6 +6,9 @@
 #include "afxdialogex.h"
 #include "CMapTool.h"
 #include "CFileInfo.h"
+#include "MainFrm.h"
+#include "ToolView.h"
+#include "CTerrain.h"
 
 // CMapTool 대화 상자
 

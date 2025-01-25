@@ -13,8 +13,8 @@ extern HWND		g_hWnd;
 #define		TILECX			32
 #define		TILECY			32
 
-#define		TILEX			10
-#define		TILEY			10
+#define		TILEX			40
+#define		TILEY			40
 
 #define		MIN_STR			64
 #define		MAX_STR			256
@@ -22,6 +22,9 @@ extern HWND		g_hWnd;
 #define		RUBY			0x01		// -> 0001
 #define		DIAMOND			0x02		// -> 0010
 #define		SAPPHIRE		0x04		// -> 0100
+
+#define		OPTION_NOCOLLISION	0
+#define		OPTION_COLLISION	1
 
 
 

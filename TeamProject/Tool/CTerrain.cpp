@@ -45,18 +45,17 @@ HRESULT CTerrain::Initialize()
 			pTile->vPos = { fX, fY, 0.f };
 			pTile->vSize = { (float)TILECX, (float)TILECY };
 			pTile->byOption = 0;
-			pTile->byDrawID = 1;
-
+			pTile->byDrawID[OPT_GROUND] = 27;
+			pTile->eTileTerrain = TRN_DIRT;
+			pTile->eTileType = OPT_GROUND;
 			m_vecTile.push_back(pTile);
 		}
 	}
-
 	return S_OK;
 }
 
 void CTerrain::Update()
 {
-	
 }
 
 void CTerrain::Render()
@@ -88,7 +87,36 @@ void CTerrain::Render()
 
 		CDevice::Get_Instance()->Get_Sprite()->SetTransform(&matWorld);
 
-		const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(L"Dirt", L"Ground", pTile->byDrawID);
+		TCHAR	szTexTerrain[MAX_STR] = L"";
+		TCHAR	szTexType[MAX_STR] = L"";
+
+		switch (pTile->eTileTerrain){
+		case TRN_DIRT:
+			lstrcpy(szTexTerrain, L"Dirt");break;
+		case TRN_SAND:
+			lstrcpy(szTexTerrain, L"Sand");break;
+		case TRN_NATURE:
+			lstrcpy(szTexTerrain, L"Nature");break;
+		case TRN_STONE:
+			lstrcpy(szTexTerrain, L"Stone");break;
+		case TRN_WATER:
+			lstrcpy(szTexTerrain, L"Water");break;
+		default:break;
+		}
+
+		switch (pTile->eTileType){
+		case OPT_GROUND:
+			lstrcpy(szTexType, L"Ground");break;
+		case OPT_WALL:
+			lstrcpy(szTexType, L"Wall");break;
+		case OPT_ORE:
+			lstrcpy(szTexType, L"Ore");	break;
+		case OPT_DECO:
+			lstrcpy(szTexType, L"Deco");break;
+		default:break;
+		}
+
+		const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(szTexTerrain, szTexType, pTile->byDrawID[pTile->eTileType]);
 
 		float	fCenterX = pTexInfo->tImgInfo.Width / 2.f;
 		float	fCenterY = pTexInfo->tImgInfo.Height / 2.f;
@@ -144,7 +172,7 @@ void CTerrain::Mini_Render()
 
 		CDevice::Get_Instance()->Get_Sprite()->SetTransform(&matWorld);
 
-		const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(L"Back", L"Tile", pTile->byDrawID);
+		const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(L"Back", L"Tile", pTile->byDrawID[pTile->eTileType]);
 
 		float	fCenterX = pTexInfo->tImgInfo.Width / 2.f;
 		float	fCenterY = pTexInfo->tImgInfo.Height / 2.f;
@@ -159,15 +187,15 @@ void CTerrain::Mini_Render()
 	}
 }
 
-void CTerrain::Tile_Change(const D3DXVECTOR3& vPos, const BYTE& byDrawID)
+void CTerrain::Tile_Change(const D3DXVECTOR3& vPos, const BYTE& byDrawID, const int byOption)
 {
 	int iIndex = Get_TileIdx(vPos);
 
 	if (-1 == iIndex)
 		return;
 
-	m_vecTile[iIndex]->byDrawID = byDrawID;
-	m_vecTile[iIndex]->byOption = 1;
+	m_vecTile[iIndex]->byDrawID[0] = byDrawID;
+	m_vecTile[iIndex]->byOption = byOption;
 }
 
 void CTerrain::Set_Ratio(D3DXMATRIX* pOut, float _fX, float _fY)
@@ -194,7 +222,6 @@ int CTerrain::Get_TileIdx(const D3DXVECTOR3& vPos)
 			return index;
 		}
 	}
-
 	return -1;
 }
 
