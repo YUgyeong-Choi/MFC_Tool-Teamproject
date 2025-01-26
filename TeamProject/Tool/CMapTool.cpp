@@ -144,8 +144,7 @@ void CMapTool::OnLoadTileAssets()
 	UpdateData(TRUE);
 
 	m_ListBox.ResetContent();
-	// 일단 dirt만 파일이름 + 경로 변경하고 잘 파싱 되는지 확인함
-	// 잘 되면 나머지 이미지도 바꿔서 추가할게...
+
 	TCHAR szFullPath[MAX_PATH] = L"../Assets/Map/";
 	TCHAR pFilePath[MAX_STR] = L"";
 	TCHAR szTileOption[MAX_STR] = L"";
@@ -153,9 +152,10 @@ void CMapTool::OnLoadTileAssets()
 	int iFullCnt = 0;
 	int iCnt = 0;
 	int iErr = 0;
-
+	TILETERRAIN eTerrain = TILETERRAIN(m_ctrlCMapType.GetCurSel());
+	TILETYPE	eType = TILETYPE(m_crtlCType.GetCurSel());
 	// 선택된 지형 받아옴
-	switch (m_ctrlCMapType.GetCurSel())
+	switch (eTerrain)
 	{
 	case 0://dirt
 		lstrcpy(pFilePath, L"dirt_tileset");
@@ -183,23 +183,26 @@ void CMapTool::OnLoadTileAssets()
 	}
 
 	// 선택된 유형 받아옴
-	switch (m_crtlCType.GetCurSel()) 
+	switch (eType) 
 	{
 	case 0://ground
 		lstrcpy(szTileOption, L"ground");
-		iCnt = 28;
+		iCnt = GROUND_ALL_CNT;
 		break;
 	case 1://wall
 		lstrcpy(szTileOption, L"wallhead");
-		iCnt = 21;
+		iCnt = WALLHEAD_ALL_CNT;
 		break;
 	case 2://ore
 		lstrcpy(szTileOption, L"ore");
-		iCnt = 3;
+		iCnt = ORE_DEFAULT_CNT;
+		if (eTerrain == TRN_SAND) iCnt = ORE_SAND_CNT;
 		break;
 	case 3://deco
 		lstrcpy(szTileOption, L"deco");
-		iCnt = 18;
+		iCnt = 12;
+		if (eTerrain == TRN_SAND) iCnt = DECO_SAND_CNT;
+		else if (eTerrain == TRN_DIRT) iCnt = DECO_DIRT_CNT;
 		break;
 	default:
 		iErr = -1;

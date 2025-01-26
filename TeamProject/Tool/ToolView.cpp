@@ -119,36 +119,16 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	Check_TileSettings(point);
 
-	// Invalidate : 호출 시 윈도우에 WM_PAINT와 WM_ERASEBKGND 메세지를 발생시킴
-	// WM_PAINT 메세지 발생 시, OnDraw함수가 다시 호출
-
-	// false : WM_PAINT 메세지만 발생
-	// true : WM_PAINT, WM_ERASEBKGND 둘 다 메세지 발생
-
 	Invalidate(FALSE);
 
-	// AfxGetMainWnd : 현재 쓰레드로부터 Wnd 반환
-	// 현재 쓰레드가 메인 쓰레드일 경우에 정상적인 동작
-	//CMainFrame* pMainFrm = (CMainFrame*)AfxGetMainWnd();
-
-	// AfxGetApp : 메인 쓰레드가 갖고 있는 현재 메인 app을 반환
-	// CMainFrame* pMainFrm = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd())
-
-	// GetParentFrame : 현재 View창을 둘러싸고 있는 상위 FrameWnd
 }
 
 void CToolView::OnMouseMove(UINT nFlags, CPoint point)
 {
-	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-
 	CView::OnMouseMove(nFlags, point);
 
 	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
 	{
-		//m_pTerrain->Tile_Change(D3DXVECTOR3(float(point.x) + GetScrollPos(0), 
-		//									float(point.y) + GetScrollPos(1), 
-		//									0.f), 20);
-
 		Check_TileSettings(point);
 		Invalidate(FALSE);
 	}
@@ -158,63 +138,73 @@ void CToolView::Check_TileSettings(CPoint point)
 {
 	CMainFrame* pMainFrm = (CMainFrame*)AfxGetMainWnd();
 	CMyForm* pMyForm = dynamic_cast<CMyForm*>(pMainFrm->m_MainSplitter.GetPane(0, 1));
+	int		iOption = OPTION_NOCOLLISION;
 
 	if (nullptr == pMyForm->m_MapTool.GetSafeHwnd())
 		return;
-	TILETERRAIN eTerrain = (TILETERRAIN)(pMyForm->m_MapTool.m_ctrlCMapType.GetCurSel());
-	TILEOPTION eOption = (TILEOPTION)(pMyForm->m_MapTool.m_crtlCType.GetCurSel());
 
+	TILETERRAIN eTerrain = (TILETERRAIN)(pMyForm->m_MapTool.m_ctrlCMapType.GetCurSel());
+	TILETYPE eType = (TILETYPE)(pMyForm->m_MapTool.m_crtlCType.GetCurSel());
+	int iDrawID = -1;
 	// 확대/축소 비율과 중심을 고려하여 포인트 조정
 	CPoint adjustedPoint;
 	adjustedPoint.x = static_cast<int>((point.x - m_zoomCenter.x) / m_fZoomFactor + m_zoomCenter.x);
 	adjustedPoint.y = static_cast<int>((point.y - m_zoomCenter.y) / m_fZoomFactor + m_zoomCenter.y);
 
+	//if (eType == OPT_GROUND)
+	//{
+	//	iDrawID = pMyForm->m_MapTool.m_ListBox.GetCurSel();
+	//	if (iDrawID == -1)
+	//		return;
+	//}
+	//else
+	//{
 
+	//	switch (eTerrain)
+	//	{
+	//	case TRN_DIRT:
 
+	//		break;
+	//	case TRN_SAND:
 
-	if (eOption == OPT_GROUND)
+	//		break;
+	//	case TRN_NATURE:
+
+	//		break;
+	//	case TRN_STONE:
+
+	//		break;
+	//	case TRN_WATER:
+
+	//		break;
+	//	case TRN_END:
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//}
+
+	switch (eType)
 	{
-		int iDrawID = pMyForm->m_MapTool.m_ListBox.GetCurSel();
-		if (iDrawID == -1)
-			return;
-		//m_pTerrain->Tile_Change(D3DXVECTOR3(float(point.x) + GetScrollPos(0),
-		//	float(point.y) + GetScrollPos(1),
-		//	0.f),
-		//	pMyForm->m_MapTool.m_ListBox.GetCurSel(), 0
-		//);
-
-		m_pTerrain->Tile_Change(D3DXVECTOR3(float(adjustedPoint.x) + GetScrollPos(0),
-			float(adjustedPoint.y) + GetScrollPos(1),
-			0.f),
-			pMyForm->m_MapTool.m_ListBox.GetCurSel(), 0
-		);
-	}
-	else
-	{
-		switch (eTerrain)
-		{
-		case TRN_DIRT:
-
-			break;
-		case TRN_SAND:
-
-			break;
-		case TRN_NATURE:
-
-			break;
-		case TRN_STONE:
-
-			break;
-		case TRN_WATER:
-
-			break;
-		case TRN_END:
-			break;
-		default:
-			break;
-		}
+	case OPT_GROUND:
+	case OPT_DECO:
+		iOption = OPTION_NOCOLLISION;
+		break;
+	case OPT_WALL:
+	case OPT_ORE:
+		iOption = OPTION_COLLISION;
+		break;
 	}
 
+	iDrawID = pMyForm->m_MapTool.m_ListBox.GetCurSel();
+	if (iDrawID == -1)
+		return;
+
+	m_pTerrain->Tile_Change(D3DXVECTOR3(float(adjustedPoint.x) + GetScrollPos(0), float(adjustedPoint.y) + GetScrollPos(1), 0.f), // 좌표
+		eType,					// 타일 타입
+		eTerrain,
+		iDrawID,					// 타일 id
+		iOption);		// option(통과 가능 여부)
 }
 
 void CToolView::OnDraw(CDC* pDC)
@@ -235,18 +225,6 @@ void CToolView::OnDraw(CDC* pDC)
 		CPen pen(PS_SOLID, 1, RGB(255, 255, 255));
 		CPen* pOldPen = pDC->SelectObject(&pen);
 
-		//// 그리드의 가로선 그리기
-		//for (int i = 0; i <= TILEY; ++i) {
-		//	pDC->MoveTo(static_cast<int>((i * TILECY - m_zoomCenter.y) * m_fZoomFactor + m_zoomCenter.x), 0);
-		//	pDC->LineTo(static_cast<int>((i * TILECY - m_zoomCenter.y) * m_fZoomFactor + m_zoomCenter.x), static_cast<int>(TILEX * TILECX * m_fZoomFactor));
-		//}
-
-		//// 그리드의 세로선 그리기
-		//for (int i = 0; i <= TILEX; ++i) {
-		//	pDC->MoveTo(0, static_cast<int>((i * TILECX - m_zoomCenter.x) * m_fZoomFactor + m_zoomCenter.y));
-		//	pDC->LineTo(static_cast<int>(TILEY * TILECY * m_fZoomFactor), static_cast<int>((i * TILECX - m_zoomCenter.x) * m_fZoomFactor + m_zoomCenter.y));
-		//}
-
 		// 그리드의 가로선 그리기
 		for (int i = 0; i <= TILEY; ++i) {
 			pDC->MoveTo(0, static_cast<int>((i * TILECY - m_zoomCenter.y) * m_fZoomFactor + m_zoomCenter.y)); // **********
@@ -258,7 +236,6 @@ void CToolView::OnDraw(CDC* pDC)
 			pDC->MoveTo(static_cast<int>((i * TILECX - m_zoomCenter.x) * m_fZoomFactor + m_zoomCenter.x), 0); // **********
 			pDC->LineTo(static_cast<int>((i * TILECX - m_zoomCenter.x) * m_fZoomFactor + m_zoomCenter.x), static_cast<int>(TILEY * TILECY * m_fZoomFactor)); // **********
 		}
-
 
 		pDC->SelectObject(pOldPen);
 	}

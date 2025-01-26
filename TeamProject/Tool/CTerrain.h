@@ -17,7 +17,7 @@ public:
 	void		Mini_Render();
 
 public:
-	void	Tile_Change(const D3DXVECTOR3& vPos, const BYTE& byDrawID, const int byOption);
+	void	Tile_Change(const D3DXVECTOR3& vPos, TILETYPE byTileType, TILETERRAIN byTerrain, const BYTE& byDrawID, const int byOption);
 	void	Set_MainView(CToolView* pMainView) { m_pMainView = pMainView;  }
 	void	Set_Ratio(D3DXMATRIX* pOut, float _fX, float _fY);
 
@@ -25,6 +25,7 @@ private:
 	bool	Picking(const D3DXVECTOR3& vPos, const int& iIndex);
 	bool	Picking_Dot(const D3DXVECTOR3& vPos, const int& iIndex);
 	int		Get_TileIdx(const D3DXVECTOR3& vPos);
+	HRESULT	Initialize_TileTexture();
 
 public:
 	bool m_bGrid;
