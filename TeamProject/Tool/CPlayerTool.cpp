@@ -6,7 +6,6 @@
 #include "afxdialogex.h"
 #include "CPlayerTool.h"
 
-
 // CPlayerTool 대화 상자
 
 IMPLEMENT_DYNAMIC(CPlayerTool, CDialog)
@@ -24,6 +23,9 @@ CPlayerTool::~CPlayerTool()
 void CPlayerTool::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_EDIT14, m_skinR);
+	DDX_Control(pDX, IDC_EDIT15, m_skinG);
+	DDX_Control(pDX, IDC_EDIT16, m_skinB);
 	DDX_Control(pDX, IDC_EDIT1, m_hairR);
 	DDX_Control(pDX, IDC_EDIT2, m_hairG);
 	DDX_Control(pDX, IDC_EDIT7, m_hairB);
@@ -36,6 +38,9 @@ void CPlayerTool::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT11, m_pantR);
 	DDX_Control(pDX, IDC_EDIT12, m_pantG);
 	DDX_Control(pDX, IDC_EDIT13, m_pantB);
+	DDX_Control(pDX, IDC_SLIDER13, m_silderSkinR);
+	DDX_Control(pDX, IDC_SLIDER14, m_silderSkinG);
+	DDX_Control(pDX, IDC_SLIDER15, m_silderSkinB);
 	DDX_Control(pDX, IDC_SLIDER1, m_silderHairR);
 	DDX_Control(pDX, IDC_SLIDER2, m_silderHairG);
 	DDX_Control(pDX, IDC_SLIDER3, m_silderHairB);
@@ -56,6 +61,9 @@ void CPlayerTool::OnInitialUpdate()
 	m_hairIndex = 0;
 	OnLoadData();
 
+	Ui_Silder_Set(&m_silderSkinR);
+	Ui_Silder_Set(&m_silderSkinG);
+	Ui_Silder_Set(&m_silderSkinB);
 	Ui_Silder_Set(&m_silderHairR);
 	Ui_Silder_Set(&m_silderHairG);
 	Ui_Silder_Set(&m_silderHairB);
@@ -69,19 +77,21 @@ void CPlayerTool::OnInitialUpdate()
 	Ui_Silder_Set(&m_silderPantG);
 	Ui_Silder_Set(&m_silderPantB);
 
-
-	m_hairR.SetWindowTextW(_T("0"));
-	m_hairG.SetWindowTextW(_T("0"));
-	m_hairB.SetWindowTextW(_T("0"));
-	m_eyeR.SetWindowTextW(_T("0"));
-	m_eyeG.SetWindowTextW(_T("0"));
-	m_eyeB.SetWindowTextW(_T("0"));
-	m_shirtR.SetWindowTextW(_T("0"));
-	m_shirtG.SetWindowTextW(_T("0"));
-	m_shirtB.SetWindowTextW(_T("0"));
-	m_pantR.SetWindowTextW(_T("0"));
-	m_pantG.SetWindowTextW(_T("0"));
-	m_pantB.SetWindowTextW(_T("0"));
+	m_skinR.SetWindowTextW(_T("255"));
+	m_skinG.SetWindowTextW(_T("255"));
+	m_skinB.SetWindowTextW(_T("255"));
+	m_hairR.SetWindowTextW(_T("255"));
+	m_hairG.SetWindowTextW(_T("255"));
+	m_hairB.SetWindowTextW(_T("255"));
+	m_eyeR.SetWindowTextW(_T("255"));
+	m_eyeG.SetWindowTextW(_T("255"));
+	m_eyeB.SetWindowTextW(_T("255"));
+	m_shirtR.SetWindowTextW(_T("255"));
+	m_shirtG.SetWindowTextW(_T("255"));
+	m_shirtB.SetWindowTextW(_T("255"));
+	m_pantR.SetWindowTextW(_T("255"));
+	m_pantG.SetWindowTextW(_T("255"));
+	m_pantB.SetWindowTextW(_T("255"));
 }
 
 void CPlayerTool::Ui_Silder_Set(CSliderCtrl* silder)
@@ -92,53 +102,80 @@ void CPlayerTool::Ui_Silder_Set(CSliderCtrl* silder)
 	silder->SetTicFreq(1);
 	silder->SetLineSize(1);
 	silder->SetPageSize(1);
+	silder->SetPos(255);
 }
 
 void CPlayerTool::OnLoadData()
 {
-	//스킨
-	m_vecSkin.push_back(new CImage());
-	TCHAR szSkinPath[MAX_PATH] = L"../Assets/Player/skin/idle/front/front_1.png";
-	m_vecSkin[0]->Load(szSkinPath);
 	COLORREF transparentColor = RGB(255, 255, 255);
-	m_vecSkin[0]->SetTransparentColor(transparentColor);
+
+	//스킨
+	m_Skin = L"../Assets/Player/skin/idle/front/front_1.png";
 
 	//눈
-	m_eye = new CImage();
-	TCHAR szEyePath[MAX_PATH] = L"../Assets/Player/eye/idle/front/front_1.png";
-	m_eye->Load(szEyePath);
-	m_eye->SetTransparentColor(transparentColor);
+	m_eye = L"../Assets/Player/eye/idle/front/front_1.png";
 
 	//셔츠
-	m_shirt = new CImage();
-	TCHAR szShirtPath[MAX_PATH] = L"../Assets/Player/shirt/idle/front/front_1.png";
-	m_shirt->Load(szShirtPath);
-	m_shirt->SetTransparentColor(transparentColor);
+	m_shirt = L"../Assets/Player/shirt/idle/front/front_1.png";
 
 	//바지
-	m_pant = new CImage();
-	TCHAR szPantPath[MAX_PATH] = L"../Assets/Player/pant/idle/front/front_1.png";
-	m_pant->Load(szPantPath);
-	m_pant->SetTransparentColor(transparentColor);
-
-	m_vecHair.push_back(new CImage());
-	TCHAR szHairPath[MAX_PATH] = L"../Assets/Player/hair/hair1/idle/front/Miner_hair2_10.png";
-	m_vecHair[0]->Load(szHairPath);
-	m_vecHair[0]->SetTransparentColor(transparentColor);
+	m_pant = L"../Assets/Player/pant/idle/front/front_1.png";
 
 	//머리
-	//for (int i = 0; i < 5; ++i) {
-	//	m_vecHair.push_back(new CImage());
-
-	//	TCHAR szHairPath[MAX_PATH];
-	//	wsprintf(szHairPath, L"../Assets/Player/hair/hair%d/idle/front/front_1.png", i + 1);
-
-	//	m_vecHair[i]->Load(szHairPath);
-	//	m_vecHair[i]->SetTransparentColor(RGB(255, 255, 255));
-	//}
+	m_vecHair.push_back(L"../Assets/Player/hair/hair1/idle/front/front_1.png");
+	m_vecHair.push_back(L"../Assets/Player/hair/hair2/idle/front/front_1.png");
+	m_vecHair.push_back(L"../Assets/Player/hair/hair3/idle/front/front_1.png");
+	m_vecHair.push_back(L"../Assets/Player/hair/hair4/idle/front/front_1.png");
+	m_vecHair.push_back(L"../Assets/Player/hair/hair5/idle/front/front_1.png");
 }
 
-void CPlayerTool::ChangeImageColor(CImage* image, CEdit* R, CEdit* G, CEdit* B)
+void CPlayerTool::ChangeImageColorInitRender()
+{
+	CImage* _copySkin = new CImage;
+	CImage* _copyHair = new CImage;
+	CImage* _copyEye = new CImage;
+	CImage* _copyShirt = new CImage;
+	CImage* _copyPant = new CImage;
+
+	_copySkin->Load(m_Skin);
+	_copySkin->SetTransparentColor(RGB(255, 255, 255));
+	_copyHair->Load(m_vecHair[m_hairIndex]);
+	_copyHair->SetTransparentColor(RGB(255, 255, 255));
+	_copyEye->Load(m_eye);
+	_copyEye->SetTransparentColor(RGB(255, 255, 255));
+	_copyShirt->Load(m_shirt);
+	_copyShirt->SetTransparentColor(RGB(255, 255, 255));
+	_copyPant->Load(m_pant);
+	_copyPant->SetTransparentColor(RGB(255, 255, 255));
+
+	ChangeColor(_copySkin, &m_skinR, &m_skinG, &m_skinB);
+	ChangeColor(_copyHair, &m_hairR, &m_hairG, &m_hairB);
+	ChangeColor(_copyEye, &m_eyeR, &m_eyeG, &m_eyeB);
+	ChangeColor(_copyShirt, &m_shirtR, &m_shirtG, &m_shirtB);
+	ChangeColor(_copyPant, &m_pantR, &m_pantG, &m_pantB);
+
+	
+
+	Invalidate(FALSE);
+	CClientDC dc(&PlayerPreviewImg);
+	CRect rect;
+	PlayerPreviewImg.GetClientRect(&rect);
+	dc.FillSolidRect(rect, RGB(255, 255, 255));
+	_copySkin->Draw(dc, rect);
+	_copyHair->Draw(dc, rect);
+	_copyEye->Draw(dc, rect);
+	_copyShirt->Draw(dc, rect);
+	_copyPant->Draw(dc, rect);
+
+	Safe_Delete(_copySkin);
+	Safe_Delete(_copyHair);
+	Safe_Delete(_copyEye);
+	Safe_Delete(_copyShirt);
+	Safe_Delete(_copyPant);
+}
+
+
+void CPlayerTool::ChangeColor(CImage* image, CEdit* R, CEdit* G, CEdit* B)
 {
 	for (int y = 0; y < image->GetHeight(); ++y)
 	{
@@ -176,13 +213,88 @@ void CPlayerTool::ChangeImageColor(CImage* image, CEdit* R, CEdit* G, CEdit* B)
 	}
 }
 
+void CPlayerTool::RenderPlayer()
+{
+	Invalidate(FALSE);
+	CClientDC dc(&PlayerPreviewImg);
+	CRect rect;
+	PlayerPreviewImg.GetClientRect(&rect);
+	dc.FillSolidRect(rect, RGB(255, 255, 255));
+
+	m_DecoSkin->Draw(dc, rect);
+	m_DecoHair->Draw(dc, rect);
+	m_Decoeye->Draw(dc, rect);
+	m_Decoshirt->Draw(dc, rect);
+	m_Decopant->Draw(dc, rect);
+}
+
+void CPlayerTool::InitDeco()
+{
+	Safe_Delete(m_DecoSkin);
+	Safe_Delete(m_DecoHair);
+	Safe_Delete(m_Decoeye);
+	Safe_Delete(m_Decoshirt);
+	Safe_Delete(m_Decopant);
+
+	COLORREF transparentColor = RGB(255, 255, 255);
+
+	m_DecoSkin = new CImage();
+	m_DecoSkin->Load(m_Skin);
+	m_DecoSkin->SetTransparentColor(transparentColor);
+	m_DecoHair = new CImage();
+	m_DecoHair->Load(m_vecHair[m_hairIndex]);
+	m_DecoHair->SetTransparentColor(transparentColor);
+	m_Decoeye = new CImage();
+	m_Decoeye->Load(m_eye);
+	m_Decoeye->SetTransparentColor(transparentColor);
+	m_Decoshirt = new CImage();
+	m_Decoshirt->Load(m_shirt);
+	m_Decoshirt->SetTransparentColor(transparentColor);
+	m_Decopant = new CImage();
+	m_Decopant->Load(m_pant);
+	m_Decopant->SetTransparentColor(transparentColor);
+
+
+	m_skinR.SetWindowTextW(_T("255"));
+	m_skinG.SetWindowTextW(_T("255"));
+	m_skinB.SetWindowTextW(_T("255"));
+	m_hairR.SetWindowTextW(_T("255"));
+	m_hairG.SetWindowTextW(_T("255"));
+	m_hairB.SetWindowTextW(_T("255"));
+	m_eyeR.SetWindowTextW(_T("255"));
+	m_eyeG.SetWindowTextW(_T("255"));
+	m_eyeB.SetWindowTextW(_T("255"));
+	m_shirtR.SetWindowTextW(_T("255"));
+	m_shirtG.SetWindowTextW(_T("255"));
+	m_shirtB.SetWindowTextW(_T("255"));
+	m_pantR.SetWindowTextW(_T("255"));
+	m_pantG.SetWindowTextW(_T("255"));
+	m_pantB.SetWindowTextW(_T("255"));
+
+
+	m_silderSkinR.SetPos(255);
+	m_silderSkinG.SetPos(255);
+	m_silderSkinB.SetPos(255);
+	m_silderHairR.SetPos(255);
+	m_silderHairG.SetPos(255);
+	m_silderHairB.SetPos(255);
+	m_silderEyeR.SetPos(255);
+	m_silderEyeG.SetPos(255);
+	m_silderEyeB.SetPos(255);
+	m_silderShirtR.SetPos(255);
+	m_silderShirtG.SetPos(255);
+	m_silderShirtB.SetPos(255);
+	m_silderPantR.SetPos(255);
+	m_silderPantG.SetPos(255);
+	m_silderPantB.SetPos(255);
+
+}
+
+
 
 BEGIN_MESSAGE_MAP(CPlayerTool, CDialog)
 	ON_WM_HSCROLL()
-	ON_BN_CLICKED(IDC_BUTTON1, &CPlayerTool::OnHairColor)
-	ON_BN_CLICKED(IDC_BUTTON3, &CPlayerTool::OnPantColor)
-	ON_BN_CLICKED(IDC_BUTTON8, &CPlayerTool::OnEyeColor)
-	ON_BN_CLICKED(IDC_BUTTON9, &CPlayerTool::OnShirtColor)
+	ON_BN_CLICKED(IDC_BUTTON1, &CPlayerTool::OnFinishColor)
 	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDC_BUTTON4, &CPlayerTool::OnLoadPlayerBasic)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN3, &CPlayerTool::OnChangeHairType)
@@ -194,7 +306,19 @@ void CPlayerTool::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	CString temp;
 	int nSPos = 0;
 	if (pScrollBar) {
-		if (pScrollBar == (CScrollBar*)&m_silderHairR) {
+		if (pScrollBar == (CScrollBar*)&m_silderSkinR) {
+			nSPos = m_silderSkinR.GetPos();
+			temp.Format(_T("%d"), nSPos);
+			m_skinR.SetWindowTextW(temp);
+		}else if (pScrollBar == (CScrollBar*)&m_silderSkinG) {
+			nSPos = m_silderSkinG.GetPos();
+			temp.Format(_T("%d"), nSPos);
+			m_skinG.SetWindowTextW(temp);
+		}else if (pScrollBar == (CScrollBar*)&m_silderSkinB) {
+			nSPos = m_silderSkinB.GetPos();
+			temp.Format(_T("%d"), nSPos);
+			m_skinB.SetWindowTextW(temp);
+		}else if (pScrollBar == (CScrollBar*)&m_silderHairR) {
 			nSPos = m_silderHairR.GetPos();
 			temp.Format(_T("%d"), nSPos);
 			m_hairR.SetWindowTextW(temp);
@@ -254,84 +378,46 @@ void CPlayerTool::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 			m_pantB.SetWindowTextW(temp);
 		}
 	}
-
+	ChangeImageColorInitRender();
 	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
 }
 
 
-void CPlayerTool::OnHairColor()
+void CPlayerTool::OnFinishColor()
 {
-	ChangeImageColor(m_vecHair[m_hairIndex], &m_hairR, &m_hairG, &m_hairB);
-
-	Invalidate(FALSE);
-	CClientDC dc(&PlayerPreviewImg);
-	CRect rect;
-	PlayerPreviewImg.GetClientRect(&rect);
-	dc.FillSolidRect(rect, RGB(255, 255, 255));
-
-	m_vecSkin[0]->Draw(dc, rect);
-	m_vecHair[m_hairIndex]->Draw(dc, rect);
-	m_eye->Draw(dc, rect);
-	m_shirt->Draw(dc, rect);
-	m_pant->Draw(dc, rect);
-
+	ChangeColor(m_DecoSkin, &m_skinR, &m_skinG, &m_skinB);
+	ChangeColor(m_DecoHair, &m_hairR, &m_hairG, &m_hairB);
+	ChangeColor(m_Decoeye, &m_eyeR, &m_eyeG, &m_eyeB);
+	ChangeColor(m_Decoshirt, &m_shirtR, &m_shirtG, &m_shirtB);
+	ChangeColor(m_Decopant, &m_pantR, &m_pantG, &m_pantB);
 }
-
-void CPlayerTool::OnPantColor()
-{
-	ChangeImageColor(m_pant, &m_pantR, &m_pantG, &m_pantB);
-
-	Invalidate(FALSE);
-	CClientDC dc(&PlayerPreviewImg);
-	CRect rect;
-	PlayerPreviewImg.GetClientRect(&rect);
-	dc.FillSolidRect(rect, RGB(255, 255, 255));
-
-	m_vecSkin[0]->Draw(dc, rect);
-	m_vecHair[m_hairIndex]->Draw(dc, rect);
-	m_eye->Draw(dc, rect);
-	m_shirt->Draw(dc, rect);
-	m_pant->Draw(dc, rect);
-}
-
-void CPlayerTool::OnShirtColor()
-{
-}
-
-
-void CPlayerTool::OnEyeColor()
-{
-}
-
 
 void CPlayerTool::OnDestroy()
 {
-	CDialog::OnDestroy();
-	for (size_t i = 0; i < m_vecSkin.size(); ++i) {
-		Safe_Delete(m_vecSkin[i]);
-	}
-	for (size_t i = 0; i < m_vecHair.size(); ++i) {
-		Safe_Delete(m_vecHair[i]);
-	}
-
-	Safe_Delete(m_eye);
-	Safe_Delete(m_shirt);
-	Safe_Delete(m_pant);
+	Safe_Delete(m_DecoSkin);
+	Safe_Delete(m_DecoHair);
+	Safe_Delete(m_Decoeye);
+	Safe_Delete(m_Decoshirt);
+	Safe_Delete(m_Decopant);
 }
 
 
 void CPlayerTool::OnLoadPlayerBasic()
 {
+	InitDeco();
+
+	m_hairIndex = 0;
+
 	CClientDC dc(&PlayerPreviewImg);
 	CRect rect;
 	PlayerPreviewImg.GetClientRect(&rect);
 	dc.FillSolidRect(rect, RGB(255, 255, 255));
 
-	m_vecSkin[0]->Draw(dc, rect);
-	m_vecHair[0]->Draw(dc, rect);
-	m_eye->Draw(dc, rect);
-	m_shirt->Draw(dc, rect);
-	m_pant->Draw(dc, rect);
+	m_DecoSkin->Draw(dc, rect);
+	m_DecoHair->Draw(dc, rect);
+	m_Decoeye->Draw(dc, rect);
+	m_Decoshirt->Draw(dc, rect);
+	m_Decopant->Draw(dc, rect);
 }
 
 
@@ -354,18 +440,14 @@ void CPlayerTool::OnChangeHairType(NMHDR* pNMHDR, LRESULT* pResult)
 		}
 	}
 
-	Invalidate(FALSE);
-	CClientDC dc(&PlayerPreviewImg);
-	CRect rect;
-	PlayerPreviewImg.GetClientRect(&rect);
-	dc.FillSolidRect(rect, RGB(255, 255, 255));
+	Safe_Delete(m_DecoHair);
 
-	m_vecSkin[0]->Draw(dc, rect);
-	m_vecHair[m_hairIndex]->Draw(dc, rect);
-	m_eye->Draw(dc, rect);
-	m_shirt->Draw(dc, rect);
-	m_pant->Draw(dc, rect);
+	m_DecoHair = new CImage();
+	m_DecoHair->Load(m_vecHair[m_hairIndex]);
+	m_DecoHair->SetTransparentColor(RGB(255, 255, 255));
 
+	RenderPlayer();
 
 	*pResult = 0;
 }
+
