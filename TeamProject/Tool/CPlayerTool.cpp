@@ -111,7 +111,7 @@ void CPlayerTool::OnLoadData()
 
 	//셔츠
 	m_shirt = new CImage();
-	TCHAR szShirtPath[MAX_PATH] = L"../Assets/Player/shirt/Miner_shirt_2.png";
+	TCHAR szShirtPath[MAX_PATH] = L"../Assets/Player/shirt/Miner_shirt_1.png";
 	m_shirt->Load(szShirtPath);
 	m_shirt->SetTransparentColor(transparentColor);
 
@@ -260,7 +260,7 @@ void CPlayerTool::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
 void CPlayerTool::OnHairColor()
 {
-	ChangeImageColor(m_vecHair[m_hairIndex], &m_hairR, &m_shirtG, &m_shirtB);
+	ChangeImageColor(m_vecHair[m_hairIndex], &m_hairR, &m_hairG, &m_hairB);
 
 	Invalidate(FALSE);
 	CClientDC dc(&PlayerPreviewImg);
