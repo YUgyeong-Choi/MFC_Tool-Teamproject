@@ -143,6 +143,7 @@ void CMapTool::OnLoadTileAssets()
 {
 	UpdateData(TRUE);
 
+	m_ListBox.ResetContent();
 	// 일단 dirt만 파일이름 + 경로 변경하고 잘 파싱 되는지 확인함
 	// 잘 되면 나머지 이미지도 바꿔서 추가할게...
 	TCHAR szFullPath[MAX_PATH] = L"../Assets/Map/";

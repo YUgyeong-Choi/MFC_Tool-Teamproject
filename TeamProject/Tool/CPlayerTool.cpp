@@ -111,7 +111,7 @@ void CPlayerTool::OnLoadData()
 
 	//셔츠
 	m_shirt = new CImage();
-	TCHAR szShirtPath[MAX_PATH] = L"../Assets/Player/shirt/Miner_shirt_1.png";
+	TCHAR szShirtPath[MAX_PATH] = L"../Assets/Player/shirt/Miner_shirt_2.png";
 	m_shirt->Load(szShirtPath);
 	m_shirt->SetTransparentColor(transparentColor);
 
