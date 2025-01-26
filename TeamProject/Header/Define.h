@@ -26,6 +26,18 @@ extern HWND		g_hWnd;
 #define		OPTION_NOCOLLISION	0
 #define		OPTION_COLLISION	1
 
+#define		GROUND_ALL_CNT		28
+#define		WALLBODY_ALL_CNT	6
+#define		WALLHEAD_ALL_CNT	21
+#define		ORE_DEFAULT_CNT		3
+#define		ORE_SAND_CNT		0
+#define		DECO_DEFAULT_CNT	12
+#define		DECO_SAND_CNT		0
+#define		DECO_DIRT_CNT		18
+
+
+
+
 
 
 

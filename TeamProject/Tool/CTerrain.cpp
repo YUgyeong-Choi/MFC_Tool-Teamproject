@@ -15,23 +15,7 @@ CTerrain::~CTerrain()
 
 HRESULT CTerrain::Initialize()
 {
-	if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
-		L"../Assets/Map//back/dark.png",
-		TEX_SINGLE, L"Back", L"Tile", 1)))
-	{
-		AfxMessageBox(L"Back Texture Insert Failed");
-		return E_FAIL;
-	}
-
-
-	if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
-		L"../Assets/Map/dirt_tileset/ground/dirt_tileset_ground%d.png",
-		TEX_MULTI, L"Dirt", L"Ground", 28)))
-	{
-		AfxMessageBox(L"Dirt Ground Texture Insert Failed");
-		return E_FAIL;
-	}
-
+	Initialize_TileTexture();
 
 	for (int i = 0; i < TILEY; ++i)
 	{
@@ -45,9 +29,10 @@ HRESULT CTerrain::Initialize()
 			pTile->vPos = { fX, fY, 0.f };
 			pTile->vSize = { (float)TILECX, (float)TILECY };
 			pTile->byOption = 0;
-			pTile->byDrawID[OPT_GROUND] = 27;
-			pTile->eTileTerrain = TRN_DIRT;
-			//pTile->eTileType = OPT_GROUND;
+			pTile->tObject[OPT_GROUND].bExist = true;
+			for (int i = OPT_GROUND + 1; i < OPT_END; ++i) pTile->tObject[i].bExist = false;
+			pTile->tObject[OPT_GROUND].byDrawID = 27;
+			pTile->tObject[OPT_GROUND].eTileTerrain = TRN_DIRT;
 			m_vecTile.push_back(pTile);
 		}
 	}
@@ -90,93 +75,103 @@ void CTerrain::Render(float fZoomFactor, const CPoint& zoomCenter)
 		TCHAR szTexTerrain[MAX_STR] = L"";
 		TCHAR szTexType[MAX_STR] = L"";
 
-		switch (pTile->eTileTerrain)
+		int i(0);
+
+		for (int iOp = 0; iOp < OPT_END; ++iOp)
 		{
-		case TRN_DIRT:
-			lstrcpy(szTexTerrain, L"Dirt"); break;
-		case TRN_SAND:
-			lstrcpy(szTexTerrain, L"Sand"); break;
-		case TRN_NATURE:
-			lstrcpy(szTexTerrain, L"Nature"); break;
-		case TRN_STONE:
-			lstrcpy(szTexTerrain, L"Stone"); break;
-		case TRN_WATER:
-			lstrcpy(szTexTerrain, L"Water"); break;
-		default: break;
+			// 렌더 순서 조절용 
+			switch (iOp) { case 0: i = OPT_GROUND; break; case 1: i = OPT_DECO; break; case 2:i = OPT_WALL; break; case 3: i = OPT_ORE; break; }
+			if (pTile->tObject[i].bExist)
+			{
+				// switch 더러우니 접어둘 것
+				switch (i)
+				{
+				case OPT_GROUND:
+					 lstrcpy(szTexType, L"ground"); break;
+				case OPT_WALL:
+					 lstrcpy(szTexType, L"wallbody"); break;
+				case OPT_ORE:
+					 lstrcpy(szTexType, L"ore"); break;
+				case OPT_DECO:
+					 lstrcpy(szTexType, L"deco"); break;
+				default: break;
+				}
+				switch (pTile->tObject[i].eTileTerrain)
+				{
+				case TRN_DIRT:
+					 lstrcpy(szTexTerrain, L"dirt"); break;
+				case TRN_SAND:
+					 lstrcpy(szTexTerrain, L"sand"); break;
+				case TRN_NATURE:
+					 lstrcpy(szTexTerrain, L"nature"); break;
+				case TRN_STONE:
+					 lstrcpy(szTexTerrain, L"stone"); break;
+				case TRN_WATER:
+					 lstrcpy(szTexTerrain, L"water"); break;
+				default: break;
+				}
+				
+				int iDrawID = pTile->tObject[i].byDrawID;
+				if (i == OPT_WALL)
+					iDrawID = 1;
+				const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(szTexTerrain, szTexType, iDrawID);
+				
+				if (pTexInfo == nullptr)
+				{
+					 continue;
+				}
+				float fCenterX = pTexInfo->tImgInfo.Width / 2.f;
+				float fCenterY = pTexInfo->tImgInfo.Height / 2.f;
+				
+				D3DXVECTOR3 vTemp{ fCenterX, fCenterY, 0.f };
+				
+				CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture, //출력할 텍스처 컴객체
+					 nullptr,        // 출력할 이미지 영역에 대한 Rect 주소, null인 경우 이미지의 0, 0기준으로 출력
+					 &vTemp,        // 출력할 이미지의 중심 좌표 vec3 주소, null인 경우 0, 0 이미지 중심
+					 nullptr,        // 위치 좌표에 대한 vec3 주소, null인 경우 스크린 상 0, 0 좌표 출력    
+					 D3DCOLOR_ARGB(255, 255, 255, 255)); // 출력할 이미지와 섞을 색상 값, 0xffffffff를 넘겨주면 섞지 않고 원본 색상 유지
+				if (i == OPT_WALL)
+				{
+					const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(szTexTerrain, L"wallhead", pTile->tObject[i].byDrawID);
+					if (pTexInfo == nullptr)
+					{
+						continue;
+					}
+					float fCenterX = pTexInfo->tImgInfo.Width / 2.f;
+					float fCenterY = pTexInfo->tImgInfo.Height / 2.f + pTexInfo->tImgInfo.Height;
+
+					D3DXVECTOR3 vTemp{ fCenterX, fCenterY, 0.f };
+
+					CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture, //출력할 텍스처 컴객체
+						nullptr,        // 출력할 이미지 영역에 대한 Rect 주소, null인 경우 이미지의 0, 0기준으로 출력
+						&vTemp,        // 출력할 이미지의 중심 좌표 vec3 주소, null인 경우 0, 0 이미지 중심
+						nullptr,        // 위치 좌표에 대한 vec3 주소, null인 경우 스크린 상 0, 0 좌표 출력    
+						D3DCOLOR_ARGB(255, 255, 255, 255)); // 출력할 이미지와 섞을 색상 값, 0xffffffff를 넘겨주면 섞지 않고 원본 색상 유지
+				}
+				
+			}
+			//if (pTile->tObject[OPT_WALL].bExist)
+			//{
+			//	// 벽 머리 별개로 설치 
+			//	const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(szTexTerrain, L"wallhead", pTile->tObject[i].byDrawID);
+			//	if (pTexInfo == nullptr)
+			//	{
+			//		continue;
+			//	}
+			//	float fCenterX = pTexInfo->tImgInfo.Width / 2.f;
+			//	float fCenterY = pTexInfo->tImgInfo.Height / 2.f + pTexInfo->tImgInfo.Height;
+
+			//	D3DXVECTOR3 vTemp{ fCenterX, fCenterY, 0.f };
+
+			//	CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture, //출력할 텍스처 컴객체
+			//		nullptr,        // 출력할 이미지 영역에 대한 Rect 주소, null인 경우 이미지의 0, 0기준으로 출력
+			//		&vTemp,        // 출력할 이미지의 중심 좌표 vec3 주소, null인 경우 0, 0 이미지 중심
+			//		nullptr,        // 위치 좌표에 대한 vec3 주소, null인 경우 스크린 상 0, 0 좌표 출력    
+			//		D3DCOLOR_ARGB(255, 255, 255, 255)); // 출력할 이미지와 섞을 색상 값, 0xffffffff를 넘겨주면 섞지 않고 원본 색상 유지
+			//}
 		}
 
-		for (int i = 0; i < OPT_END; ++i)
-		{
-			switch (i)
-			{
-			case OPT_GROUND:
-				lstrcpy(szTexType, L"Ground"); break;
-			case OPT_WALL:
-				lstrcpy(szTexType, L"Wall"); break;
-			case OPT_ORE:
-				lstrcpy(szTexType, L"Ore"); break;
-			case OPT_DECO:
-				lstrcpy(szTexType, L"Deco"); break;
-			default: break;
-			}
-			const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(szTexTerrain, szTexType, pTile->byDrawID[i]);
-
-			if (pTexInfo == nullptr)
-			{
-				continue;
-			}
-			float fCenterX = pTexInfo->tImgInfo.Width / 2.f;
-			float fCenterY = pTexInfo->tImgInfo.Height / 2.f;
-
-			D3DXVECTOR3 vTemp{ fCenterX, fCenterY, 0.f };
-
-			CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture, //출력할 텍스처 컴객체
-				nullptr,        // 출력할 이미지 영역에 대한 Rect 주소, null인 경우 이미지의 0, 0기준으로 출력
-				&vTemp,        // 출력할 이미지의 중심 좌표 vec3 주소, null인 경우 0, 0 이미지 중심
-				nullptr,        // 위치 좌표에 대한 vec3 주소, null인 경우 스크린 상 0, 0 좌표 출력    
-				D3DCOLOR_ARGB(255, 255, 255, 255)); // 출력할 이미지와 섞을 색상 값, 0xffffffff를 넘겨주면 섞지 않고 원본 색상 유지
-		}
-
-
-
-
-
-		//switch (pTile->eTileType)
-		//{
-		//case OPT_GROUND:
-		//	lstrcpy(szTexType, L"Ground"); break;
-		//case OPT_WALL:
-		//	lstrcpy(szTexType, L"Wall"); break;
-		//case OPT_ORE:
-		//	lstrcpy(szTexType, L"Ore"); break;
-		//case OPT_DECO:
-		//	lstrcpy(szTexType, L"Deco"); break;
-		//default: break;
-		//}
-
-		//const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(szTexTerrain, szTexType, pTile->byDrawID[pTile->eTileType]);
-
-		//float fCenterX = pTexInfo->tImgInfo.Width / 2.f;
-		//float fCenterY = pTexInfo->tImgInfo.Height / 2.f;
-
-		//D3DXVECTOR3 vTemp{ fCenterX, fCenterY, 0.f };
-
-		//CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture, //출력할 텍스처 컴객체
-		//	nullptr,        // 출력할 이미지 영역에 대한 Rect 주소, null인 경우 이미지의 0, 0기준으로 출력
-		//	&vTemp,        // 출력할 이미지의 중심 좌표 vec3 주소, null인 경우 0, 0 이미지 중심
-		//	nullptr,        // 위치 좌표에 대한 vec3 주소, null인 경우 스크린 상 0, 0 좌표 출력    
-		//	D3DCOLOR_ARGB(255, 255, 255, 255)); // 출력할 이미지와 섞을 색상 값, 0xffffffff를 넘겨주면 섞지 않고 원본 색상 유지
 	}
-		//swprintf_s(szBuf, L"%d", iIndex);
-
-		//CDevice::Get_Instance()->Get_Font()->DrawTextW(CDevice::Get_Instance()->Get_Sprite(),
-		//	szBuf,		// 출력할 문자열
-		//	lstrlen(szBuf),  // 문자열 버퍼의 크기
-		//	nullptr,	// 출력할 렉트 위치
-		//	0,			// 정렬 기준(옵션)
-		//	D3DCOLOR_ARGB(255, 255, 255, 255));
-
-		//iIndex++;
 }
 
 void CTerrain::Release()
@@ -190,6 +185,7 @@ void CTerrain::Release()
 	m_vecTile.shrink_to_fit();
 }
 
+// 미니맵 렌더(안쓰는중)
 void CTerrain::Mini_Render()
 {
 	D3DXMATRIX	matWorld, matScale, matTrans;
@@ -209,7 +205,7 @@ void CTerrain::Mini_Render()
 
 		CDevice::Get_Instance()->Get_Sprite()->SetTransform(&matWorld);
 
-		const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(L"Back", L"Tile", pTile->byDrawID[OPT_GROUND]);
+		const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(L"Back", L"Tile", pTile->tObject[OPT_GROUND].byDrawID);
 
 		float	fCenterX = pTexInfo->tImgInfo.Width / 2.f;
 		float	fCenterY = pTexInfo->tImgInfo.Height / 2.f;
@@ -224,15 +220,19 @@ void CTerrain::Mini_Render()
 	}
 }
 
-void CTerrain::Tile_Change(const D3DXVECTOR3& vPos, const BYTE& byDrawID, const int byOption)
+void CTerrain::Tile_Change(const D3DXVECTOR3& vPos, TILETYPE byTileType, TILETERRAIN byTerrain, const BYTE& byDrawID, const int byOption)
 {
 	int iIndex = Get_TileIdx(vPos);
 
 	if (-1 == iIndex)
 		return;
+	if (byTileType == OPT_ORE && !m_vecTile[iIndex]->tObject[OPT_WALL].bExist)
+		return;
 
-	m_vecTile[iIndex]->byDrawID[0] = byDrawID;
+	m_vecTile[iIndex]->tObject[byTileType].bExist = true;
+	m_vecTile[iIndex]->tObject[byTileType].byDrawID = byDrawID;
 	m_vecTile[iIndex]->byOption = byOption;
+	m_vecTile[iIndex]->tObject[byTileType].eTileTerrain = byTerrain;
 }
 
 void CTerrain::Set_Ratio(D3DXMATRIX* pOut, float _fX, float _fY)
@@ -249,7 +249,6 @@ void CTerrain::Set_Ratio(D3DXMATRIX* pOut, float _fX, float _fY)
 
 }
 
-
 int CTerrain::Get_TileIdx(const D3DXVECTOR3& vPos)
 {
 	for (size_t index = 0; index < m_vecTile.size(); ++index)
@@ -262,6 +261,100 @@ int CTerrain::Get_TileIdx(const D3DXVECTOR3& vPos)
 	return -1;
 }
 
+// 타일 이미지 전체 불러오기
+HRESULT CTerrain::Initialize_TileTexture()
+{
+	if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
+		L"../Assets/Map//back/dark.png",
+		TEX_SINGLE, L"Back", L"Tile", 1)))
+	{
+		AfxMessageBox(L"Back Texture Insert Failed");
+		return E_FAIL;
+	}
+
+	if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
+		L"../Assets/Map/water_tileset/ground/water_tileset_ground%d.png",
+		TEX_MULTI, L"water", L"ground", 17)))
+	{
+		AfxMessageBox(L"water ground Texture Insert Failed");
+		//return E_FAIL;
+	}
+
+	TCHAR szTexFullPath[MAX_PATH] = L"";
+	TCHAR szTexTerrain[MAX_STR] = L"";
+	TCHAR szTexType[MAX_STR] = L"";
+	int		iCnt;
+	for (int j = 0; j < TRN_WATER; ++j)
+	{
+		for (int i = 0; i < OPT_END; ++i)
+		{
+			switch (j)
+			{
+			case TRN_DIRT:
+				lstrcpy(szTexTerrain, L"dirt"); break;
+			case TRN_SAND:
+				lstrcpy(szTexTerrain, L"sand"); break;
+			case TRN_NATURE:
+				lstrcpy(szTexTerrain, L"nature"); break;
+			case TRN_STONE:
+				lstrcpy(szTexTerrain, L"stone"); break;
+			default: break;
+			}
+			switch (i)
+			{
+			case OPT_GROUND:
+				lstrcpy(szTexType, L"ground");
+				iCnt = GROUND_ALL_CNT; break;
+			case OPT_WALL:
+				lstrcpy(szTexType, L"wall"); break;
+				// body 6, head 21
+			case OPT_ORE:
+				lstrcpy(szTexType, L"ore");
+				iCnt = ORE_DEFAULT_CNT;
+				if (j == TRN_SAND) iCnt = ORE_SAND_CNT; break;
+			case OPT_DECO:
+				lstrcpy(szTexType, L"deco");
+				iCnt = DECO_DEFAULT_CNT;
+				if (j == TRN_SAND) iCnt = DECO_SAND_CNT;
+				else if (j == TRN_DIRT) iCnt = DECO_DIRT_CNT; break;
+			default: break;
+			}
+
+			if (i != OPT_WALL)
+			{
+				swprintf_s(szTexFullPath, L"../Assets/Map/%s_tileset/%s/%s_tileset_%s", szTexTerrain, szTexType, szTexTerrain, szTexType);
+				lstrcat(szTexFullPath, L"%d.png");
+				if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
+					szTexFullPath, TEX_MULTI, szTexTerrain, szTexType, iCnt)))
+				{
+					AfxMessageBox(L"Texture Insert Failed");
+					//return E_FAIL;
+				}
+			}  
+			else
+			{
+				swprintf_s(szTexFullPath, L"../Assets/Map/%s_tileset/%sbody/%s_tileset_%sbody", szTexTerrain, szTexType, szTexTerrain, szTexType);
+				lstrcat(szTexFullPath, L"%d.png");
+				if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
+					szTexFullPath, TEX_MULTI, szTexTerrain, L"wallbody", WALLBODY_ALL_CNT)))
+				{
+					AfxMessageBox(L"Texture Insert Failed");
+					//return E_FAIL;
+				}
+				swprintf_s(szTexFullPath, L"../Assets/Map/%s_tileset/%shead/%s_tileset_%shead", szTexTerrain, szTexType, szTexTerrain, szTexType);
+				lstrcat(szTexFullPath, L"%d.png");
+				if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
+					szTexFullPath, TEX_MULTI, szTexTerrain, L"wallhead", WALLHEAD_ALL_CNT)))
+				{
+					AfxMessageBox(L"Texture Insert Failed");
+					//return E_FAIL;
+				}
+			}
+		}
+	}
+}
+
+// 피킹 직선의방정식
 bool CTerrain::Picking(const D3DXVECTOR3& vPos, const int& iIndex)
 {
 	// 12 -> 3 -> 6 -> 9
@@ -321,6 +414,7 @@ bool CTerrain::Picking(const D3DXVECTOR3& vPos, const int& iIndex)
 	return bCheck[0] && bCheck[1] && bCheck[2] && bCheck[3];
 }
 
+// 피킹 내적
 bool CTerrain::Picking_Dot(const D3DXVECTOR3& vPos, const int& iIndex)
 {
 	// 12 -> 3 -> 6 -> 9
