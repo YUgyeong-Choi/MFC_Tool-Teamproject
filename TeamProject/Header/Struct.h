@@ -30,14 +30,19 @@ typedef struct tagTile
 	BYTE		byOption;			// 0, 1번(장애물)
 	BYTE		byDrawID[OPT_END];	// 몇 번 타일 이미지, 유형 갯수 만큼 배열 추가
 
-	TILEOPTION	eTileType;			// 유형 (땅 벽 장식 ...)
+	//TILEOPTION	eTileType;			// 유형 (땅 벽 장식 ...)
 	TILETERRAIN eTileTerrain;		// 지형 (흙 모래 ... )
 }TILE;
 
-typedef struct tagWall
+typedef struct tagTileObject
 {
 	// 추가할 수도 있고 아닐 수도 있음..
-};
+	D3DXVECTOR3	vPos;				// 타일의 중점 좌표
+	D3DXVECTOR2 vSize;				// 타일의 가로, 세로 사이즈
+
+	BYTE		byOption;			// 0, 1번(장애물)
+	BYTE		byDrawID[OPT_END];	// 몇 번 타일 이미지, 유형 갯수 만큼 배열 추가
+}TILEOBJ;
 
 typedef	struct tagUnitData
 {
