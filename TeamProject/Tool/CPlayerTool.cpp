@@ -53,10 +53,8 @@ void CPlayerTool::DoDataExchange(CDataExchange* pDX)
 
 void CPlayerTool::OnInitialUpdate()
 {
-	image = new CImage;
-	TCHAR szFullPath[MAX_PATH] = L"../Assets/Player/skin/idle/front/idle_front1.png"; //스킨
-	image->Load(szFullPath);
-	PlayerPreviewImg.SetBitmap(*image);
+	m_hairIndex = 0;
+	OnLoadData();
 
 	Ui_Silder_Set(&m_silderHairR);
 	Ui_Silder_Set(&m_silderHairG);
@@ -96,105 +94,85 @@ void CPlayerTool::Ui_Silder_Set(CSliderCtrl* silder)
 	silder->SetPageSize(1);
 }
 
-void CPlayerTool::OnLoadHair()
+void CPlayerTool::OnLoadData()
 {
-	//UpdateData(TRUE);
+	//스킨
+	m_vecSkin.push_back(new CImage());
+	TCHAR szSkinPath[MAX_PATH] = L"../Assets/Player/skin/idle/front/idle_front1.png";
+	m_vecSkin[0]->Load(szSkinPath);
+	COLORREF transparentColor = RGB(255, 255, 255);
+	m_vecSkin[0]->SetTransparentColor(transparentColor);
 
-	//TCHAR szFullPath[MAX_PATH] = L"../Assets/Player/hair/har1/Miner_hair1_1";
-	//TCHAR pFilePath[MAX_STR] = L"";
-	//TCHAR szTileOption[MAX_STR] = L"";
+	//눈
+	m_eye = new CImage();
+	TCHAR szEyePath[MAX_PATH] = L"../Assets/Player/eye/Miner_eyes_1.png";
+	m_eye->Load(szEyePath);
+	m_eye->SetTransparentColor(transparentColor);
 
-	//int iFullCnt = 0;
-	//int iCnt = 0;
-	//int iErr = 0;
+	//셔츠
+	m_shirt = new CImage();
+	TCHAR szShirtPath[MAX_PATH] = L"../Assets/Player/shirt/Miner_shirt_1.png";
+	m_shirt->Load(szShirtPath);
+	m_shirt->SetTransparentColor(transparentColor);
 
-	//// 선택된 지형 받아옴
-	//switch (m_ctrlCMapType.GetCurSel())
-	//{
-	//case 0://dirt
-	//	lstrcpy(pFilePath, L"dirt_tileset");
-	//	iFullCnt = 86;
-	//	break;
-	//case 1://sand
-	//	lstrcpy(pFilePath, L"sand_tileset");
-	//	iFullCnt = 55;
-	//	break;
-	//case 2://nature
-	//	lstrcpy(pFilePath, L"nature_tileset");
-	//	iFullCnt = 72;
-	//	break;
-	//case 3://stone
-	//	lstrcpy(pFilePath, L"stone_tileset");
-	//	iFullCnt = 70;
-	//	break;
-	//case 4://water
-	//	lstrcpy(pFilePath, L"water_tileset");
-	//	iFullCnt = 17;
-	//	break;
-	//default:
-	//	iErr = -1;
-	//	break;
-	//}
+	//바지
+	m_pant = new CImage();
+	TCHAR szPantPath[MAX_PATH] = L"../Assets/Player/pant/Miner_pants_1.png";
+	m_pant->Load(szPantPath);
+	m_pant->SetTransparentColor(transparentColor);
 
-	//// 선택된 유형 받아옴
-	//switch (m_crtlCType.GetCurSel())
-	//{
-	//case 0://ground
-	//	lstrcpy(szTileOption, L"ground");
-	//	iCnt = 28;
-	//	break;
-	//case 1://wall
-	//	lstrcpy(szTileOption, L"wallhead");
-	//	iCnt = 21;
-	//	break;
-	//case 2://ore
-	//	lstrcpy(szTileOption, L"ore");
-	//	iCnt = 3;
-	//	break;
-	//case 3://deco
-	//	lstrcpy(szTileOption, L"deco");
-	//	iCnt = 18;
-	//	break;
-	//default:
-	//	iErr = -1;
-	//	break;
-	//}
+	//머리
+	for (int i = 0; i < 3; ++i) {
+		m_vecHair.push_back(new CImage());
 
+		TCHAR szHairPath[MAX_PATH];
+		wsprintf(szHairPath, L"../Assets/Player/hair/hair%d/idle/front/idle_front1.png", i + 1);
 
-	//for (int i = 0; i < iCnt; ++i)
-	//{
-	//	CString strTileName;
-	//	TCHAR pFilePath2[MAX_STR];
-	//	CImage* pPngImage = new CImage;
+		m_vecHair[i]->Load(szHairPath);
+		m_vecHair[i]->SetTransparentColor(RGB(255, 255, 255));
+	}
+}
 
-	//	swprintf_s(szFullPath, MAX_PATH, L"../Assets/Map/%s/%s/%s_%s%d.png", pFilePath, szTileOption, pFilePath, szTileOption, i + 1);
-	//	if (iErr == 0 && FAILED(pPngImage->Load(szFullPath)))
-	//	{
-	//		AfxMessageBox(lstrcat(szFullPath, L" Load Failed"));
-	//		iErr = -1;
-	//		iCnt = iFullCnt;
-	//	}
+void CPlayerTool::ChangeImageColor(CImage* image, CEdit* R, CEdit* G, CEdit* B)
+{
+	for (int y = 0; y < image->GetHeight(); ++y)
+	{
+		for (int x = 0; x < image->GetWidth(); ++x)
+		{
+			// 현재 픽셀 색상 가져오기
+			COLORREF pixelColor = image->GetPixel(x, y);
 
-	//	if (iErr == 0)
-	//	{
-	//		strTileName.Format(L"%s_%s%d", pFilePath, szTileOption, i + 1);
-	//		swprintf_s(pFilePath2, MAX_STR, L"%s_%s%d", pFilePath, szTileOption, i + 1);
-	//	}
-	//	else // 선택된 값과 동일한 폴더가 존재하지 않을 경우 바깥쪽 폴더에서 분류 안 된 이미지 그냥 다 받아옴 (지금 흙만 분류해서 나머지는 기존과 동일하게 다받음) // 파일 다 정리되면 삭제 예정
-	//	{
-	//		swprintf_s(szFullPath, MAX_PATH, L"../Assets/Map/%s/%s%d.png", pFilePath, pFilePath, i + 1);
-	//		pPngImage->Load(szFullPath);
-	//		strTileName.Format(L"%s_%d", pFilePath, i + 1);
-	//		swprintf_s(pFilePath2, MAX_STR, L"%s_%d", pFilePath, i + 1);
-	//	}
+			// 투명한 색상인 경우 건드리지 않음
+			if (pixelColor != RGB(255, 255, 255))
+			{
+				// 각 색상 채널의 값 가져오기
+				int r = GetRValue(pixelColor);
+				int g = GetGValue(pixelColor);
+				int b = GetBValue(pixelColor);
 
-	//	m_mapPngImage.insert({ strTileName, pPngImage });
-	//	m_ListBox.AddString(pFilePath2);
-	//}
+				// 새로운 색상의 RGB 채널 값 가져오기
+				CString strR, strG, strB;
+				R->GetWindowTextW(strR);
+				G->GetWindowTextW(strG);
+				B->GetWindowTextW(strB);
+				int myr = _ttoi(strR);
+				int myg = _ttoi(strG);
+				int myb = _ttoi(strB);
 
-	//Horizontal_Scroll();
+				int rNew = GetRValue(myr);
+				int gNew = GetGValue(myg);
+				int bNew = GetBValue(myb);
 
-	//UpdateData(FALSE);
+				// 색상 비율에 맞춰 텍스쳐 색상 변경 (예시: 회색으로 변환)
+				int rResult = (r * rNew) / 255;
+				int gResult = (g * gNew) / 255;
+				int bResult = (b * bNew) / 255;
+
+				// 변경된 색으로 픽셀을 설정
+				image->SetPixel(x, y, RGB(rResult, gResult, bResult));
+			}
+		}
+	}
 }
 
 
@@ -205,6 +183,8 @@ BEGIN_MESSAGE_MAP(CPlayerTool, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON8, &CPlayerTool::OnEyeColor)
 	ON_BN_CLICKED(IDC_BUTTON9, &CPlayerTool::OnShirtColor)
 	ON_WM_DESTROY()
+	ON_BN_CLICKED(IDC_BUTTON4, &CPlayerTool::OnLoadPlayerBasic)
+	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN3, &CPlayerTool::OnChangeHairType)
 END_MESSAGE_MAP()
 
 
@@ -280,29 +260,20 @@ void CPlayerTool::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
 void CPlayerTool::OnHairColor()
 {
-	image2 = new CImage;
-	TCHAR szFullPath2[MAX_PATH] = L"../Assets/Player/hair/hair1/Miner_hair1_1.png"; //머리
-	image2->Load(szFullPath2);
+	ChangeImageColor(m_vecHair[m_hairIndex], &m_hairR, &m_shirtG, &m_shirtB);
 
+	Invalidate(FALSE);
+	CClientDC dc(&PlayerPreviewImg);
 	CRect rect;
 	PlayerPreviewImg.GetClientRect(&rect);
-	int centerX = rect.Width() * 0.5;
-	int centerY = rect.Height() * 0.5;
-	int leftX = centerX - image2->GetWidth() * 0.5;
-	int leftY = centerY - image2->GetHeight() * 0.5;
+	dc.FillSolidRect(rect, RGB(255, 255, 255));
 
-	CDC* _dc = PlayerPreviewImg.GetDC();
-	
-	image2->Draw(_dc->m_hDC, leftX, leftY, image2->GetWidth(), image2->GetHeight());
-	image2->SetTransparentColor(RGB(255, 255, 255));
+	m_vecSkin[0]->Draw(dc, rect);
+	m_vecHair[m_hairIndex]->Draw(dc, rect);
+	m_eye->Draw(dc, rect);
+	m_shirt->Draw(dc, rect);
+	m_pant->Draw(dc, rect);
 
-	image3 = new CImage;
-	TCHAR szFullPath3[MAX_PATH] = L"../Assets/Player/pant/Miner_pants_1.png"; //머리
-	image3->Load(szFullPath3);
-
-	image3->Draw(_dc->m_hDC, leftX, leftY, image3->GetWidth(), image3->GetHeight());
-	image3->SetTransparentColor(RGB(255, 255, 255));
-	PlayerPreviewImg.ReleaseDC(_dc);
 }
 
 void CPlayerTool::OnPantColor()
@@ -322,8 +293,65 @@ void CPlayerTool::OnEyeColor()
 void CPlayerTool::OnDestroy()
 {
 	CDialog::OnDestroy();
-	Safe_Delete(image);
-	Safe_Delete(image2);
-	Safe_Delete(image3);
-	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
+	for (size_t i = 0; i < m_vecSkin.size(); ++i) {
+		Safe_Delete(m_vecSkin[i]);
+	}
+	for (size_t i = 0; i < m_vecHair.size(); ++i) {
+		Safe_Delete(m_vecHair[i]);
+	}
+
+	Safe_Delete(m_eye);
+	Safe_Delete(m_shirt);
+	Safe_Delete(m_pant);
+}
+
+
+void CPlayerTool::OnLoadPlayerBasic()
+{
+	CClientDC dc(&PlayerPreviewImg);
+	CRect rect;
+	PlayerPreviewImg.GetClientRect(&rect);
+	dc.FillSolidRect(rect, RGB(255, 255, 255));
+
+	m_vecSkin[0]->Draw(dc, rect);
+	m_vecHair[0]->Draw(dc, rect);
+	m_eye->Draw(dc, rect);
+	m_shirt->Draw(dc, rect);
+	m_pant->Draw(dc, rect);
+}
+
+
+void CPlayerTool::OnChangeHairType(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+
+	if (pNMUpDown->iDelta < 0) {
+		//오른쪽 누름
+		m_hairIndex++;
+		if (m_hairIndex == m_vecHair.size()) {
+			m_hairIndex = 0;
+		}
+	}
+	else {
+		//왼쪽 누름
+		m_hairIndex--;
+		if (m_hairIndex < 0) {
+			m_hairIndex = m_vecHair.size() - 1;
+		}
+	}
+
+	Invalidate(FALSE);
+	CClientDC dc(&PlayerPreviewImg);
+	CRect rect;
+	PlayerPreviewImg.GetClientRect(&rect);
+	dc.FillSolidRect(rect, RGB(255, 255, 255));
+
+	m_vecSkin[0]->Draw(dc, rect);
+	m_vecHair[m_hairIndex]->Draw(dc, rect);
+	m_eye->Draw(dc, rect);
+	m_shirt->Draw(dc, rect);
+	m_pant->Draw(dc, rect);
+
+
+	*pResult = 0;
 }
