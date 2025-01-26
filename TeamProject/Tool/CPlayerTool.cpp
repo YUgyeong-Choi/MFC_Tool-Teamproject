@@ -98,39 +98,44 @@ void CPlayerTool::OnLoadData()
 {
 	//스킨
 	m_vecSkin.push_back(new CImage());
-	TCHAR szSkinPath[MAX_PATH] = L"../Assets/Player/skin/idle/front/idle_front1.png";
+	TCHAR szSkinPath[MAX_PATH] = L"../Assets/Player/skin/idle/front/front_1.png";
 	m_vecSkin[0]->Load(szSkinPath);
 	COLORREF transparentColor = RGB(255, 255, 255);
 	m_vecSkin[0]->SetTransparentColor(transparentColor);
 
 	//눈
 	m_eye = new CImage();
-	TCHAR szEyePath[MAX_PATH] = L"../Assets/Player/eye/Miner_eyes_1.png";
+	TCHAR szEyePath[MAX_PATH] = L"../Assets/Player/eye/idle/front/front_1.png";
 	m_eye->Load(szEyePath);
 	m_eye->SetTransparentColor(transparentColor);
 
 	//셔츠
 	m_shirt = new CImage();
-	TCHAR szShirtPath[MAX_PATH] = L"../Assets/Player/shirt/Miner_shirt_1.png";
+	TCHAR szShirtPath[MAX_PATH] = L"../Assets/Player/shirt/idle/front/front_1.png";
 	m_shirt->Load(szShirtPath);
 	m_shirt->SetTransparentColor(transparentColor);
 
 	//바지
 	m_pant = new CImage();
-	TCHAR szPantPath[MAX_PATH] = L"../Assets/Player/pant/Miner_pants_1.png";
+	TCHAR szPantPath[MAX_PATH] = L"../Assets/Player/pant/idle/front/front_1.png";
 	m_pant->Load(szPantPath);
 	m_pant->SetTransparentColor(transparentColor);
 
+	m_vecHair.push_back(new CImage());
+	TCHAR szHairPath[MAX_PATH] = L"../Assets/Player/hair/hair1/idle/front/Miner_hair2_10.png";
+	m_vecHair[0]->Load(szHairPath);
+	m_vecHair[0]->SetTransparentColor(transparentColor);
+
 	//머리
-	for (int i = 0; i < 3; ++i) {
-		m_vecHair.push_back(new CImage());
+	//for (int i = 0; i < 5; ++i) {
+	//	m_vecHair.push_back(new CImage());
 
-		TCHAR szHairPath[MAX_PATH];
-		wsprintf(szHairPath, L"../Assets/Player/hair/hair%d/idle/front/idle_front1.png", i + 1);
+	//	TCHAR szHairPath[MAX_PATH];
+	//	wsprintf(szHairPath, L"../Assets/Player/hair/hair%d/idle/front/front_1.png", i + 1);
 
-		m_vecHair[i]->Load(szHairPath);
-		m_vecHair[i]->SetTransparentColor(RGB(255, 255, 255));
-	}
+	//	m_vecHair[i]->Load(szHairPath);
+	//	m_vecHair[i]->SetTransparentColor(RGB(255, 255, 255));
+	//}
 }
 
 void CPlayerTool::ChangeImageColor(CImage* image, CEdit* R, CEdit* G, CEdit* B)
@@ -159,14 +164,10 @@ void CPlayerTool::ChangeImageColor(CImage* image, CEdit* R, CEdit* G, CEdit* B)
 				int myg = _ttoi(strG);
 				int myb = _ttoi(strB);
 
-				int rNew = GetRValue(myr);
-				int gNew = GetGValue(myg);
-				int bNew = GetBValue(myb);
-
-				// 색상 비율에 맞춰 텍스쳐 색상 변경 (예시: 회색으로 변환)
-				int rResult = (r * rNew) / 255;
-				int gResult = (g * gNew) / 255;
-				int bResult = (b * bNew) / 255;
+				// 색상 비율에 맞춰 텍스쳐 색상 변경
+				int rResult = (r * myr) / 255;
+				int gResult = (g * myg) / 255;
+				int bResult = (b * myb) / 255;
 
 				// 변경된 색으로 픽셀을 설정
 				image->SetPixel(x, y, RGB(rResult, gResult, bResult));
@@ -260,7 +261,7 @@ void CPlayerTool::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
 void CPlayerTool::OnHairColor()
 {
-	ChangeImageColor(m_vecHair[m_hairIndex], &m_hairR, &m_shirtG, &m_shirtB);
+	ChangeImageColor(m_vecHair[m_hairIndex], &m_hairR, &m_hairG, &m_hairB);
 
 	Invalidate(FALSE);
 	CClientDC dc(&PlayerPreviewImg);
@@ -278,6 +279,19 @@ void CPlayerTool::OnHairColor()
 
 void CPlayerTool::OnPantColor()
 {
+	ChangeImageColor(m_pant, &m_pantR, &m_pantG, &m_pantB);
+
+	Invalidate(FALSE);
+	CClientDC dc(&PlayerPreviewImg);
+	CRect rect;
+	PlayerPreviewImg.GetClientRect(&rect);
+	dc.FillSolidRect(rect, RGB(255, 255, 255));
+
+	m_vecSkin[0]->Draw(dc, rect);
+	m_vecHair[m_hairIndex]->Draw(dc, rect);
+	m_eye->Draw(dc, rect);
+	m_shirt->Draw(dc, rect);
+	m_pant->Draw(dc, rect);
 }
 
 void CPlayerTool::OnShirtColor()
