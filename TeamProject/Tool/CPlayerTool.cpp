@@ -260,7 +260,7 @@ void CPlayerTool::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
 void CPlayerTool::OnHairColor()
 {
-	ChangeImageColor(m_vecHair[m_hairIndex], &m_hairR, &m_shirtG, &m_shirtB);
+	ChangeImageColor(m_vecHair[m_hairIndex], &m_hairR, &m_hairG, &m_hairB);
 
 	Invalidate(FALSE);
 	CClientDC dc(&PlayerPreviewImg);

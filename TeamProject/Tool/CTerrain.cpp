@@ -38,7 +38,7 @@ HRESULT CTerrain::Initialize()
 		for (int j = 0; j < TILEX; ++j)
 		{
 			TILE* pTile = new TILE;
-
+			ZeroMemory(pTile, sizeof(TILE));
 			float    fY = TILECY * i + (TILECY / 2.f);
 			float    fX = TILECX * j + (TILECX / 2.f);
 
@@ -47,7 +47,7 @@ HRESULT CTerrain::Initialize()
 			pTile->byOption = 0;
 			pTile->byDrawID[OPT_GROUND] = 27;
 			pTile->eTileTerrain = TRN_DIRT;
-			pTile->eTileType = OPT_GROUND;
+			//pTile->eTileType = OPT_GROUND;
 			m_vecTile.push_back(pTile);
 		}
 	}
@@ -58,77 +58,115 @@ void CTerrain::Update()
 {
 }
 
-void CTerrain::Render()
+void CTerrain::Render(float fZoomFactor, const CPoint& zoomCenter)
 {
-	D3DXMATRIX	matWorld, matScale, matTrans;
+	D3DXMATRIX matWorld, matScale, matTrans;
 
-	TCHAR	szBuf[MIN_STR] = L"";
-	//int		iIndex(0);
+	// 최소 확대/축소 비율 설정
+	float minZoomFactor = 0.1f;
+	float zoomFactor = max(fZoomFactor, minZoomFactor);
 
 	for (auto pTile : m_vecTile)
 	{
 		D3DXMatrixIdentity(&matWorld);
-		D3DXMatrixScaling(&matScale, 1.f, 1.f, 1.f);
-		D3DXMatrixTranslation(&matTrans, 
-			pTile->vPos.x ,
-			pTile->vPos.y ,
+		D3DXMatrixScaling(&matScale, zoomFactor, zoomFactor, 1.f);
+		D3DXMatrixTranslation(&matTrans,
+			(pTile->vPos.x - zoomCenter.x) * zoomFactor + zoomCenter.x,
+			(pTile->vPos.y - zoomCenter.y) * zoomFactor + zoomCenter.y,
 			pTile->vPos.z);
 
 		matWorld = matScale * matTrans;
 
-		RECT	rc{};
-
+		RECT rc{};
 		GetClientRect(m_pMainView->m_hWnd, &rc);
 
-		float	fX = WINCX / float(rc.right - rc.left);
-		float	fY = WINCY / float(rc.bottom - rc.top);
+		float fX = WINCX / float(rc.right - rc.left);
+		float fY = WINCY / float(rc.bottom - rc.top);
 
 		Set_Ratio(&matWorld, fX, fY);
 
 		CDevice::Get_Instance()->Get_Sprite()->SetTransform(&matWorld);
 
-		TCHAR	szTexTerrain[MAX_STR] = L"";
-		TCHAR	szTexType[MAX_STR] = L"";
+		TCHAR szTexTerrain[MAX_STR] = L"";
+		TCHAR szTexType[MAX_STR] = L"";
 
-		switch (pTile->eTileTerrain){
+		switch (pTile->eTileTerrain)
+		{
 		case TRN_DIRT:
-			lstrcpy(szTexTerrain, L"Dirt");break;
+			lstrcpy(szTexTerrain, L"Dirt"); break;
 		case TRN_SAND:
-			lstrcpy(szTexTerrain, L"Sand");break;
+			lstrcpy(szTexTerrain, L"Sand"); break;
 		case TRN_NATURE:
-			lstrcpy(szTexTerrain, L"Nature");break;
+			lstrcpy(szTexTerrain, L"Nature"); break;
 		case TRN_STONE:
-			lstrcpy(szTexTerrain, L"Stone");break;
+			lstrcpy(szTexTerrain, L"Stone"); break;
 		case TRN_WATER:
-			lstrcpy(szTexTerrain, L"Water");break;
-		default:break;
+			lstrcpy(szTexTerrain, L"Water"); break;
+		default: break;
 		}
 
-		switch (pTile->eTileType){
-		case OPT_GROUND:
-			lstrcpy(szTexType, L"Ground");break;
-		case OPT_WALL:
-			lstrcpy(szTexType, L"Wall");break;
-		case OPT_ORE:
-			lstrcpy(szTexType, L"Ore");	break;
-		case OPT_DECO:
-			lstrcpy(szTexType, L"Deco");break;
-		default:break;
+		for (int i = 0; i < OPT_END; ++i)
+		{
+			switch (i)
+			{
+			case OPT_GROUND:
+				lstrcpy(szTexType, L"Ground"); break;
+			case OPT_WALL:
+				lstrcpy(szTexType, L"Wall"); break;
+			case OPT_ORE:
+				lstrcpy(szTexType, L"Ore"); break;
+			case OPT_DECO:
+				lstrcpy(szTexType, L"Deco"); break;
+			default: break;
+			}
+			const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(szTexTerrain, szTexType, pTile->byDrawID[i]);
+
+			if (pTexInfo == nullptr)
+			{
+				continue;
+			}
+			float fCenterX = pTexInfo->tImgInfo.Width / 2.f;
+			float fCenterY = pTexInfo->tImgInfo.Height / 2.f;
+
+			D3DXVECTOR3 vTemp{ fCenterX, fCenterY, 0.f };
+
+			CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture, //출력할 텍스처 컴객체
+				nullptr,        // 출력할 이미지 영역에 대한 Rect 주소, null인 경우 이미지의 0, 0기준으로 출력
+				&vTemp,        // 출력할 이미지의 중심 좌표 vec3 주소, null인 경우 0, 0 이미지 중심
+				nullptr,        // 위치 좌표에 대한 vec3 주소, null인 경우 스크린 상 0, 0 좌표 출력    
+				D3DCOLOR_ARGB(255, 255, 255, 255)); // 출력할 이미지와 섞을 색상 값, 0xffffffff를 넘겨주면 섞지 않고 원본 색상 유지
 		}
 
-		const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(szTexTerrain, szTexType, pTile->byDrawID[pTile->eTileType]);
 
-		float	fCenterX = pTexInfo->tImgInfo.Width / 2.f;
-		float	fCenterY = pTexInfo->tImgInfo.Height / 2.f;
 
-		D3DXVECTOR3	vTemp{ fCenterX, fCenterY, 0.f };
 
-		CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture, //출력할 텍스처 컴객체
-			nullptr,		// 출력할 이미지 영역에 대한 Rect 주소, null인 경우 이미지의 0, 0기준으로 출력
-			&vTemp,		// 출력할 이미지의 중심 좌표 vec3 주소, null인 경우 0, 0 이미지 중심
-			nullptr,		// 위치 좌표에 대한 vec3 주소, null인 경우 스크린 상 0, 0 좌표 출력	
-			D3DCOLOR_ARGB(255, 255, 255, 255)); // 출력할 이미지와 섞을 색상 값, 0xffffffff를 넘겨주면 섞지 않고 원본 색상 유지
-			
+
+		//switch (pTile->eTileType)
+		//{
+		//case OPT_GROUND:
+		//	lstrcpy(szTexType, L"Ground"); break;
+		//case OPT_WALL:
+		//	lstrcpy(szTexType, L"Wall"); break;
+		//case OPT_ORE:
+		//	lstrcpy(szTexType, L"Ore"); break;
+		//case OPT_DECO:
+		//	lstrcpy(szTexType, L"Deco"); break;
+		//default: break;
+		//}
+
+		//const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(szTexTerrain, szTexType, pTile->byDrawID[pTile->eTileType]);
+
+		//float fCenterX = pTexInfo->tImgInfo.Width / 2.f;
+		//float fCenterY = pTexInfo->tImgInfo.Height / 2.f;
+
+		//D3DXVECTOR3 vTemp{ fCenterX, fCenterY, 0.f };
+
+		//CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture, //출력할 텍스처 컴객체
+		//	nullptr,        // 출력할 이미지 영역에 대한 Rect 주소, null인 경우 이미지의 0, 0기준으로 출력
+		//	&vTemp,        // 출력할 이미지의 중심 좌표 vec3 주소, null인 경우 0, 0 이미지 중심
+		//	nullptr,        // 위치 좌표에 대한 vec3 주소, null인 경우 스크린 상 0, 0 좌표 출력    
+		//	D3DCOLOR_ARGB(255, 255, 255, 255)); // 출력할 이미지와 섞을 색상 값, 0xffffffff를 넘겨주면 섞지 않고 원본 색상 유지
+	}
 		//swprintf_s(szBuf, L"%d", iIndex);
 
 		//CDevice::Get_Instance()->Get_Font()->DrawTextW(CDevice::Get_Instance()->Get_Sprite(),
@@ -139,7 +177,6 @@ void CTerrain::Render()
 		//	D3DCOLOR_ARGB(255, 255, 255, 255));
 
 		//iIndex++;
-	}		
 }
 
 void CTerrain::Release()
@@ -172,7 +209,7 @@ void CTerrain::Mini_Render()
 
 		CDevice::Get_Instance()->Get_Sprite()->SetTransform(&matWorld);
 
-		const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(L"Back", L"Tile", pTile->byDrawID[pTile->eTileType]);
+		const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(L"Back", L"Tile", pTile->byDrawID[OPT_GROUND]);
 
 		float	fCenterX = pTexInfo->tImgInfo.Width / 2.f;
 		float	fCenterY = pTexInfo->tImgInfo.Height / 2.f;

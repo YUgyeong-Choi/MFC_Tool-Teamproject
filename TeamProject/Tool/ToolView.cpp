@@ -36,13 +36,14 @@ BEGIN_MESSAGE_MAP(CToolView, CView)
 	ON_WM_DESTROY()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_MOUSEMOVE()
+	ON_WM_MOUSEWHEEL()
 END_MESSAGE_MAP()
 
 // CToolView 생성/소멸
 
 CToolView::CToolView() noexcept
 	: m_pDevice(CDevice::Get_Instance())
-	, m_pTerrain(nullptr), m_bGrid(false)
+	, m_pTerrain(nullptr), m_bGrid(false), m_fZoomFactor(1.0f)
 
 {
 	// TODO: 여기에 생성 코드를 추가합니다.
@@ -163,13 +164,27 @@ void CToolView::Check_TileSettings(CPoint point)
 	TILETERRAIN eTerrain = (TILETERRAIN)(pMyForm->m_MapTool.m_ctrlCMapType.GetCurSel());
 	TILEOPTION eOption = (TILEOPTION)(pMyForm->m_MapTool.m_crtlCType.GetCurSel());
 
+	// 확대/축소 비율과 중심을 고려하여 포인트 조정
+	CPoint adjustedPoint;
+	adjustedPoint.x = static_cast<int>((point.x - m_zoomCenter.x) / m_fZoomFactor + m_zoomCenter.x);
+	adjustedPoint.y = static_cast<int>((point.y - m_zoomCenter.y) / m_fZoomFactor + m_zoomCenter.y);
+
+
+
+
 	if (eOption == OPT_GROUND)
 	{
 		int iDrawID = pMyForm->m_MapTool.m_ListBox.GetCurSel();
 		if (iDrawID == -1)
 			return;
-		m_pTerrain->Tile_Change(D3DXVECTOR3(float(point.x) + GetScrollPos(0),
-			float(point.y) + GetScrollPos(1),
+		//m_pTerrain->Tile_Change(D3DXVECTOR3(float(point.x) + GetScrollPos(0),
+		//	float(point.y) + GetScrollPos(1),
+		//	0.f),
+		//	pMyForm->m_MapTool.m_ListBox.GetCurSel(), 0
+		//);
+
+		m_pTerrain->Tile_Change(D3DXVECTOR3(float(adjustedPoint.x) + GetScrollPos(0),
+			float(adjustedPoint.y) + GetScrollPos(1),
 			0.f),
 			pMyForm->m_MapTool.m_ListBox.GetCurSel(), 0
 		);
@@ -211,7 +226,7 @@ void CToolView::OnDraw(CDC* pDC)
 
 	m_pDevice->Render_Begin();
 
-	m_pTerrain->Render();
+	m_pTerrain->Render(m_fZoomFactor, m_zoomCenter);
 
 	m_pDevice->Render_End();
 
@@ -220,21 +235,60 @@ void CToolView::OnDraw(CDC* pDC)
 		CPen pen(PS_SOLID, 1, RGB(255, 255, 255));
 		CPen* pOldPen = pDC->SelectObject(&pen);
 
+		//// 그리드의 가로선 그리기
+		//for (int i = 0; i <= TILEY; ++i) {
+		//	pDC->MoveTo(static_cast<int>((i * TILECY - m_zoomCenter.y) * m_fZoomFactor + m_zoomCenter.x), 0);
+		//	pDC->LineTo(static_cast<int>((i * TILECY - m_zoomCenter.y) * m_fZoomFactor + m_zoomCenter.x), static_cast<int>(TILEX * TILECX * m_fZoomFactor));
+		//}
+
+		//// 그리드의 세로선 그리기
+		//for (int i = 0; i <= TILEX; ++i) {
+		//	pDC->MoveTo(0, static_cast<int>((i * TILECX - m_zoomCenter.x) * m_fZoomFactor + m_zoomCenter.y));
+		//	pDC->LineTo(static_cast<int>(TILEY * TILECY * m_fZoomFactor), static_cast<int>((i * TILECX - m_zoomCenter.x) * m_fZoomFactor + m_zoomCenter.y));
+		//}
+
 		// 그리드의 가로선 그리기
 		for (int i = 0; i <= TILEY; ++i) {
-			pDC->MoveTo(0 , i * TILECY);
-			pDC->LineTo(TILEY * TILECY , i * TILECY);
+			pDC->MoveTo(0, static_cast<int>((i * TILECY - m_zoomCenter.y) * m_fZoomFactor + m_zoomCenter.y)); // **********
+			pDC->LineTo(static_cast<int>(TILEX * TILECX * m_fZoomFactor), static_cast<int>((i * TILECY - m_zoomCenter.y) * m_fZoomFactor + m_zoomCenter.y)); // **********
 		}
 
 		// 그리드의 세로선 그리기
 		for (int i = 0; i <= TILEX; ++i) {
-			pDC->MoveTo(i * TILECX , 0 );
-			pDC->LineTo(i * TILECX, TILEX * TILECX );
+			pDC->MoveTo(static_cast<int>((i * TILECX - m_zoomCenter.x) * m_fZoomFactor + m_zoomCenter.x), 0); // **********
+			pDC->LineTo(static_cast<int>((i * TILECX - m_zoomCenter.x) * m_fZoomFactor + m_zoomCenter.x), static_cast<int>(TILEY * TILECY * m_fZoomFactor)); // **********
 		}
+
 
 		pDC->SelectObject(pOldPen);
 	}
 }
+
+BOOL CToolView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
+{
+	ScreenToClient(&pt); // 마우스 위치를 클라이언트 좌표로 변환
+
+	// 현재 마우스 위치를 기준으로 확대/축소 중심을 조정
+	CPoint newCenter;
+	newCenter.x = static_cast<int>((pt.x - m_zoomCenter.x) / m_fZoomFactor + m_zoomCenter.x);
+	newCenter.y = static_cast<int>((pt.y - m_zoomCenter.y) / m_fZoomFactor + m_zoomCenter.y);
+
+	if (zDelta > 0)
+		m_fZoomFactor *= 1.1f; // 확대
+	else
+		m_fZoomFactor /= 1.1f; // 축소
+
+	// 최소 확대/축소 비율 설정
+	float minZoomFactor = 0.1f;
+	m_fZoomFactor = max(m_fZoomFactor, minZoomFactor);
+
+	// 확대/축소 중심을 업데이트
+	m_zoomCenter = newCenter;
+
+	Invalidate(FALSE); // 화면 갱신
+	return CView::OnMouseWheel(nFlags, zDelta, pt);
+}
+
 
 void CToolView::OnDestroy()
 {
@@ -300,11 +354,3 @@ CToolDoc* CToolView::GetDocument() const // 디버그되지 않은 버전은 인
 // CToolView 메시지 처리기
 
 #pragma endregion
-
-
-
-
-
-
-
-

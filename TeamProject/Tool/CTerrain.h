@@ -12,7 +12,7 @@ public:
 public:
 	HRESULT		Initialize();
 	void		Update();
-	void		Render();
+	void		Render(float fZoomFactor, const CPoint& zoomCenter);
 	void		Release();
 	void		Mini_Render();
 
