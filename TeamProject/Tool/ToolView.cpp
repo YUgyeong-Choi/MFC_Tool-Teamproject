@@ -151,39 +151,6 @@ void CToolView::Check_TileSettings(CPoint point)
 	adjustedPoint.x = static_cast<int>((point.x - m_zoomCenter.x) / m_fZoomFactor + m_zoomCenter.x);
 	adjustedPoint.y = static_cast<int>((point.y - m_zoomCenter.y) / m_fZoomFactor + m_zoomCenter.y);
 
-	//if (eType == OPT_GROUND)
-	//{
-	//	iDrawID = pMyForm->m_MapTool.m_ListBox.GetCurSel();
-	//	if (iDrawID == -1)
-	//		return;
-	//}
-	//else
-	//{
-
-	//	switch (eTerrain)
-	//	{
-	//	case TRN_DIRT:
-
-	//		break;
-	//	case TRN_SAND:
-
-	//		break;
-	//	case TRN_NATURE:
-
-	//		break;
-	//	case TRN_STONE:
-
-	//		break;
-	//	case TRN_WATER:
-
-	//		break;
-	//	case TRN_END:
-	//		break;
-	//	default:
-	//		break;
-	//	}
-	//}
-
 	switch (eType)
 	{
 	case OPT_GROUND:
