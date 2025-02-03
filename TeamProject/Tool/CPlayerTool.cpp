@@ -55,6 +55,8 @@ void CPlayerTool::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SLIDER12, m_silderPantB);
 	DDX_Control(pDX, IDC_PICTURE2, PlayerPreviewImg);
 	DDX_Control(pDX, IDC_CHECK2, m_AnimationOn);
+	DDX_Control(pDX, IDC_EDIT6, m_PlayerHp);
+	DDX_Control(pDX, IDC_EDIT17, m_PlayerAttackDmg);
 }
 
 void CPlayerTool::OnInitialUpdate()
@@ -606,8 +608,12 @@ void CPlayerTool::OnClickBack()
 
 void CPlayerTool::OnPlayerSave()
 {
-	m_playerData.iHp = 100;
-	m_playerData.iAttack = 10;
+	CString playerHp;
+	CString playerAttackDmg;
+	m_PlayerHp.GetWindowTextW(playerHp);
+	m_playerData.iHp = _ttoi(playerHp);
+	m_PlayerAttackDmg.GetWindowTextW(playerAttackDmg);
+	m_playerData.iAttack = _ttoi(playerAttackDmg);
 
 	CString strR, strG, strB;
 	m_skinR.GetWindowTextW(strR);
@@ -735,7 +741,6 @@ void CPlayerTool::OnPlayerLoad()
 				break;
 			}
 
-
 			m_skinR.SetWindowTextW(std::to_wstring(tData.eSkinRGB.iR).c_str());
 			m_skinG.SetWindowTextW(std::to_wstring(tData.eSkinRGB.iG).c_str());
 			m_skinB.SetWindowTextW(std::to_wstring(tData.eSkinRGB.iB).c_str());
@@ -771,10 +776,15 @@ void CPlayerTool::OnPlayerLoad()
 			m_silderPantR.SetPos(tData.ePantRGB.iR);
 			m_silderPantG.SetPos(tData.ePantRGB.iG);
 			m_silderPantB.SetPos(tData.ePantRGB.iB);
+
+			m_PlayerHp.SetWindowTextW(std::to_wstring(tData.iHp).c_str());
+			m_PlayerAttackDmg.SetWindowTextW(std::to_wstring(tData.iAttack).c_str());
 		}
 
 		CloseHandle(hFile);
 	}
+
+	OnClickFront();
 }
 
 

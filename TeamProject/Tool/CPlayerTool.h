@@ -65,6 +65,9 @@ private:
 	CSliderCtrl m_silderPantB;
 	CStatic PlayerPreviewImg;
 
+	CEdit m_PlayerHp;
+	CEdit m_PlayerAttackDmg;
+
 	// 플레이어 원본 이미지
 	map<CString, CString>		m_playerImagePath;
 
