@@ -320,6 +320,8 @@ BEGIN_MESSAGE_MAP(CPlayerTool, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON3, &CPlayerTool::OnClickFront)
 	ON_BN_CLICKED(IDC_BUTTON5, &CPlayerTool::OnClickSide)
 	ON_BN_CLICKED(IDC_BUTTON6, &CPlayerTool::OnClickBack)
+	ON_BN_CLICKED(IDC_BUTTON8, &CPlayerTool::OnPlayerSave)
+	ON_BN_CLICKED(IDC_BUTTON9, &CPlayerTool::OnPlayerLoad)
 END_MESSAGE_MAP()
 
 
@@ -603,4 +605,16 @@ void CPlayerTool::OnClickBack()
 	Safe_Delete(_copyHair);
 	Safe_Delete(_copyShirt);
 	Safe_Delete(_copyPant);
+}
+
+
+void CPlayerTool::OnPlayerSave()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+
+void CPlayerTool::OnPlayerLoad()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }
