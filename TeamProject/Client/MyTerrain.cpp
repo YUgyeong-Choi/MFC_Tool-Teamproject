@@ -18,13 +18,129 @@ HRESULT CMyTerrain::Initialize(void)
 {
 	m_vecTile.reserve(TILEX * TILEY);
 
-	if (FAILED(Load_Tile(L"../Data/Map.dat")))
+	// 저장 불러오기 추가할 것***
+	//if (FAILED(Load_Tile(L"../Data/Map.dat")))
+	//{
+	//	return E_FAIL;
+	//}
+
+
+	// Initialize_TileTexture
 	{
-		return E_FAIL;
+
+		if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
+			L"../Assets/Map//back/dark.png",
+			TEX_SINGLE, L"Back", L"Tile", 1)))
+		{
+			ERR_MSG(L"Back Texture Insert Failed");
+			return E_FAIL;
+		}
+
+		if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
+			L"../Assets/Map/water_tileset/ground/water_tileset_ground%d.png",
+			TEX_MULTI, L"water", L"ground", 17)))
+		{
+			ERR_MSG(L"water ground Texture Insert Failed");
+			//return E_FAIL;
+		}
+
+		TCHAR szTexFullPath[MAX_PATH] = L"";
+		TCHAR szTexTerrain[MAX_STR] = L"";
+		TCHAR szTexType[MAX_STR] = L"";
+		int		iCnt;
+		for (int j = 0; j < TRN_WATER; ++j)
+		{
+			for (int i = 0; i < OPT_END; ++i)
+			{
+				switch (j)
+				{
+				case TRN_DIRT:
+					lstrcpy(szTexTerrain, L"dirt"); break;
+				case TRN_SAND:
+					lstrcpy(szTexTerrain, L"sand"); break;
+				case TRN_NATURE:
+					lstrcpy(szTexTerrain, L"nature"); break;
+				case TRN_STONE:
+					lstrcpy(szTexTerrain, L"stone"); break;
+				default: break;
+				}
+				switch (i)
+				{
+				case OPT_GROUND:
+					lstrcpy(szTexType, L"ground");
+					iCnt = GROUND_ALL_CNT; break;
+				case OPT_WALL:
+					lstrcpy(szTexType, L"wall"); break;
+					// body 6, head 21
+				case OPT_ORE:
+					lstrcpy(szTexType, L"ore");
+					iCnt = ORE_DEFAULT_CNT;
+					if (j == TRN_SAND) iCnt = ORE_SAND_CNT; break;
+				case OPT_DECO:
+					lstrcpy(szTexType, L"deco");
+					iCnt = DECO_DEFAULT_CNT;
+					if (j == TRN_SAND) iCnt = DECO_SAND_CNT;
+					else if (j == TRN_DIRT) iCnt = DECO_DIRT_CNT; break;
+				default: break;
+				}
+
+				if (i != OPT_WALL)
+				{
+					swprintf_s(szTexFullPath, L"../Assets/Map/%s_tileset/%s/%s_tileset_%s", szTexTerrain, szTexType, szTexTerrain, szTexType);
+					lstrcat(szTexFullPath, L"%d.png");
+					if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
+						szTexFullPath, TEX_MULTI, szTexTerrain, szTexType, iCnt)))
+					{
+						ERR_MSG(L"Texture Insert Failed");
+						//return E_FAIL;
+					}
+				}
+				else
+				{
+					swprintf_s(szTexFullPath, L"../Assets/Map/%s_tileset/%sbody/%s_tileset_%sbody", szTexTerrain, szTexType, szTexTerrain, szTexType);
+					lstrcat(szTexFullPath, L"%d.png");
+					if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
+						szTexFullPath, TEX_MULTI, szTexTerrain, L"wallbody", WALLBODY_ALL_CNT)))
+					{
+						ERR_MSG(L"Texture Insert Failed");
+						//return E_FAIL;
+					}
+					swprintf_s(szTexFullPath, L"../Assets/Map/%s_tileset/%shead/%s_tileset_%shead", szTexTerrain, szTexType, szTexTerrain, szTexType);
+					lstrcat(szTexFullPath, L"%d.png");
+					if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
+						szTexFullPath, TEX_MULTI, szTexTerrain, L"wallhead", WALLHEAD_ALL_CNT)))
+					{
+						ERR_MSG(L"Texture Insert Failed");
+						//return E_FAIL;
+					}
+				}
+			}
+		}
 	}
 
-	m_wstrObjKey = L"Terrain";
-	m_wstrStateKey = L"Tile";
+
+	for (int i = 0; i < TILEY; ++i)
+	{
+		for (int j = 0; j < TILEX; ++j)
+		{
+			TILE* pTile = new TILE;
+			ZeroMemory(pTile, sizeof(TILE));
+			float    fY = TILECY * i + (TILECY / 2.f);
+			float    fX = TILECX * j + (TILECX / 2.f);
+
+			pTile->vPos = { fX, fY, 0.f };
+			pTile->vSize = { (float)TILECX, (float)TILECY };
+			pTile->byOption = 0;
+			pTile->tObject[OPT_GROUND].bExist = true;
+			for (int i = OPT_GROUND + 1; i < OPT_END; ++i) pTile->tObject[i].bExist = false;
+			pTile->tObject[OPT_GROUND].byDrawID = 27;
+			pTile->tObject[OPT_GROUND].eTileTerrain = TRN_DIRT;
+			m_vecTile.push_back(pTile);
+		}
+	}
+
+	m_wstrObjKey = L"dirt";
+	m_wstrStateKey = L"ground";
 
 	return S_OK;
 }
@@ -33,16 +149,16 @@ int CMyTerrain::Update(void)
 {
 	
 	if (0.f > Get_Mouse().x)
-		m_vScroll.x += 5.f * CTimeMgr::Get_Instance()->Get_TimeDelta();
+		m_vScroll.x += 200.f * CTimeMgr::Get_Instance()->Get_TimeDelta();
 
 	if (WINCX < Get_Mouse().x)
-		m_vScroll.x -= 5.f * CTimeMgr::Get_Instance()->Get_TimeDelta();
+		m_vScroll.x -= 200.f * CTimeMgr::Get_Instance()->Get_TimeDelta();
 
 	if (0.f > Get_Mouse().y)
-		m_vScroll.y += 5.f * CTimeMgr::Get_Instance()->Get_TimeDelta();
+		m_vScroll.y += 200.f * CTimeMgr::Get_Instance()->Get_TimeDelta();
 
 	if (WINCY < Get_Mouse().y)
-		m_vScroll.y -= 5.f * CTimeMgr::Get_Instance()->Get_TimeDelta();
+		m_vScroll.y -= 200.f * CTimeMgr::Get_Instance()->Get_TimeDelta();
 
 	return 0;
 }
@@ -61,14 +177,14 @@ void CMyTerrain::Render(void)
 	int		iIndex(0);
 
 	int		iScrollX = int(-m_vScroll.x) / TILECX;
-	int		iScrollY = int(-m_vScroll.y) / (TILECY / 2);
+	int		iScrollY = int(-m_vScroll.y) / TILECY;
 
-	int		iMaxX = WINCX / TILECX;
-	int		iMaxY = WINCY / (TILECY / 2);
+	int		iMaxX = WINCX / TILECX + 1;
+	int		iMaxY = WINCY / TILECY + 1;
 
 	for (int i = iScrollY; i < iScrollY + iMaxY; ++i)
 	{
-		for(int j = iScrollX; j < iScrollX + iMaxX; ++j)
+		for (int j = iScrollX; j < iScrollX + iMaxX; ++j)
 		{
 			int			iIndex = i * TILEX + j;
 
@@ -87,29 +203,91 @@ void CMyTerrain::Render(void)
 
 			CDevice::Get_Instance()->Get_Sprite()->SetTransform(&matWorld);
 
-			const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(m_wstrObjKey.c_str(), m_wstrStateKey.c_str(), 
-				m_vecTile[iIndex]->byDrawID);
+			TCHAR szTexTerrain[MAX_STR] = L"";
+			TCHAR szTexType[MAX_STR] = L"";
 
-			float	fCenterX = pTexInfo->tImgInfo.Width / 2.f;
-			float	fCenterY = pTexInfo->tImgInfo.Height / 2.f;
+			int i(0);
 
-			D3DXVECTOR3	vTemp = { fCenterX, fCenterY, 0.f };
+			for (int iOp = 0; iOp < OPT_END; ++iOp)
+			{
+				// 렌더 순서 조절용 
+				switch (iOp) { case 0: i = OPT_GROUND; break; case 1: i = OPT_DECO; break; case 2:i = OPT_WALL; break; case 3: i = OPT_ORE; break; }
+				if (m_vecTile[iIndex]->tObject[i].bExist)
+				{
+				 // switch 더러우니 접어둘 것
+					switch (i)
+										 {
+										 case OPT_GROUND:
+											 lstrcpy(szTexType, L"ground"); break;
+										 case OPT_WALL:
+											 lstrcpy(szTexType, L"wallbody"); break;
+										 case OPT_ORE:
+											 lstrcpy(szTexType, L"ore"); break;
+										 case OPT_DECO:
+											 lstrcpy(szTexType, L"deco"); break;
+										 default: break;
+										 }
+					switch (m_vecTile[iIndex]->tObject[i].eTileTerrain)
+										 {
+										 case TRN_DIRT:
+											 lstrcpy(szTexTerrain, L"dirt"); break;
+										 case TRN_SAND:
+											 lstrcpy(szTexTerrain, L"sand"); break;
+										 case TRN_NATURE:
+											 lstrcpy(szTexTerrain, L"nature"); break;
+										 case TRN_STONE:
+											 lstrcpy(szTexTerrain, L"stone"); break;
+										 case TRN_WATER:
+											 lstrcpy(szTexTerrain, L"water"); break;
+										 default: break;
+										 }
 
-			CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture,
-				nullptr, // 출력할 이미지 영역의 RECT 주소, NULL인 경우 0, 0 기준으로 출력
-				&vTemp, // 출력할 이미지의 중심 좌표, VEC3주소, NULL 인 경우 0, 0이 중심 좌표
-				nullptr, // 텍스처를 출력할 위치 좌표, VEC3주소, 스크린상 0, 0 좌표에 출력
-				D3DCOLOR_ARGB(255, 255, 255, 255)); // 출력할 원본 이미지와 섞을 색상, 0xffffffff를 넘겨주면 원본색 유지
+					int iDrawID = m_vecTile[iIndex]->tObject[i].byDrawID;
+					if (i == OPT_WALL)
+						 iDrawID = 1;
+					const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(szTexTerrain, szTexType, iDrawID);
 
-			swprintf_s(szBuf, L"%d", iIndex);
-			CDevice::Get_Instance()->Get_Font()->DrawTextW(CDevice::Get_Instance()->Get_Sprite(), szBuf, lstrlen(szBuf), nullptr, 0, D3DCOLOR_ARGB(255, 255, 255, 255));
-			++iIndex;
+					if (pTexInfo == nullptr)
+					{
+						 continue;
+					}
+					float fCenterX = pTexInfo->tImgInfo.Width / 2.f;
+					float fCenterY = pTexInfo->tImgInfo.Height / 2.f;
+
+					D3DXVECTOR3 vTemp{ fCenterX, fCenterY, 0.f };
+
+					CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture, //출력할 텍스처 컴객체
+						 nullptr,        // 출력할 이미지 영역에 대한 Rect 주소, null인 경우 이미지의 0, 0기준으로 출력
+						 &vTemp,        // 출력할 이미지의 중심 좌표 vec3 주소, null인 경우 0, 0 이미지 중심
+						 nullptr,        // 위치 좌표에 대한 vec3 주소, null인 경우 스크린 상 0, 0 좌표 출력    
+						 D3DCOLOR_ARGB(255, 255, 255, 255)); // 출력할 이미지와 섞을 색상 값, 0xffffffff를 넘겨주면 섞지 않고 원본 색상 유지
+					if (i == OPT_WALL)
+					{
+						 const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(szTexTerrain, L"wallhead", m_vecTile[iIndex]->tObject[i].byDrawID);
+						 if (pTexInfo == nullptr)
+						 {
+							 continue;
+						 }
+						 float fCenterX = pTexInfo->tImgInfo.Width / 2.f;
+						 float fCenterY = pTexInfo->tImgInfo.Height / 2.f + pTexInfo->tImgInfo.Height;
+
+						 D3DXVECTOR3 vTemp{ fCenterX, fCenterY, 0.f };
+
+						 CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture, //출력할 텍스처 컴객체
+							 nullptr,        // 출력할 이미지 영역에 대한 Rect 주소, null인 경우 이미지의 0, 0기준으로 출력
+							 &vTemp,        // 출력할 이미지의 중심 좌표 vec3 주소, null인 경우 0, 0 이미지 중심
+							 nullptr,        // 위치 좌표에 대한 vec3 주소, null인 경우 스크린 상 0, 0 좌표 출력    
+							 D3DCOLOR_ARGB(255, 255, 255, 255)); // 출력할 이미지와 섞을 색상 값, 0xffffffff를 넘겨주면 섞지 않고 원본 색상 유지
+					}
+
+				}
+			}
 		}
 	}
-
-	
-	
 }
+
+
+
 
 void CMyTerrain::Release(void)
 {
