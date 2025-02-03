@@ -54,6 +54,7 @@ void CPlayerTool::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SLIDER11, m_silderPantG);
 	DDX_Control(pDX, IDC_SLIDER12, m_silderPantB);
 	DDX_Control(pDX, IDC_PICTURE2, PlayerPreviewImg);
+	DDX_Control(pDX, IDC_CHECK2, m_AnimationOn);
 }
 
 void CPlayerTool::OnInitialUpdate()
@@ -314,6 +315,7 @@ void CPlayerTool::InitDeco()
 BEGIN_MESSAGE_MAP(CPlayerTool, CDialog)
 	ON_WM_HSCROLL()
 	ON_WM_DESTROY()
+	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_BUTTON4, &CPlayerTool::OnLoadPlayerBasic)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN3, &CPlayerTool::OnChangeHairType)
 	ON_BN_CLICKED(IDC_BUTTON3, &CPlayerTool::OnClickFront)
@@ -612,5 +614,23 @@ void CPlayerTool::OnPlayerLoad()
 
 void CPlayerTool::OnAnimation()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	if (m_AnimationOn.GetCheck() == BST_CHECKED)
+	{
+		m_currentImageIndex = 0; 
+		SetTimer(1, 100, NULL);
+	}
+	else
+	{
+		KillTimer(1);
+	}
+}
+
+void CPlayerTool::OnTimer(UINT_PTR nIDEvent)
+{
+	if (nIDEvent == 1) 
+	{
+		m_currentImageIndex = (m_currentImageIndex + 1) % 6;
+	}
+
+	CWnd::OnTimer(nIDEvent);  // 기본 타이머 처리
 }

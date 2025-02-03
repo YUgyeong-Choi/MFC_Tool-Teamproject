@@ -21,6 +21,7 @@ public:
 	enum PLAYERSTATE{IDLE, WALK, STATE_END};
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -81,6 +82,7 @@ private:
 	CImage* m_Decopant;
 
 	int m_hairIndex;
+	int m_currentImageIndex;
 public:
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg void OnDestroy();
@@ -92,4 +94,5 @@ public:
 	afx_msg void OnPlayerSave();
 	afx_msg void OnPlayerLoad();
 	afx_msg void OnAnimation();
+	CButton m_AnimationOn;
 };
