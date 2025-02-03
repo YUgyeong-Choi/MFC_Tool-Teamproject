@@ -54,6 +54,7 @@ void CPlayerTool::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SLIDER11, m_silderPantG);
 	DDX_Control(pDX, IDC_SLIDER12, m_silderPantB);
 	DDX_Control(pDX, IDC_PICTURE2, PlayerPreviewImg);
+	DDX_Control(pDX, IDC_CHECK2, m_AnimationOn);
 }
 
 void CPlayerTool::OnInitialUpdate()
@@ -107,45 +108,45 @@ void CPlayerTool::Ui_Silder_Set(CSliderCtrl* silder)
 
 void CPlayerTool::OnLoadData()
 {
-	//스킨
-	m_Skin[IDLE][FRONT] = L"../Assets/Player/skin/idle/front/front_1.png";
-	m_Skin[IDLE][SIDE] = L"../Assets/Player/skin/idle/side/side_1.png";
-	m_Skin[IDLE][BACK] = L"../Assets/Player/skin/idle/back/back_1.png";
 
-	//눈
-	m_eye[IDLE][FRONT] = L"../Assets/Player/eye/idle/front/front_1.png";
-	m_eye[IDLE][SIDE] = L"../Assets/Player/eye/idle/side/side_1.png";
+	TCHAR szFullPath[MAX_PATH] = L"../Assets/Player/";
+	TCHAR pFilePathType[9][MAX_STR] = { L"eye", L"hair1", L"hair2", L"hair3", L"hair4", L"hair5", L"pant", L"shirt", L"skin" };
+	TCHAR pFilePathState[3][MAX_STR] = { L"front", L"side", L"back" };
 
-	//셔츠
-	m_shirt[IDLE][FRONT] = L"../Assets/Player/shirt/idle/front/front_1.png";
-	m_shirt[IDLE][SIDE] = L"../Assets/Player/shirt/idle/side/side_1.png";
-	m_shirt[IDLE][BACK] = L"../Assets/Player/shirt/idle/back/back_1.png";
 
-	//바지
-	m_pant[IDLE][FRONT] = L"../Assets/Player/pant/idle/front/front_1.png";
-	m_pant[IDLE][SIDE] = L"../Assets/Player/pant/idle/side/side_1.png";
-	m_pant[IDLE][BACK] = L"../Assets/Player/pant/idle/back/back_1.png";
+	for (int i = 0; i < 9; ++i) {
+		for (int j = 0; j < 3; ++j) {
+			for (int k = 0; k < 6; ++k) {
+				//눈이 back일때
+				if (i == 0 && j == 2) {
+					continue;
+				}
 
-	//머리
-	m_vecHair[IDLE][FRONT].push_back(L"../Assets/Player/hair/hair1/idle/front/front_1.png");
-	m_vecHair[IDLE][SIDE].push_back(L"../Assets/Player/hair/hair1/idle/side/side_1.png");
-	m_vecHair[IDLE][BACK].push_back(L"../Assets/Player/hair/hair1/idle/back/back_1.png");
+				CString strTileName;
+				CString szFilePath;
 
-	m_vecHair[IDLE][FRONT].push_back(L"../Assets/Player/hair/hair2/idle/front/front_1.png");
-	m_vecHair[IDLE][SIDE].push_back(L"../Assets/Player/hair/hair2/idle/side/side_1.png");
-	m_vecHair[IDLE][BACK].push_back(L"../Assets/Player/hair/hair2/idle/back/back_1.png");
+				szFilePath.Format(L"../Assets/Player/%s/walk/%s/%s_%d.png", pFilePathType[i], pFilePathState[j], pFilePathState[j], k + 1);
+				strTileName.Format(L"%s_walk%s_%d", pFilePathType[i], pFilePathState[j], k + 1);
+				m_playerImagePath.insert({ strTileName, szFilePath });
+			}
+		}
+	}
 
-	m_vecHair[IDLE][FRONT].push_back(L"../Assets/Player/hair/hair3/idle/front/front_1.png");
-	m_vecHair[IDLE][SIDE].push_back(L"../Assets/Player/hair/hair3/idle/side/side_1.png");
-	m_vecHair[IDLE][BACK].push_back(L"../Assets/Player/hair/hair3/idle/back/back_1.png");
+	for (int i = 0; i < 9; ++i) {
+		for (int j = 0; j < 3; ++j) {
+			//눈이 back일때
+			if (i == 0 && j == 2) {
+				continue;
+			}
 
-	m_vecHair[IDLE][FRONT].push_back(L"../Assets/Player/hair/hair4/idle/front/front_1.png");
-	m_vecHair[IDLE][SIDE].push_back(L"../Assets/Player/hair/hair4/idle/side/side_1.png");
-	m_vecHair[IDLE][BACK].push_back(L"../Assets/Player/hair/hair4/idle/back/back_1.png");
+			CString strTileName;
+			CString szFilePath;
 
-	m_vecHair[IDLE][FRONT].push_back(L"../Assets/Player/hair/hair5/idle/front/front_1.png");
-	m_vecHair[IDLE][SIDE].push_back(L"../Assets/Player/hair/hair5/idle/side/side_1.png");
-	m_vecHair[IDLE][BACK].push_back(L"../Assets/Player/hair/hair5/idle/back/back_1.png");
+			szFilePath.Format(L"../Assets/Player/%s/idle/%s/%s_%d.png", pFilePathType[i], pFilePathState[j], pFilePathState[j], 1);
+			strTileName.Format(L"%s_idle%s_%d", pFilePathType[i], pFilePathState[j], 1);
+			m_playerImagePath.insert({ strTileName, szFilePath });
+		}
+	}
 }
 
 void CPlayerTool::ChangeImageColorInitRender()
@@ -156,15 +157,15 @@ void CPlayerTool::ChangeImageColorInitRender()
 	CImage* _copyShirt = new CImage;
 	CImage* _copyPant = new CImage;
 
-	_copySkin->Load(m_Skin[IDLE][FRONT]);
+	_copySkin->Load(m_playerImagePath[L"skin_idlefront_1"]);
 	_copySkin->SetTransparentColor(RGB(255, 255, 255));
-	_copyHair->Load(m_vecHair[IDLE][FRONT][m_hairIndex]);
+	_copyHair->Load(m_playerImagePath[L"hair1_idlefront_1"]);
 	_copyHair->SetTransparentColor(RGB(255, 255, 255));
-	_copyEye->Load(m_eye[IDLE][FRONT]);
+	_copyEye->Load(m_playerImagePath[L"eye_idlefront_1"]);
 	_copyEye->SetTransparentColor(RGB(255, 255, 255));
-	_copyShirt->Load(m_shirt[IDLE][FRONT]);
+	_copyShirt->Load(m_playerImagePath[L"shirt_idlefront_1"]);
 	_copyShirt->SetTransparentColor(RGB(255, 255, 255));
-	_copyPant->Load(m_pant[IDLE][FRONT]);
+	_copyPant->Load(m_playerImagePath[L"pant_idlefront_1"]);
 	_copyPant->SetTransparentColor(RGB(255, 255, 255));
 
 	ChangeColor(_copySkin, &m_skinR, &m_skinG, &m_skinB);
@@ -258,19 +259,19 @@ void CPlayerTool::InitDeco()
 	COLORREF transparentColor = RGB(255, 255, 255);
 
 	m_DecoSkin = new CImage();
-	m_DecoSkin->Load(m_Skin[IDLE][FRONT]);
+	m_DecoSkin->Load(m_playerImagePath[L"skin_idlefront_1"]);
 	m_DecoSkin->SetTransparentColor(transparentColor);
 	m_DecoHair = new CImage();
-	m_DecoHair->Load(m_vecHair[IDLE][FRONT][m_hairIndex]);
+	m_DecoHair->Load(m_playerImagePath[L"hair1_idlefront_1"]);
 	m_DecoHair->SetTransparentColor(transparentColor);
 	m_Decoeye = new CImage();
-	m_Decoeye->Load(m_eye[IDLE][FRONT]);
+	m_Decoeye->Load(m_playerImagePath[L"eye_idlefront_1"]);
 	m_Decoeye->SetTransparentColor(transparentColor);
 	m_Decoshirt = new CImage();
-	m_Decoshirt->Load(m_shirt[IDLE][FRONT]);
+	m_Decoshirt->Load(m_playerImagePath[L"shirt_idlefront_1"]);
 	m_Decoshirt->SetTransparentColor(transparentColor);
 	m_Decopant = new CImage();
-	m_Decopant->Load(m_pant[IDLE][FRONT]);
+	m_Decopant->Load(m_playerImagePath[L"pant_idlefront_1"]);
 	m_Decopant->SetTransparentColor(transparentColor);
 
 
@@ -313,8 +314,8 @@ void CPlayerTool::InitDeco()
 
 BEGIN_MESSAGE_MAP(CPlayerTool, CDialog)
 	ON_WM_HSCROLL()
-	ON_BN_CLICKED(IDC_BUTTON1, &CPlayerTool::OnFinishColor)
 	ON_WM_DESTROY()
+	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_BUTTON4, &CPlayerTool::OnLoadPlayerBasic)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN3, &CPlayerTool::OnChangeHairType)
 	ON_BN_CLICKED(IDC_BUTTON3, &CPlayerTool::OnClickFront)
@@ -322,6 +323,7 @@ BEGIN_MESSAGE_MAP(CPlayerTool, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON6, &CPlayerTool::OnClickBack)
 	ON_BN_CLICKED(IDC_BUTTON8, &CPlayerTool::OnPlayerSave)
 	ON_BN_CLICKED(IDC_BUTTON9, &CPlayerTool::OnPlayerLoad)
+	ON_BN_CLICKED(IDC_CHECK2, &CPlayerTool::OnAnimation)
 END_MESSAGE_MAP()
 
 
@@ -406,16 +408,6 @@ void CPlayerTool::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
 }
 
-
-void CPlayerTool::OnFinishColor()
-{
-	ChangeColor(m_DecoSkin, &m_skinR, &m_skinG, &m_skinB);
-	ChangeColor(m_DecoHair, &m_hairR, &m_hairG, &m_hairB);
-	ChangeColor(m_Decoeye, &m_eyeR, &m_eyeG, &m_eyeB);
-	ChangeColor(m_Decoshirt, &m_shirtR, &m_shirtG, &m_shirtB);
-	ChangeColor(m_Decopant, &m_pantR, &m_pantG, &m_pantB);
-}
-
 void CPlayerTool::OnDestroy()
 {
 	Safe_Delete(m_DecoSkin);
@@ -485,15 +477,15 @@ void CPlayerTool::OnClickFront()
 	CImage* _copyShirt = new CImage;
 	CImage* _copyPant = new CImage;
 
-	_copySkin->Load(m_Skin[IDLE][FRONT]);
+	_copySkin->Load(m_playerImagePath[L"skin_idlefront_1"]);
 	_copySkin->SetTransparentColor(RGB(255, 255, 255));
-	_copyHair->Load(m_vecHair[IDLE][FRONT][m_hairIndex]);
+	_copyHair->Load(m_playerImagePath[L"hair1_idlefront_1"]);
 	_copyHair->SetTransparentColor(RGB(255, 255, 255));
-	_copyEye->Load(m_eye[IDLE][FRONT]);
+	_copyEye->Load(m_playerImagePath[L"eye_idlefront_1"]);
 	_copyEye->SetTransparentColor(RGB(255, 255, 255));
-	_copyShirt->Load(m_shirt[IDLE][FRONT]);
+	_copyShirt->Load(m_playerImagePath[L"shirt_idlefront_1"]);
 	_copyShirt->SetTransparentColor(RGB(255, 255, 255));
-	_copyPant->Load(m_pant[IDLE][FRONT]);
+	_copyPant->Load(m_playerImagePath[L"pant_idlefront_1"]);
 	_copyPant->SetTransparentColor(RGB(255, 255, 255));
 
 	ChangeColor(_copySkin, &m_skinR, &m_skinG, &m_skinB);
@@ -531,15 +523,15 @@ void CPlayerTool::OnClickSide()
 	CImage* _copyShirt = new CImage;
 	CImage* _copyPant = new CImage;
 
-	_copySkin->Load(m_Skin[IDLE][SIDE]);
+	_copySkin->Load(m_playerImagePath[L"skin_idleside_1"]);
 	_copySkin->SetTransparentColor(RGB(255, 255, 255));
-	_copyHair->Load(m_vecHair[IDLE][SIDE][m_hairIndex]);
+	_copyHair->Load(m_playerImagePath[L"hair1_idleside_1"]);
 	_copyHair->SetTransparentColor(RGB(255, 255, 255));
-	_copyEye->Load(m_eye[IDLE][SIDE]);
+	_copyEye->Load(m_playerImagePath[L"eye_idleside_1"]);
 	_copyEye->SetTransparentColor(RGB(255, 255, 255));
-	_copyShirt->Load(m_shirt[IDLE][SIDE]);
+	_copyShirt->Load(m_playerImagePath[L"shirt_idleside_1"]);
 	_copyShirt->SetTransparentColor(RGB(255, 255, 255));
-	_copyPant->Load(m_pant[IDLE][SIDE]);
+	_copyPant->Load(m_playerImagePath[L"pant_idleside_1"]);
 	_copyPant->SetTransparentColor(RGB(255, 255, 255));
 
 	ChangeColor(_copySkin, &m_skinR, &m_skinG, &m_skinB);
@@ -576,13 +568,13 @@ void CPlayerTool::OnClickBack()
 	CImage* _copyShirt = new CImage;
 	CImage* _copyPant = new CImage;
 
-	_copySkin->Load(m_Skin[IDLE][BACK]);
+	_copySkin->Load(m_playerImagePath[L"skin_idleback_1"]);
 	_copySkin->SetTransparentColor(RGB(255, 255, 255));
-	_copyHair->Load(m_vecHair[IDLE][BACK][m_hairIndex]);
+	_copyHair->Load(m_playerImagePath[L"hair1_idleback_1"]);
 	_copyHair->SetTransparentColor(RGB(255, 255, 255));
-	_copyShirt->Load(m_shirt[IDLE][BACK]);
+	_copyShirt->Load(m_playerImagePath[L"shirt_idleback_1"]);
 	_copyShirt->SetTransparentColor(RGB(255, 255, 255));
-	_copyPant->Load(m_pant[IDLE][BACK]);
+	_copyPant->Load(m_playerImagePath[L"pant_idleback_1"]);
 	_copyPant->SetTransparentColor(RGB(255, 255, 255));
 
 	ChangeColor(_copySkin, &m_skinR, &m_skinG, &m_skinB);
@@ -617,4 +609,28 @@ void CPlayerTool::OnPlayerSave()
 void CPlayerTool::OnPlayerLoad()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+
+void CPlayerTool::OnAnimation()
+{
+	if (m_AnimationOn.GetCheck() == BST_CHECKED)
+	{
+		m_currentImageIndex = 0; 
+		SetTimer(1, 100, NULL);
+	}
+	else
+	{
+		KillTimer(1);
+	}
+}
+
+void CPlayerTool::OnTimer(UINT_PTR nIDEvent)
+{
+	if (nIDEvent == 1) 
+	{
+		m_currentImageIndex = (m_currentImageIndex + 1) % 6;
+	}
+
+	CWnd::OnTimer(nIDEvent);  // 기본 타이머 처리
 }

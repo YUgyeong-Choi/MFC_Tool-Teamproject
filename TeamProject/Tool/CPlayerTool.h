@@ -21,6 +21,7 @@ public:
 	enum PLAYERSTATE{IDLE, WALK, STATE_END};
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -66,6 +67,7 @@ private:
 	CStatic PlayerPreviewImg;
 
 	// 플레이어 원본 이미지
+	map<CString, CString>		m_playerImagePath;
 	TCHAR* m_Skin[STATE_END][LOOK_END];
 	vector<TCHAR*> m_vecHair[STATE_END][LOOK_END];
 	TCHAR* m_eye[STATE_END][LOOK_END];
@@ -80,9 +82,9 @@ private:
 	CImage* m_Decopant;
 
 	int m_hairIndex;
+	int m_currentImageIndex;
 public:
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
-	afx_msg void OnFinishColor();
 	afx_msg void OnDestroy();
 	afx_msg void OnLoadPlayerBasic();
 	afx_msg void OnChangeHairType(NMHDR* pNMHDR, LRESULT* pResult);
@@ -91,4 +93,6 @@ public:
 	afx_msg void OnClickBack();
 	afx_msg void OnPlayerSave();
 	afx_msg void OnPlayerLoad();
+	afx_msg void OnAnimation();
+	CButton m_AnimationOn;
 };
