@@ -38,19 +38,21 @@ typedef struct tagTile
 	TILEOBJ		tObject[OPT_END];
 }TILE;
 
+typedef struct PlayerColorData {
+	int iR;
+	int iG;
+	int iB;
+}PLAYERRGB;
+
 typedef	struct tagUnitData
 {
-#ifndef _AFX
-	wstring strName;
-#else
-	CString strName;
-#endif
-
 	int		iHp;
 	int		iAttack;
-	BYTE	byJobIndex;
-	BYTE	byItem;
-
+	PLAYERRGB eSkinRGB;
+	PLAYERRGB eEyeRGB;
+	PLAYERRGB eHairRGB;
+	PLAYERRGB eShirtRGB;
+	PLAYERRGB ePantRGB;
 }UNITDATA;
 
 typedef struct tagTexturePath

@@ -55,10 +55,13 @@ void CPlayerTool::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SLIDER12, m_silderPantB);
 	DDX_Control(pDX, IDC_PICTURE2, PlayerPreviewImg);
 	DDX_Control(pDX, IDC_CHECK2, m_AnimationOn);
+	DDX_Control(pDX, IDC_EDIT6, m_PlayerHp);
+	DDX_Control(pDX, IDC_EDIT17, m_PlayerAttackDmg);
 }
 
 void CPlayerTool::OnInitialUpdate()
 {
+	m_playerLook = FRONT;
 	m_hairIndex = 0;
 	OnLoadData();
 
@@ -317,7 +320,7 @@ BEGIN_MESSAGE_MAP(CPlayerTool, CDialog)
 	ON_WM_DESTROY()
 	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_BUTTON4, &CPlayerTool::OnLoadPlayerBasic)
-	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN3, &CPlayerTool::OnChangeHairType)
+	//ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN3, &CPlayerTool::OnChangeHairType)
 	ON_BN_CLICKED(IDC_BUTTON3, &CPlayerTool::OnClickFront)
 	ON_BN_CLICKED(IDC_BUTTON5, &CPlayerTool::OnClickSide)
 	ON_BN_CLICKED(IDC_BUTTON6, &CPlayerTool::OnClickBack)
@@ -437,40 +440,41 @@ void CPlayerTool::OnLoadPlayerBasic()
 }
 
 
-void CPlayerTool::OnChangeHairType(NMHDR* pNMHDR, LRESULT* pResult)
-{
-	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
-
-	if (pNMUpDown->iDelta < 0) {
-		//오른쪽 누름
-		m_hairIndex++;
-		if (m_hairIndex == m_vecHair[IDLE][FRONT].size()) {
-			m_hairIndex = 0;
-		}
-	}
-	else {
-		//왼쪽 누름
-		m_hairIndex--;
-		if (m_hairIndex < 0) {
-			m_hairIndex = m_vecHair[IDLE][FRONT].size() - 1;
-		}
-	}
-
-	Safe_Delete(m_DecoHair);
-
-	m_DecoHair = new CImage();
-	m_DecoHair->Load(m_vecHair[IDLE][FRONT][m_hairIndex]);
-	m_DecoHair->SetTransparentColor(RGB(255, 255, 255));
-
-	RenderPlayer();
-
-	*pResult = 0;
-}
+//void CPlayerTool::OnChangeHairType(NMHDR* pNMHDR, LRESULT* pResult)
+//{
+//	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+//
+//	if (pNMUpDown->iDelta < 0) {
+//		//오른쪽 누름
+//		m_hairIndex++;
+//		if (m_hairIndex == m_vecHair[IDLE][FRONT].size()) {
+//			m_hairIndex = 0;
+//		}
+//	}
+//	else {
+//		//왼쪽 누름
+//		m_hairIndex--;
+//		if (m_hairIndex < 0) {
+//			m_hairIndex = m_vecHair[IDLE][FRONT].size() - 1;
+//		}
+//	}
+//
+//	Safe_Delete(m_DecoHair);
+//
+//	m_DecoHair = new CImage();
+//	m_DecoHair->Load(m_vecHair[IDLE][FRONT][m_hairIndex]);
+//	m_DecoHair->SetTransparentColor(RGB(255, 255, 255));
+//
+//	RenderPlayer();
+//
+//	*pResult = 0;
+//}
 
 
 
 void CPlayerTool::OnClickFront()
 {
+	m_playerLook = FRONT;
 	CImage* _copySkin = new CImage;
 	CImage* _copyHair = new CImage;
 	CImage* _copyEye = new CImage;
@@ -517,6 +521,7 @@ void CPlayerTool::OnClickFront()
 
 void CPlayerTool::OnClickSide()
 {
+	m_playerLook = SIDE;
 	CImage* _copySkin = new CImage;
 	CImage* _copyHair = new CImage;
 	CImage* _copyEye = new CImage;
@@ -563,6 +568,7 @@ void CPlayerTool::OnClickSide()
 
 void CPlayerTool::OnClickBack()
 {
+	m_playerLook = BACK;
 	CImage* _copySkin = new CImage;
 	CImage* _copyHair = new CImage;
 	CImage* _copyShirt = new CImage;
@@ -602,13 +608,183 @@ void CPlayerTool::OnClickBack()
 
 void CPlayerTool::OnPlayerSave()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CString playerHp;
+	CString playerAttackDmg;
+	m_PlayerHp.GetWindowTextW(playerHp);
+	m_playerData.iHp = _ttoi(playerHp);
+	m_PlayerAttackDmg.GetWindowTextW(playerAttackDmg);
+	m_playerData.iAttack = _ttoi(playerAttackDmg);
+
+	CString strR, strG, strB;
+	m_skinR.GetWindowTextW(strR);
+	m_playerData.eSkinRGB.iR = _ttoi(strR);
+	m_skinG.GetWindowTextW(strG);
+	m_playerData.eSkinRGB.iG = _ttoi(strG);
+	m_skinB.GetWindowTextW(strB);
+	m_playerData.eSkinRGB.iB = _ttoi(strB);
+
+	m_hairR.GetWindowTextW(strR);
+	m_playerData.eHairRGB.iR = _ttoi(strR);
+	m_hairG.GetWindowTextW(strG);
+	m_playerData.eHairRGB.iG = _ttoi(strG);
+	m_hairB.GetWindowTextW(strB);
+	m_playerData.eHairRGB.iB = _ttoi(strB);
+
+	m_eyeR.GetWindowTextW(strR);
+	m_playerData.eEyeRGB.iR = _ttoi(strR);
+	m_eyeG.GetWindowTextW(strG);
+	m_playerData.eEyeRGB.iG = _ttoi(strG);
+	m_eyeB.GetWindowTextW(strB);
+	m_playerData.eEyeRGB.iB = _ttoi(strB);
+
+	m_shirtR.GetWindowTextW(strR);
+	m_playerData.eShirtRGB.iR = _ttoi(strR);
+	m_shirtG.GetWindowTextW(strG);
+	m_playerData.eShirtRGB.iG = _ttoi(strG);
+	m_shirtB.GetWindowTextW(strB);
+	m_playerData.eShirtRGB.iB = _ttoi(strB);
+
+	m_pantR.GetWindowTextW(strR);
+	m_playerData.ePantRGB.iR = _ttoi(strR);
+	m_pantG.GetWindowTextW(strG);
+	m_playerData.ePantRGB.iG = _ttoi(strG);
+	m_pantB.GetWindowTextW(strB);
+	m_playerData.ePantRGB.iB = _ttoi(strB);
+
+	CFileDialog		Dlg(FALSE,	L"dat",	L"*.dat",OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,L"Data Files(*.dat) | *.dat ||", this);
+
+	TCHAR	szPath[MAX_PATH] = L"";
+
+	GetCurrentDirectory(MAX_PATH, szPath);
+	PathRemoveFileSpec(szPath);
+
+	lstrcat(szPath, L"\\Data");
+
+	Dlg.m_ofn.lpstrInitialDir = szPath;
+
+	if (IDOK == Dlg.DoModal())
+	{
+
+		CString	str = Dlg.GetPathName().GetString();
+		const TCHAR* pGetPath = str.GetString();
+
+		HANDLE hFile = CreateFile(pGetPath,
+			GENERIC_WRITE,
+			0, 0,
+			CREATE_ALWAYS,
+			FILE_ATTRIBUTE_NORMAL,
+			0);
+
+		if (INVALID_HANDLE_VALUE == hFile)
+			return;
+
+		DWORD	dwByte(0), dwStrByte(0);
+
+		// value 값 저장
+		WriteFile(hFile, &(m_playerData.iHp), sizeof(int), &dwByte, nullptr);
+		WriteFile(hFile, &(m_playerData.iAttack), sizeof(int), &dwByte, nullptr);
+		WriteFile(hFile, &(m_playerData.eSkinRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+		WriteFile(hFile, &(m_playerData.eHairRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+		WriteFile(hFile, &(m_playerData.eEyeRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+		WriteFile(hFile, &(m_playerData.eShirtRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+		WriteFile(hFile, &(m_playerData.ePantRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+
+		CloseHandle(hFile);
+	}
 }
 
 
 void CPlayerTool::OnPlayerLoad()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CFileDialog		Dlg(TRUE,	L"dat",	L"*.dat",	OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,L"Data Files(*.dat) | *.dat ||", this);
+
+	TCHAR	szPath[MAX_PATH] = L"";
+
+	GetCurrentDirectory(MAX_PATH, szPath);
+
+	PathRemoveFileSpec(szPath);
+
+	lstrcat(szPath, L"\\Data");
+
+	Dlg.m_ofn.lpstrInitialDir = szPath;
+
+	if (IDOK == Dlg.DoModal())
+	{
+		CString	str = Dlg.GetPathName().GetString();
+		const TCHAR* pGetPath = str.GetString();
+
+		HANDLE hFile = CreateFile(pGetPath,
+			GENERIC_READ,
+			0, 0,
+			OPEN_EXISTING,
+			FILE_ATTRIBUTE_NORMAL,
+			0);
+
+		if (INVALID_HANDLE_VALUE == hFile)
+			return;
+
+		DWORD	dwByte(0), dwStrByte(0);
+		UNITDATA		tData{};
+
+		while (true)
+		{
+			ReadFile(hFile, &(tData.iHp), sizeof(int), &dwByte, nullptr);
+			ReadFile(hFile, &(tData.iAttack), sizeof(int), &dwByte, nullptr);
+			ReadFile(hFile, &(tData.eSkinRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+			ReadFile(hFile, &(tData.eHairRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+			ReadFile(hFile, &(tData.eEyeRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+			ReadFile(hFile, &(tData.eShirtRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+			ReadFile(hFile, &(tData.ePantRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+
+			if (0 == dwByte)
+			{
+				break;
+			}
+
+			m_skinR.SetWindowTextW(std::to_wstring(tData.eSkinRGB.iR).c_str());
+			m_skinG.SetWindowTextW(std::to_wstring(tData.eSkinRGB.iG).c_str());
+			m_skinB.SetWindowTextW(std::to_wstring(tData.eSkinRGB.iB).c_str());
+
+			m_hairR.SetWindowTextW(std::to_wstring(tData.eHairRGB.iR).c_str());
+			m_hairG.SetWindowTextW(std::to_wstring(tData.eHairRGB.iG).c_str());
+			m_hairB.SetWindowTextW(std::to_wstring(tData.eHairRGB.iB).c_str());
+
+			m_eyeR.SetWindowTextW(std::to_wstring(tData.eEyeRGB.iR).c_str());
+			m_eyeG.SetWindowTextW(std::to_wstring(tData.eEyeRGB.iG).c_str());
+			m_eyeB.SetWindowTextW(std::to_wstring(tData.eEyeRGB.iB).c_str());
+
+			m_shirtR.SetWindowTextW(std::to_wstring(tData.eShirtRGB.iR).c_str());
+			m_shirtG.SetWindowTextW(std::to_wstring(tData.eShirtRGB.iG).c_str());
+			m_shirtB.SetWindowTextW(std::to_wstring(tData.eShirtRGB.iB).c_str());
+
+			m_pantR.SetWindowTextW(std::to_wstring(tData.ePantRGB.iR).c_str());
+			m_pantG.SetWindowTextW(std::to_wstring(tData.ePantRGB.iG).c_str());
+			m_pantB.SetWindowTextW(std::to_wstring(tData.ePantRGB.iB).c_str());
+
+			m_silderSkinR.SetPos(tData.eSkinRGB.iR);
+			m_silderSkinG.SetPos(tData.eSkinRGB.iG);
+			m_silderSkinB.SetPos(tData.eSkinRGB.iB);
+			m_silderHairR.SetPos(tData.eHairRGB.iR);
+			m_silderHairG.SetPos(tData.eHairRGB.iG);
+			m_silderHairB.SetPos(tData.eHairRGB.iB);
+			m_silderEyeR.SetPos(tData.eEyeRGB.iR);
+			m_silderEyeG.SetPos(tData.eEyeRGB.iG);
+			m_silderEyeB.SetPos(tData.eEyeRGB.iB);
+			m_silderShirtR.SetPos(tData.eShirtRGB.iR);
+			m_silderShirtG.SetPos(tData.eShirtRGB.iG);
+			m_silderShirtB.SetPos(tData.eShirtRGB.iB);
+			m_silderPantR.SetPos(tData.ePantRGB.iR);
+			m_silderPantG.SetPos(tData.ePantRGB.iG);
+			m_silderPantB.SetPos(tData.ePantRGB.iB);
+
+			m_PlayerHp.SetWindowTextW(std::to_wstring(tData.iHp).c_str());
+			m_PlayerAttackDmg.SetWindowTextW(std::to_wstring(tData.iAttack).c_str());
+		}
+
+		CloseHandle(hFile);
+	}
+
+	OnClickFront();
 }
 
 
@@ -622,6 +798,23 @@ void CPlayerTool::OnAnimation()
 	else
 	{
 		KillTimer(1);
+
+		switch (m_playerLook)
+		{
+		case CPlayerTool::FRONT:
+			OnClickFront();
+			break;
+		case CPlayerTool::SIDE:
+			OnClickSide();
+			break;
+		case CPlayerTool::BACK:
+			OnClickBack();
+			break;
+		case CPlayerTool::LOOK_END:
+			break;
+		default:
+			break;
+		}
 	}
 }
 
@@ -629,7 +822,138 @@ void CPlayerTool::OnTimer(UINT_PTR nIDEvent)
 {
 	if (nIDEvent == 1) 
 	{
+		TCHAR pFilePathType[9][MAX_STR] = { L"eye", L"hair1", L"hair2", L"hair3", L"hair4", L"hair5", L"pant", L"shirt", L"skin" };
+		CImage* _copySkin = new CImage;
+		CImage* _copyHair = new CImage;
+		CImage* _copyEye = new CImage;
+		CImage* _copyShirt = new CImage;
+		CImage* _copyPant = new CImage;
+		CString strTileName;
+
+		CClientDC dc(&PlayerPreviewImg);
+		CRect rect;
+		PlayerPreviewImg.GetClientRect(&rect);
+
+		switch (m_playerLook)
+		{
+		case CPlayerTool::FRONT:
+			strTileName.Format(L"%s_walkfront_%d", pFilePathType[0], m_currentImageIndex + 1);
+			_copyEye->Load(m_playerImagePath[strTileName]);
+			_copyEye->SetTransparentColor(RGB(255, 255, 255));
+
+			strTileName.Format(L"%s_walkfront_%d", pFilePathType[8], m_currentImageIndex + 1);
+			_copySkin->Load(m_playerImagePath[strTileName]);
+			_copySkin->SetTransparentColor(RGB(255, 255, 255));
+
+			strTileName.Format(L"%s_walkfront_%d", pFilePathType[1], m_currentImageIndex + 1);
+			_copyHair->Load(m_playerImagePath[strTileName]);
+			_copyHair->SetTransparentColor(RGB(255, 255, 255));
+
+			strTileName.Format(L"%s_walkfront_%d", pFilePathType[7], m_currentImageIndex + 1);
+			_copyShirt->Load(m_playerImagePath[strTileName]);
+			_copyShirt->SetTransparentColor(RGB(255, 255, 255));
+
+			strTileName.Format(L"%s_walkfront_%d", pFilePathType[6], m_currentImageIndex + 1);
+			_copyPant->Load(m_playerImagePath[strTileName]);
+			_copyPant->SetTransparentColor(RGB(255, 255, 255));
+
+			ChangeColor(_copySkin, &m_skinR, &m_skinG, &m_skinB);
+			ChangeColor(_copyEye, &m_eyeR, &m_eyeG, &m_eyeB);
+			ChangeColor(_copyShirt, &m_shirtR, &m_shirtG, &m_shirtB);
+			ChangeColor(_copyPant, &m_pantR, &m_pantG, &m_pantB);
+			ChangeColor(_copyHair, &m_hairR, &m_hairG, &m_hairB);
+
+
+			Invalidate(FALSE);
+
+			dc.FillSolidRect(rect, RGB(255, 255, 255));
+			_copySkin->Draw(dc, rect);
+			_copyShirt->Draw(dc, rect);
+			_copyEye->Draw(dc, rect);
+			_copyPant->Draw(dc, rect);
+			_copyHair->Draw(dc, rect);
+			break;
+		case CPlayerTool::SIDE:
+			strTileName.Format(L"%s_walkside_%d", pFilePathType[0], m_currentImageIndex + 1);
+			_copyEye->Load(m_playerImagePath[strTileName]);
+			_copyEye->SetTransparentColor(RGB(255, 255, 255));
+
+			strTileName.Format(L"%s_walkside_%d", pFilePathType[8], m_currentImageIndex + 1);
+			_copySkin->Load(m_playerImagePath[strTileName]);
+			_copySkin->SetTransparentColor(RGB(255, 255, 255));
+
+			strTileName.Format(L"%s_walkside_%d", pFilePathType[1], m_currentImageIndex + 1);
+			_copyHair->Load(m_playerImagePath[strTileName]);
+			_copyHair->SetTransparentColor(RGB(255, 255, 255));
+
+			strTileName.Format(L"%s_walkside_%d", pFilePathType[7], m_currentImageIndex + 1);
+			_copyShirt->Load(m_playerImagePath[strTileName]);
+			_copyShirt->SetTransparentColor(RGB(255, 255, 255));
+
+			strTileName.Format(L"%s_walkside_%d", pFilePathType[6], m_currentImageIndex + 1);
+			_copyPant->Load(m_playerImagePath[strTileName]);
+			_copyPant->SetTransparentColor(RGB(255, 255, 255));
+
+			ChangeColor(_copySkin, &m_skinR, &m_skinG, &m_skinB);
+			ChangeColor(_copyEye, &m_eyeR, &m_eyeG, &m_eyeB);
+			ChangeColor(_copyShirt, &m_shirtR, &m_shirtG, &m_shirtB);
+			ChangeColor(_copyPant, &m_pantR, &m_pantG, &m_pantB);
+			ChangeColor(_copyHair, &m_hairR, &m_hairG, &m_hairB);
+
+
+			Invalidate(FALSE);
+
+			dc.FillSolidRect(rect, RGB(255, 255, 255));
+			_copySkin->Draw(dc, rect);
+			_copyShirt->Draw(dc, rect);
+			_copyEye->Draw(dc, rect);
+			_copyPant->Draw(dc, rect);
+			_copyHair->Draw(dc, rect);
+			break;
+		case CPlayerTool::BACK:
+
+			strTileName.Format(L"%s_walkback_%d", pFilePathType[8], m_currentImageIndex + 1);
+			_copySkin->Load(m_playerImagePath[strTileName]);
+			_copySkin->SetTransparentColor(RGB(255, 255, 255));
+
+			strTileName.Format(L"%s_walkback_%d", pFilePathType[1], m_currentImageIndex + 1);
+			_copyHair->Load(m_playerImagePath[strTileName]);
+			_copyHair->SetTransparentColor(RGB(255, 255, 255));
+
+			strTileName.Format(L"%s_walkback_%d", pFilePathType[7], m_currentImageIndex + 1);
+			_copyShirt->Load(m_playerImagePath[strTileName]);
+			_copyShirt->SetTransparentColor(RGB(255, 255, 255));
+
+			strTileName.Format(L"%s_walkback_%d", pFilePathType[6], m_currentImageIndex + 1);
+			_copyPant->Load(m_playerImagePath[strTileName]);
+			_copyPant->SetTransparentColor(RGB(255, 255, 255));
+
+			ChangeColor(_copySkin, &m_skinR, &m_skinG, &m_skinB);
+			ChangeColor(_copyShirt, &m_shirtR, &m_shirtG, &m_shirtB);
+			ChangeColor(_copyPant, &m_pantR, &m_pantG, &m_pantB);
+			ChangeColor(_copyHair, &m_hairR, &m_hairG, &m_hairB);
+
+
+			Invalidate(FALSE);
+
+			dc.FillSolidRect(rect, RGB(255, 255, 255));
+			_copySkin->Draw(dc, rect);
+			_copyShirt->Draw(dc, rect);
+			_copyPant->Draw(dc, rect);
+			_copyHair->Draw(dc, rect);
+			break;
+		case CPlayerTool::LOOK_END:
+			break;
+		default:
+			break;
+		}
 		m_currentImageIndex = (m_currentImageIndex + 1) % 6;
+
+		Safe_Delete(_copySkin);
+		Safe_Delete(_copyHair);
+		Safe_Delete(_copyEye);
+		Safe_Delete(_copyShirt);
+		Safe_Delete(_copyPant);
 	}
 
 	CWnd::OnTimer(nIDEvent);  // 기본 타이머 처리

@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include "CUnitTool.h"
 #include "CMapTool.h"
 #include "CPlayerTool.h"
 
