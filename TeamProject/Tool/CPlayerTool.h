@@ -89,4 +89,6 @@ public:
 	afx_msg void OnClickFront();
 	afx_msg void OnClickSide();
 	afx_msg void OnClickBack();
+	afx_msg void OnPlayerSave();
+	afx_msg void OnPlayerLoad();
 };
