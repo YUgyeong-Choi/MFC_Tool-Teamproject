@@ -606,13 +606,175 @@ void CPlayerTool::OnClickBack()
 
 void CPlayerTool::OnPlayerSave()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	m_playerData.iHp = 100;
+	m_playerData.iAttack = 10;
+
+	CString strR, strG, strB;
+	m_skinR.GetWindowTextW(strR);
+	m_playerData.eSkinRGB.iR = _ttoi(strR);
+	m_skinG.GetWindowTextW(strG);
+	m_playerData.eSkinRGB.iG = _ttoi(strG);
+	m_skinB.GetWindowTextW(strB);
+	m_playerData.eSkinRGB.iB = _ttoi(strB);
+
+	m_hairR.GetWindowTextW(strR);
+	m_playerData.eHairRGB.iR = _ttoi(strR);
+	m_hairG.GetWindowTextW(strG);
+	m_playerData.eHairRGB.iG = _ttoi(strG);
+	m_hairB.GetWindowTextW(strB);
+	m_playerData.eHairRGB.iB = _ttoi(strB);
+
+	m_eyeR.GetWindowTextW(strR);
+	m_playerData.eEyeRGB.iR = _ttoi(strR);
+	m_eyeG.GetWindowTextW(strG);
+	m_playerData.eEyeRGB.iG = _ttoi(strG);
+	m_eyeB.GetWindowTextW(strB);
+	m_playerData.eEyeRGB.iB = _ttoi(strB);
+
+	m_shirtR.GetWindowTextW(strR);
+	m_playerData.eShirtRGB.iR = _ttoi(strR);
+	m_shirtG.GetWindowTextW(strG);
+	m_playerData.eShirtRGB.iG = _ttoi(strG);
+	m_shirtB.GetWindowTextW(strB);
+	m_playerData.eShirtRGB.iB = _ttoi(strB);
+
+	m_pantR.GetWindowTextW(strR);
+	m_playerData.ePantRGB.iR = _ttoi(strR);
+	m_pantG.GetWindowTextW(strG);
+	m_playerData.ePantRGB.iG = _ttoi(strG);
+	m_pantB.GetWindowTextW(strB);
+	m_playerData.ePantRGB.iB = _ttoi(strB);
+
+	CFileDialog		Dlg(FALSE,	L"dat",	L"*.dat",OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,L"Data Files(*.dat) | *.dat ||", this);
+
+	TCHAR	szPath[MAX_PATH] = L"";
+
+	GetCurrentDirectory(MAX_PATH, szPath);
+	PathRemoveFileSpec(szPath);
+
+	lstrcat(szPath, L"\\Data");
+
+	Dlg.m_ofn.lpstrInitialDir = szPath;
+
+	if (IDOK == Dlg.DoModal())
+	{
+
+		CString	str = Dlg.GetPathName().GetString();
+		const TCHAR* pGetPath = str.GetString();
+
+		HANDLE hFile = CreateFile(pGetPath,
+			GENERIC_WRITE,
+			0, 0,
+			CREATE_ALWAYS,
+			FILE_ATTRIBUTE_NORMAL,
+			0);
+
+		if (INVALID_HANDLE_VALUE == hFile)
+			return;
+
+		DWORD	dwByte(0), dwStrByte(0);
+
+		// value 값 저장
+		WriteFile(hFile, &(m_playerData.iHp), sizeof(int), &dwByte, nullptr);
+		WriteFile(hFile, &(m_playerData.iAttack), sizeof(int), &dwByte, nullptr);
+		WriteFile(hFile, &(m_playerData.eSkinRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+		WriteFile(hFile, &(m_playerData.eHairRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+		WriteFile(hFile, &(m_playerData.eEyeRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+		WriteFile(hFile, &(m_playerData.eShirtRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+		WriteFile(hFile, &(m_playerData.ePantRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+
+		CloseHandle(hFile);
+	}
 }
 
 
 void CPlayerTool::OnPlayerLoad()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CFileDialog		Dlg(TRUE,	L"dat",	L"*.dat",	OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,L"Data Files(*.dat) | *.dat ||", this);
+
+	TCHAR	szPath[MAX_PATH] = L"";
+
+	GetCurrentDirectory(MAX_PATH, szPath);
+
+	PathRemoveFileSpec(szPath);
+
+	lstrcat(szPath, L"\\Data");
+
+	Dlg.m_ofn.lpstrInitialDir = szPath;
+
+	if (IDOK == Dlg.DoModal())
+	{
+		CString	str = Dlg.GetPathName().GetString();
+		const TCHAR* pGetPath = str.GetString();
+
+		HANDLE hFile = CreateFile(pGetPath,
+			GENERIC_READ,
+			0, 0,
+			OPEN_EXISTING,
+			FILE_ATTRIBUTE_NORMAL,
+			0);
+
+		if (INVALID_HANDLE_VALUE == hFile)
+			return;
+
+		DWORD	dwByte(0), dwStrByte(0);
+		UNITDATA		tData{};
+
+		while (true)
+		{
+			ReadFile(hFile, &(tData.iHp), sizeof(int), &dwByte, nullptr);
+			ReadFile(hFile, &(tData.iAttack), sizeof(int), &dwByte, nullptr);
+			ReadFile(hFile, &(tData.eSkinRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+			ReadFile(hFile, &(tData.eHairRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+			ReadFile(hFile, &(tData.eEyeRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+			ReadFile(hFile, &(tData.eShirtRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+			ReadFile(hFile, &(tData.ePantRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+
+			if (0 == dwByte)
+			{
+				break;
+			}
+
+
+			m_skinR.SetWindowTextW(std::to_wstring(tData.eSkinRGB.iR).c_str());
+			m_skinG.SetWindowTextW(std::to_wstring(tData.eSkinRGB.iG).c_str());
+			m_skinB.SetWindowTextW(std::to_wstring(tData.eSkinRGB.iB).c_str());
+
+			m_hairR.SetWindowTextW(std::to_wstring(tData.eHairRGB.iR).c_str());
+			m_hairG.SetWindowTextW(std::to_wstring(tData.eHairRGB.iG).c_str());
+			m_hairB.SetWindowTextW(std::to_wstring(tData.eHairRGB.iB).c_str());
+
+			m_eyeR.SetWindowTextW(std::to_wstring(tData.eEyeRGB.iR).c_str());
+			m_eyeG.SetWindowTextW(std::to_wstring(tData.eEyeRGB.iG).c_str());
+			m_eyeB.SetWindowTextW(std::to_wstring(tData.eEyeRGB.iB).c_str());
+
+			m_shirtR.SetWindowTextW(std::to_wstring(tData.eShirtRGB.iR).c_str());
+			m_shirtG.SetWindowTextW(std::to_wstring(tData.eShirtRGB.iG).c_str());
+			m_shirtB.SetWindowTextW(std::to_wstring(tData.eShirtRGB.iB).c_str());
+
+			m_pantR.SetWindowTextW(std::to_wstring(tData.ePantRGB.iR).c_str());
+			m_pantG.SetWindowTextW(std::to_wstring(tData.ePantRGB.iG).c_str());
+			m_pantB.SetWindowTextW(std::to_wstring(tData.ePantRGB.iB).c_str());
+
+			m_silderSkinR.SetPos(tData.eSkinRGB.iR);
+			m_silderSkinG.SetPos(tData.eSkinRGB.iG);
+			m_silderSkinB.SetPos(tData.eSkinRGB.iB);
+			m_silderHairR.SetPos(tData.eHairRGB.iR);
+			m_silderHairG.SetPos(tData.eHairRGB.iG);
+			m_silderHairB.SetPos(tData.eHairRGB.iB);
+			m_silderEyeR.SetPos(tData.eEyeRGB.iR);
+			m_silderEyeG.SetPos(tData.eEyeRGB.iG);
+			m_silderEyeB.SetPos(tData.eEyeRGB.iB);
+			m_silderShirtR.SetPos(tData.eShirtRGB.iR);
+			m_silderShirtG.SetPos(tData.eShirtRGB.iG);
+			m_silderShirtB.SetPos(tData.eShirtRGB.iB);
+			m_silderPantR.SetPos(tData.ePantRGB.iR);
+			m_silderPantG.SetPos(tData.ePantRGB.iG);
+			m_silderPantB.SetPos(tData.ePantRGB.iB);
+		}
+
+		CloseHandle(hFile);
+	}
 }
 
 

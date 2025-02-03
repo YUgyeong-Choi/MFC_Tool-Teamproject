@@ -79,6 +79,9 @@ private:
 
 	int m_hairIndex;
 	int m_currentImageIndex;
+
+	//파일 저장용
+	UNITDATA m_playerData;
 public:
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg void OnDestroy();
