@@ -15,13 +15,13 @@ CStage::~CStage()
 
 HRESULT CStage::Ready_Scene()
 {
-	if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
-		L"../Texture/Stage/Terrain/Tile/Tile%d.png", 
-		TEX_MULTI, L"Terrain", L"Tile", 36)))
-	{
-		ERR_MSG(L"Tile Img Insert Failed");
-		return E_FAIL;
-	}	
+	//if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
+	//	L"../Texture/Stage/Terrain/Tile/Tile%d.png", 
+	//	TEX_MULTI, L"Terrain", L"Tile", 36)))
+	//{
+	//	ERR_MSG(L"Tile Img Insert Failed");
+	//	return E_FAIL;
+	//}	
 
 	CObj*	pObj = new CMyTerrain;
 	
