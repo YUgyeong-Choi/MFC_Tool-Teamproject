@@ -55,6 +55,12 @@
     <Filter Include="01. Mgr\TImeMgr">
       <UniqueIdentifier>{f622cbb8-14fb-405c-a3dc-23cc610d19b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Mgr\ObjMgr\Obj\MyPlayer">
+      <UniqueIdentifier>{0aaa883c-34ed-4079-b296-757c8bb879c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Mgr\KeyMgr">
+      <UniqueIdentifier>{0e860a1b-b5ef-4f79-b4d7-29e062009d23}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -111,6 +117,12 @@
     <ClInclude Include="TimeMgr.h">
       <Filter>01. Mgr\TImeMgr</Filter>
     </ClInclude>
+    <ClInclude Include="MyPlayer.h">
+      <Filter>01. Mgr\ObjMgr\Obj\MyPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyMgr.h">
+      <Filter>01. Mgr\KeyMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -157,6 +169,12 @@
     </ClCompile>
     <ClCompile Include="TimeMgr.cpp">
       <Filter>01. Mgr\TImeMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="MyPlayer.cpp">
+      <Filter>01. Mgr\ObjMgr\Obj\MyPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyMgr.cpp">
+      <Filter>01. Mgr\KeyMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

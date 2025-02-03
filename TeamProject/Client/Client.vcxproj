@@ -142,8 +142,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CDevice.h" />
+    <ClInclude Include="KeyMgr.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="CMultiTexture.h" />
+    <ClInclude Include="MyPlayer.h" />
     <ClInclude Include="CSingleTexture.h" />
     <ClInclude Include="CTexture.h" />
     <ClInclude Include="CTextureMgr.h" />
@@ -162,8 +164,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CDevice.cpp" />
+    <ClCompile Include="KeyMgr.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="CMultiTexture.cpp" />
+    <ClCompile Include="MyPlayer.cpp" />
     <ClCompile Include="CSingleTexture.cpp" />
     <ClCompile Include="CTexture.cpp" />
     <ClCompile Include="CTextureMgr.cpp" />
