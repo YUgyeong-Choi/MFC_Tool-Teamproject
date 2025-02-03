@@ -83,7 +83,6 @@ private:
 	int m_hairIndex;
 public:
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
-	afx_msg void OnFinishColor();
 	afx_msg void OnDestroy();
 	afx_msg void OnLoadPlayerBasic();
 	afx_msg void OnChangeHairType(NMHDR* pNMHDR, LRESULT* pResult);

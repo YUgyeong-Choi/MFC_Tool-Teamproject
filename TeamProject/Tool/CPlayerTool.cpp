@@ -156,15 +156,15 @@ void CPlayerTool::ChangeImageColorInitRender()
 	CImage* _copyShirt = new CImage;
 	CImage* _copyPant = new CImage;
 
-	_copySkin->Load(m_Skin[IDLE][FRONT]);
+	_copySkin->Load(m_playerImagePath[L"skin_idlefront_1"]);
 	_copySkin->SetTransparentColor(RGB(255, 255, 255));
-	_copyHair->Load(m_vecHair[IDLE][FRONT][m_hairIndex]);
+	_copyHair->Load(m_playerImagePath[L"hair1_idlefront_1"]);
 	_copyHair->SetTransparentColor(RGB(255, 255, 255));
-	_copyEye->Load(m_eye[IDLE][FRONT]);
+	_copyEye->Load(m_playerImagePath[L"eye_idlefront_1"]);
 	_copyEye->SetTransparentColor(RGB(255, 255, 255));
-	_copyShirt->Load(m_shirt[IDLE][FRONT]);
+	_copyShirt->Load(m_playerImagePath[L"shirt_idlefront_1"]);
 	_copyShirt->SetTransparentColor(RGB(255, 255, 255));
-	_copyPant->Load(m_pant[IDLE][FRONT]);
+	_copyPant->Load(m_playerImagePath[L"pant_idlefront_1"]);
 	_copyPant->SetTransparentColor(RGB(255, 255, 255));
 
 	ChangeColor(_copySkin, &m_skinR, &m_skinG, &m_skinB);
@@ -258,19 +258,19 @@ void CPlayerTool::InitDeco()
 	COLORREF transparentColor = RGB(255, 255, 255);
 
 	m_DecoSkin = new CImage();
-	m_DecoSkin->Load(m_Skin[IDLE][FRONT]);
+	m_DecoSkin->Load(m_playerImagePath[L"skin_idlefront_1"]);
 	m_DecoSkin->SetTransparentColor(transparentColor);
 	m_DecoHair = new CImage();
-	m_DecoHair->Load(m_vecHair[IDLE][FRONT][m_hairIndex]);
+	m_DecoHair->Load(m_playerImagePath[L"hair1_idlefront_1"]);
 	m_DecoHair->SetTransparentColor(transparentColor);
 	m_Decoeye = new CImage();
-	m_Decoeye->Load(m_eye[IDLE][FRONT]);
+	m_Decoeye->Load(m_playerImagePath[L"eye_idlefront_1"]);
 	m_Decoeye->SetTransparentColor(transparentColor);
 	m_Decoshirt = new CImage();
-	m_Decoshirt->Load(m_shirt[IDLE][FRONT]);
+	m_Decoshirt->Load(m_playerImagePath[L"shirt_idlefront_1"]);
 	m_Decoshirt->SetTransparentColor(transparentColor);
 	m_Decopant = new CImage();
-	m_Decopant->Load(m_pant[IDLE][FRONT]);
+	m_Decopant->Load(m_playerImagePath[L"pant_idlefront_1"]);
 	m_Decopant->SetTransparentColor(transparentColor);
 
 
@@ -313,7 +313,6 @@ void CPlayerTool::InitDeco()
 
 BEGIN_MESSAGE_MAP(CPlayerTool, CDialog)
 	ON_WM_HSCROLL()
-	ON_BN_CLICKED(IDC_BUTTON1, &CPlayerTool::OnFinishColor)
 	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDC_BUTTON4, &CPlayerTool::OnLoadPlayerBasic)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN3, &CPlayerTool::OnChangeHairType)
@@ -407,16 +406,6 @@ void CPlayerTool::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
 }
 
-
-void CPlayerTool::OnFinishColor()
-{
-	ChangeColor(m_DecoSkin, &m_skinR, &m_skinG, &m_skinB);
-	ChangeColor(m_DecoHair, &m_hairR, &m_hairG, &m_hairB);
-	ChangeColor(m_Decoeye, &m_eyeR, &m_eyeG, &m_eyeB);
-	ChangeColor(m_Decoshirt, &m_shirtR, &m_shirtG, &m_shirtB);
-	ChangeColor(m_Decopant, &m_pantR, &m_pantG, &m_pantB);
-}
-
 void CPlayerTool::OnDestroy()
 {
 	Safe_Delete(m_DecoSkin);
@@ -486,15 +475,15 @@ void CPlayerTool::OnClickFront()
 	CImage* _copyShirt = new CImage;
 	CImage* _copyPant = new CImage;
 
-	_copySkin->Load(m_Skin[IDLE][FRONT]);
+	_copySkin->Load(m_playerImagePath[L"skin_idlefront_1"]);
 	_copySkin->SetTransparentColor(RGB(255, 255, 255));
-	_copyHair->Load(m_vecHair[IDLE][FRONT][m_hairIndex]);
+	_copyHair->Load(m_playerImagePath[L"hair1_idlefront_1"]);
 	_copyHair->SetTransparentColor(RGB(255, 255, 255));
-	_copyEye->Load(m_eye[IDLE][FRONT]);
+	_copyEye->Load(m_playerImagePath[L"eye_idlefront_1"]);
 	_copyEye->SetTransparentColor(RGB(255, 255, 255));
-	_copyShirt->Load(m_shirt[IDLE][FRONT]);
+	_copyShirt->Load(m_playerImagePath[L"shirt_idlefront_1"]);
 	_copyShirt->SetTransparentColor(RGB(255, 255, 255));
-	_copyPant->Load(m_pant[IDLE][FRONT]);
+	_copyPant->Load(m_playerImagePath[L"pant_idlefront_1"]);
 	_copyPant->SetTransparentColor(RGB(255, 255, 255));
 
 	ChangeColor(_copySkin, &m_skinR, &m_skinG, &m_skinB);
@@ -532,15 +521,15 @@ void CPlayerTool::OnClickSide()
 	CImage* _copyShirt = new CImage;
 	CImage* _copyPant = new CImage;
 
-	_copySkin->Load(m_Skin[IDLE][SIDE]);
+	_copySkin->Load(m_playerImagePath[L"skin_idleside_1"]);
 	_copySkin->SetTransparentColor(RGB(255, 255, 255));
-	_copyHair->Load(m_vecHair[IDLE][SIDE][m_hairIndex]);
+	_copyHair->Load(m_playerImagePath[L"hair1_idleside_1"]);
 	_copyHair->SetTransparentColor(RGB(255, 255, 255));
-	_copyEye->Load(m_eye[IDLE][SIDE]);
+	_copyEye->Load(m_playerImagePath[L"eye_idleside_1"]);
 	_copyEye->SetTransparentColor(RGB(255, 255, 255));
-	_copyShirt->Load(m_shirt[IDLE][SIDE]);
+	_copyShirt->Load(m_playerImagePath[L"shirt_idleside_1"]);
 	_copyShirt->SetTransparentColor(RGB(255, 255, 255));
-	_copyPant->Load(m_pant[IDLE][SIDE]);
+	_copyPant->Load(m_playerImagePath[L"pant_idleside_1"]);
 	_copyPant->SetTransparentColor(RGB(255, 255, 255));
 
 	ChangeColor(_copySkin, &m_skinR, &m_skinG, &m_skinB);
@@ -577,13 +566,13 @@ void CPlayerTool::OnClickBack()
 	CImage* _copyShirt = new CImage;
 	CImage* _copyPant = new CImage;
 
-	_copySkin->Load(m_Skin[IDLE][BACK]);
+	_copySkin->Load(m_playerImagePath[L"skin_idleback_1"]);
 	_copySkin->SetTransparentColor(RGB(255, 255, 255));
-	_copyHair->Load(m_vecHair[IDLE][BACK][m_hairIndex]);
+	_copyHair->Load(m_playerImagePath[L"hair1_idleback_1"]);
 	_copyHair->SetTransparentColor(RGB(255, 255, 255));
-	_copyShirt->Load(m_shirt[IDLE][BACK]);
+	_copyShirt->Load(m_playerImagePath[L"shirt_idleback_1"]);
 	_copyShirt->SetTransparentColor(RGB(255, 255, 255));
-	_copyPant->Load(m_pant[IDLE][BACK]);
+	_copyPant->Load(m_playerImagePath[L"pant_idleback_1"]);
 	_copyPant->SetTransparentColor(RGB(255, 255, 255));
 
 	ChangeColor(_copySkin, &m_skinR, &m_skinG, &m_skinB);
