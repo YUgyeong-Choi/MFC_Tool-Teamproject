@@ -66,6 +66,7 @@ private:
 	CStatic PlayerPreviewImg;
 
 	// 플레이어 원본 이미지
+	map<CString, CString>		m_playerImagePath;
 	TCHAR* m_Skin[STATE_END][LOOK_END];
 	vector<TCHAR*> m_vecHair[STATE_END][LOOK_END];
 	TCHAR* m_eye[STATE_END][LOOK_END];
@@ -91,4 +92,5 @@ public:
 	afx_msg void OnClickBack();
 	afx_msg void OnPlayerSave();
 	afx_msg void OnPlayerLoad();
+	afx_msg void OnAnimation();
 };

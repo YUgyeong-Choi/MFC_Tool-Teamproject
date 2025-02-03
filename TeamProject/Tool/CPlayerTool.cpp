@@ -107,45 +107,45 @@ void CPlayerTool::Ui_Silder_Set(CSliderCtrl* silder)
 
 void CPlayerTool::OnLoadData()
 {
-	//스킨
-	m_Skin[IDLE][FRONT] = L"../Assets/Player/skin/idle/front/front_1.png";
-	m_Skin[IDLE][SIDE] = L"../Assets/Player/skin/idle/side/side_1.png";
-	m_Skin[IDLE][BACK] = L"../Assets/Player/skin/idle/back/back_1.png";
 
-	//눈
-	m_eye[IDLE][FRONT] = L"../Assets/Player/eye/idle/front/front_1.png";
-	m_eye[IDLE][SIDE] = L"../Assets/Player/eye/idle/side/side_1.png";
+	TCHAR szFullPath[MAX_PATH] = L"../Assets/Player/";
+	TCHAR pFilePathType[9][MAX_STR] = { L"eye", L"hair1", L"hair2", L"hair3", L"hair4", L"hair5", L"pant", L"shirt", L"skin" };
+	TCHAR pFilePathState[3][MAX_STR] = { L"front", L"side", L"back" };
 
-	//셔츠
-	m_shirt[IDLE][FRONT] = L"../Assets/Player/shirt/idle/front/front_1.png";
-	m_shirt[IDLE][SIDE] = L"../Assets/Player/shirt/idle/side/side_1.png";
-	m_shirt[IDLE][BACK] = L"../Assets/Player/shirt/idle/back/back_1.png";
 
-	//바지
-	m_pant[IDLE][FRONT] = L"../Assets/Player/pant/idle/front/front_1.png";
-	m_pant[IDLE][SIDE] = L"../Assets/Player/pant/idle/side/side_1.png";
-	m_pant[IDLE][BACK] = L"../Assets/Player/pant/idle/back/back_1.png";
+	for (int i = 0; i < 9; ++i) {
+		for (int j = 0; j < 3; ++j) {
+			for (int k = 0; k < 6; ++k) {
+				//눈이 back일때
+				if (i == 0 && j == 2) {
+					continue;
+				}
 
-	//머리
-	m_vecHair[IDLE][FRONT].push_back(L"../Assets/Player/hair/hair1/idle/front/front_1.png");
-	m_vecHair[IDLE][SIDE].push_back(L"../Assets/Player/hair/hair1/idle/side/side_1.png");
-	m_vecHair[IDLE][BACK].push_back(L"../Assets/Player/hair/hair1/idle/back/back_1.png");
+				CString strTileName;
+				CString szFilePath;
 
-	m_vecHair[IDLE][FRONT].push_back(L"../Assets/Player/hair/hair2/idle/front/front_1.png");
-	m_vecHair[IDLE][SIDE].push_back(L"../Assets/Player/hair/hair2/idle/side/side_1.png");
-	m_vecHair[IDLE][BACK].push_back(L"../Assets/Player/hair/hair2/idle/back/back_1.png");
+				szFilePath.Format(L"../Assets/Player/%s/walk/%s/%s_%d.png", pFilePathType[i], pFilePathState[j], pFilePathState[j], k + 1);
+				strTileName.Format(L"%s_walk%s_%d", pFilePathType[i], pFilePathState[j], k + 1);
+				m_playerImagePath.insert({ strTileName, szFilePath });
+			}
+		}
+	}
 
-	m_vecHair[IDLE][FRONT].push_back(L"../Assets/Player/hair/hair3/idle/front/front_1.png");
-	m_vecHair[IDLE][SIDE].push_back(L"../Assets/Player/hair/hair3/idle/side/side_1.png");
-	m_vecHair[IDLE][BACK].push_back(L"../Assets/Player/hair/hair3/idle/back/back_1.png");
+	for (int i = 0; i < 9; ++i) {
+		for (int j = 0; j < 3; ++j) {
+			//눈이 back일때
+			if (i == 0 && j == 2) {
+				continue;
+			}
 
-	m_vecHair[IDLE][FRONT].push_back(L"../Assets/Player/hair/hair4/idle/front/front_1.png");
-	m_vecHair[IDLE][SIDE].push_back(L"../Assets/Player/hair/hair4/idle/side/side_1.png");
-	m_vecHair[IDLE][BACK].push_back(L"../Assets/Player/hair/hair4/idle/back/back_1.png");
+			CString strTileName;
+			CString szFilePath;
 
-	m_vecHair[IDLE][FRONT].push_back(L"../Assets/Player/hair/hair5/idle/front/front_1.png");
-	m_vecHair[IDLE][SIDE].push_back(L"../Assets/Player/hair/hair5/idle/side/side_1.png");
-	m_vecHair[IDLE][BACK].push_back(L"../Assets/Player/hair/hair5/idle/back/back_1.png");
+			szFilePath.Format(L"../Assets/Player/%s/idle/%s/%s_%d.png", pFilePathType[i], pFilePathState[j], pFilePathState[j], 1);
+			strTileName.Format(L"%s_idle%s_%d", pFilePathType[i], pFilePathState[j], 1);
+			m_playerImagePath.insert({ strTileName, szFilePath });
+		}
+	}
 }
 
 void CPlayerTool::ChangeImageColorInitRender()
@@ -322,6 +322,7 @@ BEGIN_MESSAGE_MAP(CPlayerTool, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON6, &CPlayerTool::OnClickBack)
 	ON_BN_CLICKED(IDC_BUTTON8, &CPlayerTool::OnPlayerSave)
 	ON_BN_CLICKED(IDC_BUTTON9, &CPlayerTool::OnPlayerLoad)
+	ON_BN_CLICKED(IDC_CHECK2, &CPlayerTool::OnAnimation)
 END_MESSAGE_MAP()
 
 
@@ -615,6 +616,12 @@ void CPlayerTool::OnPlayerSave()
 
 
 void CPlayerTool::OnPlayerLoad()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+
+void CPlayerTool::OnAnimation()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }
