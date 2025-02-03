@@ -59,6 +59,7 @@ void CPlayerTool::DoDataExchange(CDataExchange* pDX)
 
 void CPlayerTool::OnInitialUpdate()
 {
+	m_playerLook = FRONT;
 	m_hairIndex = 0;
 	OnLoadData();
 
@@ -317,7 +318,7 @@ BEGIN_MESSAGE_MAP(CPlayerTool, CDialog)
 	ON_WM_DESTROY()
 	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_BUTTON4, &CPlayerTool::OnLoadPlayerBasic)
-	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN3, &CPlayerTool::OnChangeHairType)
+	//ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN3, &CPlayerTool::OnChangeHairType)
 	ON_BN_CLICKED(IDC_BUTTON3, &CPlayerTool::OnClickFront)
 	ON_BN_CLICKED(IDC_BUTTON5, &CPlayerTool::OnClickSide)
 	ON_BN_CLICKED(IDC_BUTTON6, &CPlayerTool::OnClickBack)
@@ -437,40 +438,41 @@ void CPlayerTool::OnLoadPlayerBasic()
 }
 
 
-void CPlayerTool::OnChangeHairType(NMHDR* pNMHDR, LRESULT* pResult)
-{
-	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
-
-	if (pNMUpDown->iDelta < 0) {
-		//오른쪽 누름
-		m_hairIndex++;
-		if (m_hairIndex == m_vecHair[IDLE][FRONT].size()) {
-			m_hairIndex = 0;
-		}
-	}
-	else {
-		//왼쪽 누름
-		m_hairIndex--;
-		if (m_hairIndex < 0) {
-			m_hairIndex = m_vecHair[IDLE][FRONT].size() - 1;
-		}
-	}
-
-	Safe_Delete(m_DecoHair);
-
-	m_DecoHair = new CImage();
-	m_DecoHair->Load(m_vecHair[IDLE][FRONT][m_hairIndex]);
-	m_DecoHair->SetTransparentColor(RGB(255, 255, 255));
-
-	RenderPlayer();
-
-	*pResult = 0;
-}
+//void CPlayerTool::OnChangeHairType(NMHDR* pNMHDR, LRESULT* pResult)
+//{
+//	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+//
+//	if (pNMUpDown->iDelta < 0) {
+//		//오른쪽 누름
+//		m_hairIndex++;
+//		if (m_hairIndex == m_vecHair[IDLE][FRONT].size()) {
+//			m_hairIndex = 0;
+//		}
+//	}
+//	else {
+//		//왼쪽 누름
+//		m_hairIndex--;
+//		if (m_hairIndex < 0) {
+//			m_hairIndex = m_vecHair[IDLE][FRONT].size() - 1;
+//		}
+//	}
+//
+//	Safe_Delete(m_DecoHair);
+//
+//	m_DecoHair = new CImage();
+//	m_DecoHair->Load(m_vecHair[IDLE][FRONT][m_hairIndex]);
+//	m_DecoHair->SetTransparentColor(RGB(255, 255, 255));
+//
+//	RenderPlayer();
+//
+//	*pResult = 0;
+//}
 
 
 
 void CPlayerTool::OnClickFront()
 {
+	m_playerLook = FRONT;
 	CImage* _copySkin = new CImage;
 	CImage* _copyHair = new CImage;
 	CImage* _copyEye = new CImage;
@@ -517,6 +519,7 @@ void CPlayerTool::OnClickFront()
 
 void CPlayerTool::OnClickSide()
 {
+	m_playerLook = SIDE;
 	CImage* _copySkin = new CImage;
 	CImage* _copyHair = new CImage;
 	CImage* _copyEye = new CImage;
@@ -563,6 +566,7 @@ void CPlayerTool::OnClickSide()
 
 void CPlayerTool::OnClickBack()
 {
+	m_playerLook = BACK;
 	CImage* _copySkin = new CImage;
 	CImage* _copyHair = new CImage;
 	CImage* _copyShirt = new CImage;
@@ -622,6 +626,23 @@ void CPlayerTool::OnAnimation()
 	else
 	{
 		KillTimer(1);
+
+		switch (m_playerLook)
+		{
+		case CPlayerTool::FRONT:
+			OnClickFront();
+			break;
+		case CPlayerTool::SIDE:
+			OnClickSide();
+			break;
+		case CPlayerTool::BACK:
+			OnClickBack();
+			break;
+		case CPlayerTool::LOOK_END:
+			break;
+		default:
+			break;
+		}
 	}
 }
 
@@ -629,7 +650,138 @@ void CPlayerTool::OnTimer(UINT_PTR nIDEvent)
 {
 	if (nIDEvent == 1) 
 	{
+		TCHAR pFilePathType[9][MAX_STR] = { L"eye", L"hair1", L"hair2", L"hair3", L"hair4", L"hair5", L"pant", L"shirt", L"skin" };
+		CImage* _copySkin = new CImage;
+		CImage* _copyHair = new CImage;
+		CImage* _copyEye = new CImage;
+		CImage* _copyShirt = new CImage;
+		CImage* _copyPant = new CImage;
+		CString strTileName;
+
+		CClientDC dc(&PlayerPreviewImg);
+		CRect rect;
+		PlayerPreviewImg.GetClientRect(&rect);
+
+		switch (m_playerLook)
+		{
+		case CPlayerTool::FRONT:
+			strTileName.Format(L"%s_walkfront_%d", pFilePathType[0], m_currentImageIndex + 1);
+			_copyEye->Load(m_playerImagePath[strTileName]);
+			_copyEye->SetTransparentColor(RGB(255, 255, 255));
+
+			strTileName.Format(L"%s_walkfront_%d", pFilePathType[8], m_currentImageIndex + 1);
+			_copySkin->Load(m_playerImagePath[strTileName]);
+			_copySkin->SetTransparentColor(RGB(255, 255, 255));
+
+			strTileName.Format(L"%s_walkfront_%d", pFilePathType[1], m_currentImageIndex + 1);
+			_copyHair->Load(m_playerImagePath[strTileName]);
+			_copyHair->SetTransparentColor(RGB(255, 255, 255));
+
+			strTileName.Format(L"%s_walkfront_%d", pFilePathType[7], m_currentImageIndex + 1);
+			_copyShirt->Load(m_playerImagePath[strTileName]);
+			_copyShirt->SetTransparentColor(RGB(255, 255, 255));
+
+			strTileName.Format(L"%s_walkfront_%d", pFilePathType[6], m_currentImageIndex + 1);
+			_copyPant->Load(m_playerImagePath[strTileName]);
+			_copyPant->SetTransparentColor(RGB(255, 255, 255));
+
+			ChangeColor(_copySkin, &m_skinR, &m_skinG, &m_skinB);
+			ChangeColor(_copyEye, &m_eyeR, &m_eyeG, &m_eyeB);
+			ChangeColor(_copyShirt, &m_shirtR, &m_shirtG, &m_shirtB);
+			ChangeColor(_copyPant, &m_pantR, &m_pantG, &m_pantB);
+			ChangeColor(_copyHair, &m_hairR, &m_hairG, &m_hairB);
+
+
+			Invalidate(FALSE);
+
+			dc.FillSolidRect(rect, RGB(255, 255, 255));
+			_copySkin->Draw(dc, rect);
+			_copyShirt->Draw(dc, rect);
+			_copyEye->Draw(dc, rect);
+			_copyPant->Draw(dc, rect);
+			_copyHair->Draw(dc, rect);
+			break;
+		case CPlayerTool::SIDE:
+			strTileName.Format(L"%s_walkside_%d", pFilePathType[0], m_currentImageIndex + 1);
+			_copyEye->Load(m_playerImagePath[strTileName]);
+			_copyEye->SetTransparentColor(RGB(255, 255, 255));
+
+			strTileName.Format(L"%s_walkside_%d", pFilePathType[8], m_currentImageIndex + 1);
+			_copySkin->Load(m_playerImagePath[strTileName]);
+			_copySkin->SetTransparentColor(RGB(255, 255, 255));
+
+			strTileName.Format(L"%s_walkside_%d", pFilePathType[1], m_currentImageIndex + 1);
+			_copyHair->Load(m_playerImagePath[strTileName]);
+			_copyHair->SetTransparentColor(RGB(255, 255, 255));
+
+			strTileName.Format(L"%s_walkside_%d", pFilePathType[7], m_currentImageIndex + 1);
+			_copyShirt->Load(m_playerImagePath[strTileName]);
+			_copyShirt->SetTransparentColor(RGB(255, 255, 255));
+
+			strTileName.Format(L"%s_walkside_%d", pFilePathType[6], m_currentImageIndex + 1);
+			_copyPant->Load(m_playerImagePath[strTileName]);
+			_copyPant->SetTransparentColor(RGB(255, 255, 255));
+
+			ChangeColor(_copySkin, &m_skinR, &m_skinG, &m_skinB);
+			ChangeColor(_copyEye, &m_eyeR, &m_eyeG, &m_eyeB);
+			ChangeColor(_copyShirt, &m_shirtR, &m_shirtG, &m_shirtB);
+			ChangeColor(_copyPant, &m_pantR, &m_pantG, &m_pantB);
+			ChangeColor(_copyHair, &m_hairR, &m_hairG, &m_hairB);
+
+
+			Invalidate(FALSE);
+
+			dc.FillSolidRect(rect, RGB(255, 255, 255));
+			_copySkin->Draw(dc, rect);
+			_copyShirt->Draw(dc, rect);
+			_copyEye->Draw(dc, rect);
+			_copyPant->Draw(dc, rect);
+			_copyHair->Draw(dc, rect);
+			break;
+		case CPlayerTool::BACK:
+
+			strTileName.Format(L"%s_walkback_%d", pFilePathType[8], m_currentImageIndex + 1);
+			_copySkin->Load(m_playerImagePath[strTileName]);
+			_copySkin->SetTransparentColor(RGB(255, 255, 255));
+
+			strTileName.Format(L"%s_walkback_%d", pFilePathType[1], m_currentImageIndex + 1);
+			_copyHair->Load(m_playerImagePath[strTileName]);
+			_copyHair->SetTransparentColor(RGB(255, 255, 255));
+
+			strTileName.Format(L"%s_walkback_%d", pFilePathType[7], m_currentImageIndex + 1);
+			_copyShirt->Load(m_playerImagePath[strTileName]);
+			_copyShirt->SetTransparentColor(RGB(255, 255, 255));
+
+			strTileName.Format(L"%s_walkback_%d", pFilePathType[6], m_currentImageIndex + 1);
+			_copyPant->Load(m_playerImagePath[strTileName]);
+			_copyPant->SetTransparentColor(RGB(255, 255, 255));
+
+			ChangeColor(_copySkin, &m_skinR, &m_skinG, &m_skinB);
+			ChangeColor(_copyShirt, &m_shirtR, &m_shirtG, &m_shirtB);
+			ChangeColor(_copyPant, &m_pantR, &m_pantG, &m_pantB);
+			ChangeColor(_copyHair, &m_hairR, &m_hairG, &m_hairB);
+
+
+			Invalidate(FALSE);
+
+			dc.FillSolidRect(rect, RGB(255, 255, 255));
+			_copySkin->Draw(dc, rect);
+			_copyShirt->Draw(dc, rect);
+			_copyPant->Draw(dc, rect);
+			_copyHair->Draw(dc, rect);
+			break;
+		case CPlayerTool::LOOK_END:
+			break;
+		default:
+			break;
+		}
 		m_currentImageIndex = (m_currentImageIndex + 1) % 6;
+
+		Safe_Delete(_copySkin);
+		Safe_Delete(_copyHair);
+		Safe_Delete(_copyEye);
+		Safe_Delete(_copyShirt);
+		Safe_Delete(_copyPant);
 	}
 
 	CWnd::OnTimer(nIDEvent);  // 기본 타이머 처리

@@ -18,7 +18,6 @@ public:
 	enum { IDD = IDD_CPlayerTool };
 #endif
 	enum PLAYERLOOK{FRONT, SIDE, BACK, LOOK_END};
-	enum PLAYERSTATE{IDLE, WALK, STATE_END};
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
@@ -68,11 +67,6 @@ private:
 
 	// 플레이어 원본 이미지
 	map<CString, CString>		m_playerImagePath;
-	TCHAR* m_Skin[STATE_END][LOOK_END];
-	vector<TCHAR*> m_vecHair[STATE_END][LOOK_END];
-	TCHAR* m_eye[STATE_END][LOOK_END];
-	TCHAR* m_shirt[STATE_END][LOOK_END];
-	TCHAR* m_pant[STATE_END][LOOK_END];
 
 	//플레이어 커스텀 이미지
 	CImage* m_DecoSkin;
@@ -81,13 +75,15 @@ private:
 	CImage* m_Decoshirt;
 	CImage* m_Decopant;
 
+	PLAYERLOOK m_playerLook;
+
 	int m_hairIndex;
 	int m_currentImageIndex;
 public:
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg void OnDestroy();
 	afx_msg void OnLoadPlayerBasic();
-	afx_msg void OnChangeHairType(NMHDR* pNMHDR, LRESULT* pResult);
+	//afx_msg void OnChangeHairType(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnClickFront();
 	afx_msg void OnClickSide();
 	afx_msg void OnClickBack();
