@@ -131,11 +131,46 @@ void CMyPlayer::Render(void)
 
 			D3DXVECTOR3 vTemp{ fCenterX, fCenterY, 0.f };
 
-			CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture,
-				nullptr,
-				&vTemp,
-				nullptr,
-				D3DCOLOR_ARGB(255, 255, 255, 255));
+			switch (i)
+			{
+			case 0: //½ºÅ²
+				CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture,
+					nullptr,
+					&vTemp,
+					nullptr,
+					D3DCOLOR_ARGB(255, tData.eSkinRGB.iR, tData.eSkinRGB.iG, tData.eSkinRGB.iB));
+				break;
+			case 1: //¸Ó¸®
+				CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture,
+					nullptr,
+					&vTemp,
+					nullptr,
+					D3DCOLOR_ARGB(255, tData.eHairRGB.iR, tData.eHairRGB.iG, tData.eHairRGB.iB));
+				break;
+			case 2: //¹ÙÁö
+				CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture,
+					nullptr,
+					&vTemp,
+					nullptr,
+					D3DCOLOR_ARGB(255, tData.ePantRGB.iR, tData.ePantRGB.iG, tData.ePantRGB.iB));
+				break;
+			case 3: //¼ÅÃ÷
+				CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture,
+					nullptr,
+					&vTemp,
+					nullptr,
+					D3DCOLOR_ARGB(255, tData.eShirtRGB.iR, tData.eShirtRGB.iG, tData.eShirtRGB.iB));
+				break;
+			case 4: //´«
+				CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture,
+					nullptr,
+					&vTemp,
+					nullptr,
+					D3DCOLOR_ARGB(255, tData.eEyeRGB.iR, tData.eEyeRGB.iG, tData.eEyeRGB.iB));
+				break;
+			default:
+				break;
+			}
 		}
 	}
 	else {
@@ -191,11 +226,46 @@ void CMyPlayer::Render(void)
 
 			D3DXVECTOR3 vTemp{ fCenterX, fCenterY, 0.f };
 
-			CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture,
-				nullptr,
-				&vTemp,
-				nullptr,
-				D3DCOLOR_ARGB(255, 255, 255, 255));
+			switch (i)
+			{
+			case 0: //½ºÅ²
+				CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture,
+					nullptr,
+					&vTemp,
+					nullptr,
+					D3DCOLOR_ARGB(255, tData.eSkinRGB.iR, tData.eSkinRGB.iG, tData.eSkinRGB.iB));
+				break;
+			case 1: //¸Ó¸®
+				CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture,
+					nullptr,
+					&vTemp,
+					nullptr,
+					D3DCOLOR_ARGB(255, tData.eHairRGB.iR, tData.eHairRGB.iG, tData.eHairRGB.iB));
+				break;
+			case 2: //¹ÙÁö
+				CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture,
+					nullptr,
+					&vTemp,
+					nullptr,
+					D3DCOLOR_ARGB(255, tData.ePantRGB.iR, tData.ePantRGB.iG, tData.ePantRGB.iB));
+				break;
+			case 3: //¼ÅÃ÷
+				CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture,
+					nullptr,
+					&vTemp,
+					nullptr,
+					D3DCOLOR_ARGB(255, tData.eShirtRGB.iR, tData.eShirtRGB.iG, tData.eShirtRGB.iB));
+				break;
+			case 4: //´«
+				CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture,
+					nullptr,
+					&vTemp,
+					nullptr,
+					D3DCOLOR_ARGB(255, tData.eEyeRGB.iR, tData.eEyeRGB.iG, tData.eEyeRGB.iB));
+				break;
+			default:
+				break;
+			}
 		}
 	}
 
@@ -305,7 +375,6 @@ void CMyPlayer::ChangeColor()
 	HANDLE hFile = CreateFile(L"../Data/Player.dat", GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
 	DWORD	dwByte(0);
-	UNITDATA tData;
 
 	while (true)
 	{

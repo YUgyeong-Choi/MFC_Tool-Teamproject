@@ -24,6 +24,7 @@ private:
 	//플레이어 이미지 데이터
 	map<wstring, CTexture*>		m_playerImage;
 	int m_hairIndex;
+	UNITDATA tData;
 
 	float m_fSpeed;
 	INFO m_tInfo;
