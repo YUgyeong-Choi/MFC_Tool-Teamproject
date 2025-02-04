@@ -148,8 +148,8 @@ void CToolView::Check_TileSettings(CPoint point)
 	int iDrawID = -1;
 	// 확대/축소 비율과 중심을 고려하여 포인트 조정
 	CPoint adjustedPoint;
-	adjustedPoint.x = static_cast<int>((point.x - m_zoomCenter.x) / m_fZoomFactor + m_zoomCenter.x);
-	adjustedPoint.y = static_cast<int>((point.y - m_zoomCenter.y) / m_fZoomFactor + m_zoomCenter.y);
+	adjustedPoint.x = static_cast<int>((point.x / m_fZoomFactor));
+	adjustedPoint.y = static_cast<int>((point.y/ m_fZoomFactor));
 
 	switch (eType)
 	{
@@ -213,9 +213,9 @@ BOOL CToolView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	ScreenToClient(&pt); // 마우스 위치를 클라이언트 좌표로 변환
 
 	// 현재 마우스 위치를 기준으로 확대/축소 중심을 조정
-	CPoint newCenter;
-	newCenter.x = static_cast<int>((pt.x - m_zoomCenter.x) / m_fZoomFactor + m_zoomCenter.x);
-	newCenter.y = static_cast<int>((pt.y - m_zoomCenter.y) / m_fZoomFactor + m_zoomCenter.y);
+	//CPoint newCenter;
+	//newCenter.x = static_cast<int>((pt.x - m_zoomCenter.x) / m_fZoomFactor + m_zoomCenter.x);
+	//newCenter.y = static_cast<int>((pt.y - m_zoomCenter.y) / m_fZoomFactor + m_zoomCenter.y);
 
 	if (zDelta > 0)
 		m_fZoomFactor *= 1.1f; // 확대
@@ -227,7 +227,7 @@ BOOL CToolView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	m_fZoomFactor = max(m_fZoomFactor, minZoomFactor);
 
 	// 확대/축소 중심을 업데이트
-	m_zoomCenter = newCenter;
+	//m_zoomCenter = newCenter;
 
 	Invalidate(FALSE); // 화면 갱신
 	return CView::OnMouseWheel(nFlags, zDelta, pt);

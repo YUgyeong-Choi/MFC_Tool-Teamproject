@@ -23,10 +23,12 @@ protected:
 
 public:
 	void	Horizontal_Scroll();
-	void OnInitialUpdate();
+	void	OnInitialUpdate();
 	afx_msg void OnDestroy();
 	afx_msg void OnLoadTileAssets();
 	afx_msg void OnListBox();
+	afx_msg void OnClickedSave();
+	afx_msg void OnBnClickedLoad();
 
 public:
 	// 리스트 박스

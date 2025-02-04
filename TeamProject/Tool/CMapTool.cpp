@@ -65,6 +65,8 @@ BEGIN_MESSAGE_MAP(CMapTool, CDialog)
 	ON_WM_DROPFILES()
 	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDC_BUTTON1, &CMapTool::OnLoadTileAssets)
+	ON_BN_CLICKED(IDC_BUTTON2, &CMapTool::OnClickedSave)
+	ON_BN_CLICKED(IDC_BUTTON14, &CMapTool::OnBnClickedLoad)
 END_MESSAGE_MAP()
 
 
@@ -242,6 +244,156 @@ void CMapTool::OnLoadTileAssets()
 	}
 
 	Horizontal_Scroll();
+
+	UpdateData(FALSE);
+}
+
+
+void CMapTool::OnClickedSave()
+{
+	CMainFrame* pMainFrm = (CMainFrame*)AfxGetMainWnd();
+	CToolView* pToolView = dynamic_cast<CToolView*>(pMainFrm->m_MainSplitter.GetPane(0, 0));
+	CTerrain* pTerrain = pToolView->m_pTerrain;
+	auto& vecTile = *(pTerrain->Get_TileVector());
+
+	CFileDialog		Dlg(FALSE,		// TRUE(불러오기), FALSE(다른 이름으로 저장) 모드 지정
+		L"dat",		// default 확장자명
+		L"*.dat",	// 대화 상자에 표시될 최초 파일명
+		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,	// 읽기 전용 체크 박스 숨김 | 중복된 이름으로 파일 저장 시 경고 메세지 띄움
+		L"Data Files(*.dat) | *.dat ||", // 대화 상자에 표시될 파일 형식
+		this);	// 부모 윈도우 주소
+
+	// DoModal : 대화 상자를 실행
+
+	TCHAR	szPath[MAX_PATH] = L"";
+
+	// 현재 프로젝트의 경로를 얻어오는 함수(절대 경로)
+	GetCurrentDirectory(MAX_PATH, szPath);
+
+	// PathRemoveFileSpec : 전체 경로에서 파일 이름만 잘라주는 함수
+	// 경로 상에 파일 이름이 없을 경우엔 마지막 폴더명을 잘라낸다.
+
+	PathRemoveFileSpec(szPath);
+
+	lstrcat(szPath, L"\\Data");
+
+	Dlg.m_ofn.lpstrInitialDir = szPath;
+
+	if (IDOK == Dlg.DoModal())
+	{
+		// GetPathName : 선택된 경로를 반환
+		// GetString : 원시 문자열의 형태로 반환
+
+		CString	str = Dlg.GetPathName().GetString();
+		const TCHAR* pGetPath = str.GetString();
+
+		HANDLE hFile = CreateFile(pGetPath,
+			GENERIC_WRITE,
+			0, 0,
+			CREATE_ALWAYS,
+			FILE_ATTRIBUTE_NORMAL,
+			0);
+
+		if (INVALID_HANDLE_VALUE == hFile)
+			return;
+
+		DWORD	dwByte(0), dwStrByte(0);
+
+		for (auto& MyTile : vecTile)
+		{
+			WriteFile(hFile, MyTile, sizeof(TILE), &dwByte, nullptr);
+		}
+
+		CloseHandle(hFile);
+	}
+
+}
+
+
+void CMapTool::OnBnClickedLoad()
+{
+	CMainFrame* pMainFrm = (CMainFrame*)AfxGetMainWnd();
+	CToolView* pToolView = dynamic_cast<CToolView*>(pMainFrm->m_MainSplitter.GetPane(0, 0));
+	CTerrain* pTerrain = pToolView->m_pTerrain;
+	auto& vecTile = *(pTerrain->Get_TileVector());
+
+	UpdateData(TRUE);
+
+	CFileDialog		Dlg(TRUE,		// TRUE(불러오기), FALSE(다른 이름으로 저장) 모드 지정
+		L"dat",		// default 확장자명
+		L"*.dat",	// 대화 상자에 표시될 최초 파일명
+		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,	// 읽기 전용 체크 박스 숨김 | 중복된 이름으로 파일 저장 시 경고 메세지 띄움
+		L"Data Files(*.dat) | *.dat ||", // 대화 상자에 표시될 파일 형식
+		this);	// 부모 윈도우 주소
+
+	// DoModal : 대화 상자를 실행
+
+	TCHAR	szPath[MAX_PATH] = L"";
+
+	// 현재 프로젝트의 경로를 얻어오는 함수(절대 경로)
+	GetCurrentDirectory(MAX_PATH, szPath);
+
+	// PathRemoveFileSpec : 전체 경로에서 파일 이름만 잘라주는 함수
+	// 경로 상에 파일 이름이 없을 경우엔 마지막 폴더명을 잘라낸다.
+
+	PathRemoveFileSpec(szPath);
+
+	lstrcat(szPath, L"\\Data");
+
+	Dlg.m_ofn.lpstrInitialDir = szPath;
+
+	if (IDOK == Dlg.DoModal())
+	{
+		for (auto& MyTile : vecTile)
+			delete MyTile;
+		vecTile.clear();
+
+		CString	str = Dlg.GetPathName().GetString();
+		const TCHAR* pGetPath = str.GetString();
+
+		HANDLE hFile = CreateFile(pGetPath,
+			GENERIC_READ,
+			0, 0,
+			OPEN_EXISTING,
+			FILE_ATTRIBUTE_NORMAL,
+			0);
+
+		if (INVALID_HANDLE_VALUE == hFile)
+			return;
+
+		DWORD	dwByte(0), dwStrByte(0);
+
+		TILE pTile;
+		//ZeroMemory(pTile, sizeof(TILE));
+
+		while (true)
+		{
+			ReadFile(hFile, &pTile, sizeof(TILE), &dwByte, nullptr);
+
+			if (0 == dwByte)
+			{
+				break;
+			}
+			TILE* pTiletemp = new TILE;
+
+			pTiletemp->byOption = pTile.byOption;
+			pTiletemp->vPos = pTile.vPos;
+			pTiletemp->vSize = pTile.vSize;
+			for (int i = 0; i < OPT_END; ++i)
+			{
+				pTiletemp->tObject[i].bExist = pTile.tObject[i].bExist;
+				pTiletemp->tObject[i].byDrawID = pTile.tObject[i].byDrawID;
+				pTiletemp->tObject[i].eTileTerrain = pTile.tObject[i].eTileTerrain;
+			}
+
+			vecTile.push_back(pTiletemp);
+		}
+
+		CloseHandle(hFile);
+	}
+	else
+		return;
+	pToolView->Invalidate(FALSE);
 
 	UpdateData(FALSE);
 }
