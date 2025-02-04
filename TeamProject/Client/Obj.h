@@ -31,7 +31,6 @@ public:
 protected:
 
 protected:
-
 	INFO					m_tInfo;
 	wstring					m_wstrObjKey = L"";
 	wstring					m_wstrStateKey = L"";

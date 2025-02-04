@@ -3,6 +3,7 @@
 #include "CTextureMgr.h"
 #include "ObjMgr.h"
 #include "MyTerrain.h"
+#include "MyPlayer.h"
 
 CStage::CStage()
 {
@@ -31,14 +32,9 @@ HRESULT CStage::Ready_Scene()
 	pObj->Initialize();
 	CObjMgr::Get_Instance()->Add_Object(CObjMgr::TERRAIN, pObj);
 
-	// 플레이어
-	/*pObj = new CPlayer;
-	if (nullptr == pObj)
-		return E_FAIL;
-
-	pObj->Initialize();
-
-	CObjMgr::Get_Instance()->Add_Object(CObjMgr::PLAYER, pObj);*/
+	CObj* pPlayer = new CMyPlayer;
+	pPlayer->Initialize();
+	CObjMgr::Get_Instance()->Add_Object(CObjMgr::PLAYER, pPlayer);
 	
 	return S_OK;
 }
