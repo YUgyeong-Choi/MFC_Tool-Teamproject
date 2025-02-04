@@ -19,10 +19,11 @@ public:
 private:
 	void KeyInput();
 	void LoadPlayerData();
-	//void ChangeColor();
+	void ChangeColor();
 private:
 	//플레이어 이미지 데이터
 	map<wstring, CTexture*>		m_playerImage;
+	int m_hairIndex;
 
 	float m_fSpeed;
 	INFO m_tInfo;

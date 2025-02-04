@@ -10,7 +10,7 @@ CMyPlayer::CMyPlayer()
 HRESULT CMyPlayer::Initialize(void)
 {
 	LoadPlayerData();
-	//ChangeColor();
+	ChangeColor();
 
 	m_fSpeed = 0.5f;
 	m_tInfo.vPos = { 0.f,0.f,0.f };
@@ -74,7 +74,7 @@ void CMyPlayer::Render(void)
 
 	CDevice::Get_Instance()->Get_Sprite()->SetTransform(&m_tInfo.matWorld);
 
-	TCHAR pFilePathType[5][MAX_STR] = { L"skin", L"hair1",L"pant", L"shirt", L"eye" };
+	TCHAR pFilePathType[5][MAX_STR] = { L"skin", L"hair",L"pant", L"shirt", L"eye" };
 	TCHAR pFilePathState[3][MAX_STR] = { L"front", L"side", L"back" };
 
 	if (m_bPlayerWalk) {
@@ -83,19 +83,39 @@ void CMyPlayer::Render(void)
 			switch (m_playerLook)
 			{
 			case CMyPlayer::LEFT:
-				strName = wstring(pFilePathType[i]) + L"_walkside_" + to_wstring(m_tFrame.iFrameStart + 1);
+				if (i == 1) {
+					strName = wstring(pFilePathType[i]) + to_wstring(m_hairIndex+1)+ L"_walkside_" + to_wstring(m_tFrame.iFrameStart + 1);
+				}
+				else {
+					strName = wstring(pFilePathType[i]) + L"_walkside_" + to_wstring(m_tFrame.iFrameStart + 1);
+				}
 				break;
 			case CMyPlayer::RIGHT:
-				strName = wstring(pFilePathType[i]) + L"_walkside_" + to_wstring(m_tFrame.iFrameStart + 1);
+				if (i == 1) {
+					strName = wstring(pFilePathType[i]) + to_wstring(m_hairIndex + 1) + L"_walkside_" + to_wstring(m_tFrame.iFrameStart + 1);
+				}
+				else {
+					strName = wstring(pFilePathType[i]) + L"_walkside_" + to_wstring(m_tFrame.iFrameStart + 1);
+				}
 				break;
 			case CMyPlayer::UP:
 				if (i == 4) {
 					continue;
 				}
-				strName = wstring(pFilePathType[i]) + L"_walkback_" + to_wstring(m_tFrame.iFrameStart + 1);
+				if (i == 1) {
+					strName = wstring(pFilePathType[i]) + to_wstring(m_hairIndex + 1) + L"_walkback_" + to_wstring(m_tFrame.iFrameStart + 1);
+				}
+				else {
+					strName = wstring(pFilePathType[i]) + L"_walkback_" + to_wstring(m_tFrame.iFrameStart + 1);
+				}
 				break;
 			case CMyPlayer::DOWN:
-				strName = wstring(pFilePathType[i]) + L"_walkfront_" + to_wstring(m_tFrame.iFrameStart + 1);
+				if (i == 1) {
+					strName = wstring(pFilePathType[i]) + to_wstring(m_hairIndex + 1) + L"_walkfront_" + to_wstring(m_tFrame.iFrameStart + 1);
+				}
+				else {
+					strName = wstring(pFilePathType[i]) + L"_walkfront_" + to_wstring(m_tFrame.iFrameStart + 1);
+				}
 				break;
 			case CMyPlayer::PLAYERLOOK_END:
 				break;
@@ -123,19 +143,39 @@ void CMyPlayer::Render(void)
 			switch (m_playerLook)
 			{
 			case CMyPlayer::LEFT:
-				strName = wstring(pFilePathType[i]) + L"_idleside_1";
+				if (i == 1) {
+					strName = wstring(pFilePathType[i]) + to_wstring(m_hairIndex + 1) + L"_idleside_1";
+				}
+				else {
+					strName = wstring(pFilePathType[i]) + L"_idleside_1";
+				}
 				break;
 			case CMyPlayer::RIGHT:
-				strName = wstring(pFilePathType[i]) + L"_idleside_1";
+				if (i == 1) {
+					strName = wstring(pFilePathType[i]) + to_wstring(m_hairIndex + 1) + L"_idleside_1";
+				}
+				else {
+					strName = wstring(pFilePathType[i]) + L"_idleside_1";
+				}
 				break;
 			case CMyPlayer::UP:
 				if (i == 4) {
 					continue;
 				}
-				strName = wstring(pFilePathType[i]) + L"_idleback_1";
+				if (i == 1) {
+					strName = wstring(pFilePathType[i]) + to_wstring(m_hairIndex + 1) + L"_idleback_1";
+				}
+				else {
+					strName = wstring(pFilePathType[i]) + L"_idleback_1";
+				}
 				break;
 			case CMyPlayer::DOWN:
-				strName = wstring(pFilePathType[i]) + L"_idlefront_1";
+				if (i == 1) {
+					strName = wstring(pFilePathType[i]) + to_wstring(m_hairIndex + 1) + L"_idlefront_1";
+				}
+				else {
+					strName = wstring(pFilePathType[i]) + L"_idlefront_1";
+				}
 				break;
 			case CMyPlayer::PLAYERLOOK_END:
 				break;
@@ -251,69 +291,70 @@ void CMyPlayer::LoadPlayerData()
 	}
 }
 
-//void CMyPlayer::ChangeColor()
-//{
-//	HANDLE hFile = CreateFile(L"../Data/Player.dat", GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-//
-//	DWORD	dwByte(0);
-//	UNITDATA tData;
-//
-//	while (true)
-//	{
-//		ReadFile(hFile, &tData.iHp, sizeof(int), &dwByte, nullptr);
-//		ReadFile(hFile, &tData.iAttack, sizeof(int), &dwByte, nullptr);
-//		ReadFile(hFile, &(tData.eSkinRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
-//		ReadFile(hFile, &(tData.eHairRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
-//		ReadFile(hFile, &(tData.eEyeRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
-//		ReadFile(hFile, &(tData.eShirtRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
-//		ReadFile(hFile, &(tData.ePantRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
-//
-//		if (0 == dwByte)
-//		{
-//			break;
-//		}
-//	}
-//
-//	CloseHandle(hFile);
-//
-//	TCHAR pFilePathType[9][MAX_STR] = { L"eye", L"hair1", L"hair2", L"hair3", L"hair4", L"hair5", L"pant", L"shirt", L"skin" };
-//	TCHAR pFilePathState[3][MAX_STR] = { L"front", L"side", L"back" };
-//
-//	//idle
-//	for (int i = 0; i < 9; ++i) {
-//		for (int j = 0; j < 3; ++j) {
-//			if (i == 0 && j == 2) {
-//				continue;
-//			}
-//			wstring strName;
-//			strName = wstring(pFilePathType[i]) + L"_idle" + wstring(pFilePathState[j]) + L"_1";
-//
-//			D3DLOCKED_RECT lockedRect;
-//			HRESULT hr = m_playerImage[strName]->Get_Texture()->pTexture->LockRect(0, &lockedRect, NULL, D3DLOCK_DISCARD);
-//			if (FAILED(hr)) {
-//				return;
-//			}
-//
-//			BYTE* pPixels = (BYTE*)lockedRect.pBits;
-//			for (int y = 0; y < m_playerImage[strName]->Get_Texture()->tImgInfo.Height; ++y) {
-//				for (int x = 0; x < m_playerImage[strName]->Get_Texture()->tImgInfo.Width; ++x) {
-//					// 픽셀의 인덱스 계산 (A8R8G8B8 포맷에서 Red, Green, Blue, Alpha 순서로 구성)
-//					int pixelIndex = (y * lockedRect.Pitch) + (x * 4); // A8R8G8B8 포맷은 4바이트
-//
-//					// 원본 픽셀 색상 가져오기 (RGBA 순서)
-//					BYTE* pR = &pPixels[pixelIndex + 0];  // Red
-//					BYTE* pG = &pPixels[pixelIndex + 1];  // Green
-//					BYTE* pB = &pPixels[pixelIndex + 2];  // Blue
-//					BYTE* pA = &pPixels[pixelIndex + 3];  // Alpha
-//
-//					// 색상 조정 (RGB 값 변경 가능)
-//					*pR = (*pR * tData.eEyeRGB.iR) / 255;
-//					*pG = (*pG * tData.eEyeRGB.iG) / 255;
-//					*pB = (*pB * tData.eEyeRGB.iB) / 255;
-//				}
-//			}
-//
-//			m_playerImage[strName]->Get_Texture()->pTexture->UnlockRect(0);
-//		}
-//	}
-//}
+void CMyPlayer::ChangeColor()
+{
+	HANDLE hFile = CreateFile(L"../Data/Player.dat", GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+	DWORD	dwByte(0);
+	UNITDATA tData;
+
+	while (true)
+	{
+		ReadFile(hFile, &tData.iHp, sizeof(int), &dwByte, nullptr);
+		ReadFile(hFile, &tData.iAttack, sizeof(int), &dwByte, nullptr);
+		ReadFile(hFile, &(tData.eSkinRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+		ReadFile(hFile, &(tData.eHairRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+		ReadFile(hFile, &(tData.eEyeRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+		ReadFile(hFile, &(tData.eShirtRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+		ReadFile(hFile, &(tData.ePantRGB), sizeof(PLAYERRGB), &dwByte, nullptr);
+		ReadFile(hFile, &(m_hairIndex), sizeof(int), &dwByte, nullptr);
+
+		if (0 == dwByte)
+		{
+			break;
+		}
+	}
+
+	CloseHandle(hFile);
+
+	//TCHAR pFilePathType[9][MAX_STR] = { L"eye", L"hair1", L"hair2", L"hair3", L"hair4", L"hair5", L"pant", L"shirt", L"skin" };
+	//TCHAR pFilePathState[3][MAX_STR] = { L"front", L"side", L"back" };
+
+	////idle
+	//for (int i = 0; i < 9; ++i) {
+	//	for (int j = 0; j < 3; ++j) {
+	//		if (i == 0 && j == 2) {
+	//			continue;
+	//		}
+	//		wstring strName;
+	//		strName = wstring(pFilePathType[i]) + L"_idle" + wstring(pFilePathState[j]) + L"_1";
+
+	//		D3DLOCKED_RECT lockedRect;
+	//		HRESULT hr = m_playerImage[strName]->Get_Texture()->pTexture->LockRect(0, &lockedRect, NULL, D3DLOCK_DISCARD);
+	//		if (FAILED(hr)) {
+	//			return;
+	//		}
+
+	//		BYTE* pPixels = (BYTE*)lockedRect.pBits;
+	//		for (int y = 0; y < m_playerImage[strName]->Get_Texture()->tImgInfo.Height; ++y) {
+	//			for (int x = 0; x < m_playerImage[strName]->Get_Texture()->tImgInfo.Width; ++x) {
+	//				// 픽셀의 인덱스 계산 (A8R8G8B8 포맷에서 Red, Green, Blue, Alpha 순서로 구성)
+	//				int pixelIndex = (y * lockedRect.Pitch) + (x * 4); // A8R8G8B8 포맷은 4바이트
+
+	//				// 원본 픽셀 색상 가져오기 (RGBA 순서)
+	//				BYTE* pR = &pPixels[pixelIndex + 0];  // Red
+	//				BYTE* pG = &pPixels[pixelIndex + 1];  // Green
+	//				BYTE* pB = &pPixels[pixelIndex + 2];  // Blue
+	//				BYTE* pA = &pPixels[pixelIndex + 3];  // Alpha
+
+	//				// 색상 조정 (RGB 값 변경 가능)
+	//				*pR = (*pR * tData.eEyeRGB.iR) / 255;
+	//				*pG = (*pG * tData.eEyeRGB.iG) / 255;
+	//				*pB = (*pB * tData.eEyeRGB.iB) / 255;
+	//			}
+	//		}
+
+	//		m_playerImage[strName]->Get_Texture()->pTexture->UnlockRect(0);
+	//	}
+	//}
+}

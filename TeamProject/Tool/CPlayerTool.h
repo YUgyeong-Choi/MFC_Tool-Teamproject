@@ -89,7 +89,7 @@ public:
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg void OnDestroy();
 	afx_msg void OnLoadPlayerBasic();
-	//afx_msg void OnChangeHairType(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnChangeHairType(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnClickFront();
 	afx_msg void OnClickSide();
 	afx_msg void OnClickBack();
