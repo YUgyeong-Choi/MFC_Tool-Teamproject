@@ -368,12 +368,13 @@ HRESULT CTerrain::Initialize_TileTexture()
 
 void CTerrain::Check_TileHead(int iIndex)
 {
-	int iRes = 0b000010000;
+	// 3x3 bool 이차원 배열을 2진법으로 쭉 늘어놓은 것					   0b010011010일 경우	
+	// '0b' : 2진법 표시														0 1 0	  상단	   
+	// 앞에서부터 LUP, UP, RUP, L, CENTER, R, LDOWN, DOWN, RDOWN		   		0 1 1	기준타일	 우측   
+	int iRes = 0b000000000;					//						   		0 1 0	  하단        에 타일이 위치   
 	int drawID(-1);
 	for (int i = 0; i < 9; ++i)
 	{
-		if (i == 4)
-			continue;
 		int Idx = iIndex + TILEX * ((i / 3) - 1) + ((i % 3) - 1);
 		if (Idx >= 0 && Idx <= TILEX*TILEY)
 		{
@@ -382,10 +383,10 @@ void CTerrain::Check_TileHead(int iIndex)
 				iRes |= 1 << 8 - i;
 			}
 		}
-	}
-	if ((iRes & 0b010101010) == 0b010101010) {
-		if ((iRes & 0b101000101) == 0b000000000) {
-			drawID = 16;
+	}													 
+	if ((iRes & 0b010101010) == 0b010101010) {			
+		if ((iRes & 0b101000101) == 0b000000000) {		
+			drawID = 16;								
 		}
 		else {
 			drawID = 7;
