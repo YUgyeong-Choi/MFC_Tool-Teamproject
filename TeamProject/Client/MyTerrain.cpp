@@ -19,10 +19,10 @@ HRESULT CMyTerrain::Initialize(void)
 	m_vecTile.reserve(TILEX * TILEY);
 
 	// 저장 불러오기 추가할 것***
-	//if (FAILED(Load_Tile(L"../Data/Map.dat")))
-	//{
-	//	return E_FAIL;
-	//}
+	if (FAILED(Load_Tile(L"../Data/Maptest.dat")))
+	{
+		return E_FAIL;
+	}
 
 
 	// Initialize_TileTexture
@@ -119,28 +119,28 @@ HRESULT CMyTerrain::Initialize(void)
 	}
 
 
-	for (int i = 0; i < TILEY; ++i)
-	{
-		for (int j = 0; j < TILEX; ++j)
-		{
-			TILE* pTile = new TILE;
-			ZeroMemory(pTile, sizeof(TILE));
-			float    fY = TILECY * i + (TILECY / 2.f);
-			float    fX = TILECX * j + (TILECX / 2.f);
+	//for (int i = 0; i < TILEY; ++i)
+	//{
+	//	for (int j = 0; j < TILEX; ++j)
+	//	{
+	//		TILE* pTile = new TILE;
+	//		ZeroMemory(pTile, sizeof(TILE));
+	//		float    fY = TILECY * i + (TILECY / 2.f);
+	//		float    fX = TILECX * j + (TILECX / 2.f);
 
-			pTile->vPos = { fX, fY, 0.f };
-			pTile->vSize = { (float)TILECX, (float)TILECY };
-			pTile->byOption = 0;
-			pTile->tObject[OPT_GROUND].bExist = true;
-			for (int i = OPT_GROUND + 1; i < OPT_END; ++i) pTile->tObject[i].bExist = false;
-			pTile->tObject[OPT_GROUND].byDrawID = 27;
-			pTile->tObject[OPT_GROUND].eTileTerrain = TRN_DIRT;
-			m_vecTile.push_back(pTile);
-		}
-	}
+	//		pTile->vPos = { fX, fY, 0.f };
+	//		pTile->vSize = { (float)TILECX, (float)TILECY };
+	//		pTile->byOption = 0;
+	//		pTile->tObject[OPT_GROUND].bExist = true;
+	//		for (int i = OPT_GROUND + 1; i < OPT_END; ++i) pTile->tObject[i].bExist = false;
+	//		pTile->tObject[OPT_GROUND].byDrawID = 27;
+	//		pTile->tObject[OPT_GROUND].eTileTerrain = TRN_DIRT;
+	//		m_vecTile.push_back(pTile);
+	//	}
+	//}
 
-	m_wstrObjKey = L"dirt";
-	m_wstrStateKey = L"ground";
+	//m_wstrObjKey = L"dirt";
+	//m_wstrStateKey = L"ground";
 
 	return S_OK;
 }
@@ -165,7 +165,6 @@ int CMyTerrain::Update(void)
 
 void CMyTerrain::Late_Update(void)
 {
-
 
 }
 
@@ -214,33 +213,35 @@ void CMyTerrain::Render(void)
 				switch (iOp) { case 0: i = OPT_GROUND; break; case 1: i = OPT_DECO; break; case 2:i = OPT_WALL; break; case 3: i = OPT_ORE; break; }
 				if (m_vecTile[iIndex]->tObject[i].bExist)
 				{
+					if (iIndex == 132)
+						int a = 1;
 				 // switch 더러우니 접어둘 것
 					switch (i)
-										 {
-										 case OPT_GROUND:
-											 lstrcpy(szTexType, L"ground"); break;
-										 case OPT_WALL:
-											 lstrcpy(szTexType, L"wallbody"); break;
-										 case OPT_ORE:
-											 lstrcpy(szTexType, L"ore"); break;
-										 case OPT_DECO:
-											 lstrcpy(szTexType, L"deco"); break;
-										 default: break;
-										 }
+					{
+					case OPT_GROUND:
+						lstrcpy(szTexType, L"ground"); break;
+					case OPT_WALL:
+						lstrcpy(szTexType, L"wallbody"); break;
+					case OPT_ORE:
+						lstrcpy(szTexType, L"ore"); break;
+					case OPT_DECO:
+						lstrcpy(szTexType, L"deco"); break;
+					default: break;
+					}
 					switch (m_vecTile[iIndex]->tObject[i].eTileTerrain)
-										 {
-										 case TRN_DIRT:
-											 lstrcpy(szTexTerrain, L"dirt"); break;
-										 case TRN_SAND:
-											 lstrcpy(szTexTerrain, L"sand"); break;
-										 case TRN_NATURE:
-											 lstrcpy(szTexTerrain, L"nature"); break;
-										 case TRN_STONE:
-											 lstrcpy(szTexTerrain, L"stone"); break;
-										 case TRN_WATER:
-											 lstrcpy(szTexTerrain, L"water"); break;
-										 default: break;
-										 }
+					{
+					case TRN_DIRT:
+						lstrcpy(szTexTerrain, L"dirt"); break;
+					case TRN_SAND:
+						lstrcpy(szTexTerrain, L"sand"); break;
+					case TRN_NATURE:
+						lstrcpy(szTexTerrain, L"nature"); break;
+					case TRN_STONE:
+						lstrcpy(szTexTerrain, L"stone"); break;
+					case TRN_WATER:
+						lstrcpy(szTexTerrain, L"water"); break;
+					default: break;
+					}
 
 					int iDrawID = m_vecTile[iIndex]->tObject[i].byDrawID;
 					if (i == OPT_WALL)
@@ -286,9 +287,6 @@ void CMyTerrain::Render(void)
 	}
 }
 
-
-
-
 void CMyTerrain::Release(void)
 {
 	for_each(m_vecTile.begin(), m_vecTile.end(), Safe_Delete<TILE*>);
@@ -303,25 +301,46 @@ HRESULT CMyTerrain::Load_Tile(const TCHAR * pTilePath)
 		return E_FAIL;
 
 	DWORD	dwByte(0);
-
-	TILE*	pTile = nullptr;
+	TILE pTile;
+	ZeroMemory(&pTile, sizeof(TILE));
 
 	while (true)
 	{
-		pTile = new TILE;
+		ReadFile(hFile, &pTile, sizeof(TILE), &dwByte, nullptr);
 
-		ReadFile(hFile, pTile, sizeof(TILE), &dwByte, nullptr);
+		//ReadFile(hFile, &pTile->byOption, sizeof(BYTE), &dwByte, nullptr);
+		//ReadFile(hFile, &pTile->vPos, sizeof(D3DXVECTOR3), &dwByte, nullptr);
+		//ReadFile(hFile, &pTile->vSize, sizeof(D3DXVECTOR3), &dwByte, nullptr);
+		//for (int i = 0; i < OPT_END; ++i)
+		//{
+		//	ReadFile(hFile, &(pTile->tObject[i]), sizeof(TILEOBJ), &dwByte, nullptr);
+		//}
 
 		if (0 == dwByte)
 		{
-			Safe_Delete(pTile);
 			break;
 		}
+		TILE* pTiletemp = new TILE;
 
-		m_vecTile.push_back(pTile);
+		pTiletemp->byOption = pTile.byOption;
+		pTiletemp->vPos = pTile.vPos;
+		pTiletemp->vSize = pTile.vSize;
+		for (int i = 0; i < OPT_END; ++i)
+		{
+			pTiletemp->tObject[i].bExist = pTile.tObject[i].bExist;
+			if (i != 0 && pTile.tObject[i].bExist)
+			{
+				pTiletemp->tObject[i].bExist = pTile.tObject[i].bExist;
+
+			}
+
+			pTiletemp->tObject[i].byDrawID = pTile.tObject[i].byDrawID;
+			pTiletemp->tObject[i].eTileTerrain = pTile.tObject[i].eTileTerrain;
+		}
+
+		m_vecTile.push_back(pTiletemp);
 	}
 
 	CloseHandle(hFile);
-
-	return S_OK;
 }
+

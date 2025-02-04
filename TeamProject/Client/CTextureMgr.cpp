@@ -34,19 +34,20 @@ const TEXINFO* CTextureMgr::Get_Texture(const TCHAR* pObjKey,
 
 HRESULT CTextureMgr::Insert_Texture(const TCHAR* pFilePath, TEXTYPE eTexture, const TCHAR* pObjKey, const TCHAR* pStateKey, const int& iCnt)
 {
-	auto	iter = find_if(m_mapTex.begin(), m_mapTex.end(),
+	auto    iter = find_if(m_mapTex.begin(), m_mapTex.end(),
 		[&](auto& MyPair)->bool
 		{
 			if (MyPair.first == pObjKey)
+			{
 				return true;
-
+			}
 			return false;
 		});
 
+	CTexture* pTexture = nullptr;
+
 	if (iter == m_mapTex.end())
 	{
-		CTexture* pTexture = nullptr;
-
 		switch (eTexture)
 		{
 		case TEX_SINGLE:
@@ -57,16 +58,19 @@ HRESULT CTextureMgr::Insert_Texture(const TCHAR* pFilePath, TEXTYPE eTexture, co
 			pTexture = new CMultiTexture;
 			break;
 		}
-
-		if (FAILED(pTexture->Insert_Texture(pFilePath, pStateKey, iCnt)))
-		{
-			ERR_MSG(pFilePath);
-			return E_FAIL;
-		}
-
-		m_mapTex.insert({ pObjKey, pTexture });
-
 	}
+	else
+	{
+		pTexture = (*iter).second;
+	}
+
+	if (FAILED(pTexture->Insert_Texture(pFilePath, pStateKey, iCnt)))
+	{
+		ERR_MSG(pFilePath);
+		return E_FAIL;
+	}
+
+	m_mapTex.insert({ pObjKey, pTexture });
 
 	return S_OK;
 }
