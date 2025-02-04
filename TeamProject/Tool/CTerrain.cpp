@@ -233,6 +233,18 @@ void CTerrain::Tile_Change(const D3DXVECTOR3& vPos, TILETYPE byTileType, TILETER
 	m_vecTile[iIndex]->tObject[byTileType].byDrawID = byDrawID;
 	m_vecTile[iIndex]->byOption = byOption;
 	m_vecTile[iIndex]->tObject[byTileType].eTileTerrain = byTerrain;
+	
+	if (byTileType == OPT_WALL)
+	{
+		for (int i = 0; i < 9; ++i)
+		{
+			int Idx = iIndex + TILEX * ((i / 3) - 1) + ((i % 3) - 1);
+			if (Idx >= 0 && Idx <= TILEX * TILEY)
+			{
+				Check_TileHead(Idx);
+			}
+		}
+	}
 }
 
 void CTerrain::Set_Ratio(D3DXMATRIX* pOut, float _fX, float _fY)
@@ -352,6 +364,91 @@ HRESULT CTerrain::Initialize_TileTexture()
 			}
 		}
 	}
+}
+
+void CTerrain::Check_TileHead(int iIndex)
+{
+	int iRes = 0b000010000;
+	int drawID(-1);
+	for (int i = 0; i < 9; ++i)
+	{
+		if (i == 4)
+			continue;
+		int Idx = iIndex + TILEX * ((i / 3) - 1) + ((i % 3) - 1);
+		if (Idx >= 0 && Idx <= TILEX*TILEY)
+		{
+			if (m_vecTile[Idx]->tObject[OPT_WALL].bExist)
+			{
+				iRes |= 1 << 8 - i;
+			}
+		}
+	}
+	if ((iRes & 0b010101010) == 0b010101010) {
+		if ((iRes & 0b101000101) == 0b000000000) {
+			drawID = 16;
+		}
+		else {
+			drawID = 7;
+		}
+	}
+	else
+	{
+		if ((iRes & 0b000010000) == 0b000'010'000) {
+			drawID = 21;
+		}
+
+		if ((iRes & 0b010010000) == 0b010010000) {
+			drawID = 20;
+		}
+		else if ((iRes & 0b000110000) == 0b000110000) {
+			drawID = 18;
+		}
+		else if ((iRes & 0b000010010) == 0b000010010) {
+			drawID = 14;
+		}
+		else if ((iRes & 0b000011000) == 0b000011000) {
+			drawID = 15;
+		}
+
+		if ((iRes & 0b010110000) == 0b010110000) {
+			drawID = 13;
+		}
+		else if ((iRes & 0b000111000) == 0b000111000) {
+			drawID = 17;
+		}
+		else if ((iRes & 0b010010010) == 0b010010010) {
+			drawID = 19;
+		}
+		else if ((iRes & 0b010011000) == 0b010011000) {
+			drawID = 9;
+		}
+		else if ((iRes & 0b000011010) == 0b000011010) {
+			drawID = 1;
+		}
+		else if ((iRes & 0b000110010) == 0b000110010) {
+			drawID = 5;
+		}
+
+		if ((iRes & 0b000111010) == 0b000111010) {
+			drawID = rand() % 3 + 2;
+		}
+		else if ((iRes & 0b010011010) == 0b010011010) {
+			drawID = 6;
+		}
+		else if ((iRes & 0b010110010) == 0b010110010) {
+			drawID = 8;
+		}
+		else if ((iRes & 0b010111000) == 0b010111000) {
+			drawID = rand() % 3 + 10;
+		}
+	}
+
+	if (drawID != -1) {
+		m_vecTile[iIndex]->tObject[OPT_WALL].byDrawID = drawID - 1;
+	}
+
+
+	return;
 }
 
 // 피킹 직선의방정식

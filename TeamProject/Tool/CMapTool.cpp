@@ -301,18 +301,7 @@ void CMapTool::OnClickedSave()
 
 		for (auto& MyTile : vecTile)
 		{
-			
 			WriteFile(hFile, MyTile, sizeof(TILE), &dwByte, nullptr);
-			
-			//WriteFile(hFile, &MyTile->byOption, sizeof(BYTE), &dwByte, nullptr);
-			//WriteFile(hFile, &MyTile->vPos, sizeof(D3DXVECTOR3), &dwByte, nullptr);
-			//WriteFile(hFile, &MyTile->vSize, sizeof(D3DXVECTOR3), &dwByte, nullptr);
-			//for (int i = 0; i < OPT_END; ++i)
-			//{
-			//	WriteFile(hFile, &(MyTile->tObject[i].bExist), sizeof(bool), &dwByte, nullptr);
-			//	WriteFile(hFile, &(MyTile->tObject[i].byDrawID), sizeof(BYTE), &dwByte, nullptr);
-			//	WriteFile(hFile, &(MyTile->tObject[i].eTileTerrain), sizeof(TILETERRAIN), &dwByte, nullptr);
-			//}
 		}
 
 		CloseHandle(hFile);
@@ -380,14 +369,6 @@ void CMapTool::OnBnClickedLoad()
 		while (true)
 		{
 			ReadFile(hFile, &pTile, sizeof(TILE), &dwByte, nullptr);
-
-			//ReadFile(hFile, &pTile->byOption, sizeof(BYTE), &dwByte, nullptr);
-			//ReadFile(hFile, &pTile->vPos, sizeof(D3DXVECTOR3), &dwByte, nullptr);
-			//ReadFile(hFile, &pTile->vSize, sizeof(D3DXVECTOR3), &dwByte, nullptr);
-			//for (int i = 0; i < OPT_END; ++i)
-			//{
-			//	ReadFile(hFile, &(pTile->tObject[i]), sizeof(TILEOBJ), &dwByte, nullptr);
-			//}
 
 			if (0 == dwByte)
 			{

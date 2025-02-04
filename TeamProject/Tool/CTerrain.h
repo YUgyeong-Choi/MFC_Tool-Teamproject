@@ -27,6 +27,7 @@ private:
 	bool	Picking_Dot(const D3DXVECTOR3& vPos, const int& iIndex);
 	int		Get_TileIdx(const D3DXVECTOR3& vPos);
 	HRESULT	Initialize_TileTexture();
+	void	Check_TileHead(int iIndex);
 
 public:
 	bool m_bGrid;
