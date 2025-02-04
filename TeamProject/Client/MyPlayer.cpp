@@ -29,10 +29,24 @@ void CMyPlayer::Late_Update(void)
 
 void CMyPlayer::Render(void)
 {
+	D3DXMATRIX matScale, matTrans;
+
 	const TEXINFO* pTexInfo = m_playerImage[L"skin_idlefront_1"]->Get_Texture();
 
 	float fCenterX = pTexInfo->tImgInfo.Width / 2.f;
 	float fCenterY = pTexInfo->tImgInfo.Height / 2.f;
+
+	D3DXMatrixIdentity(&m_tInfo.matWorld);
+	D3DXMatrixScaling(&matScale, 1.f, 1.f, 1.f);
+	D3DXMatrixTranslation(&matTrans,
+		m_tInfo.vPos.x + m_vScroll.x,
+		m_tInfo.vPos.y + m_vScroll.y,
+		0.f);
+
+	m_tInfo.matWorld = matScale * matTrans;
+
+	CDevice::Get_Instance()->Get_Sprite()->SetTransform(&m_tInfo.matWorld);
+
 
 	D3DXVECTOR3 vTemp{ fCenterX, fCenterY, 0.f };
 
