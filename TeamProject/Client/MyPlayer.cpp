@@ -2,6 +2,7 @@
 #include "MyPlayer.h"
 #include "KeyMgr.h"
 #include "CDevice.h"
+#include "TimeMgr.h"
 
 CMyPlayer::CMyPlayer()
 {
@@ -13,7 +14,7 @@ HRESULT CMyPlayer::Initialize(void)
 	ChangeColor();
 
 	m_fSpeed = 0.5f;
-	m_tInfo.vPos = { 0.f,0.f,0.f };
+	m_tInfo.vPos = { 300.f,300.f,0.f };
 	m_playerLook = DOWN;
 	m_bPlayerWalk = false;
 	m_tFrame.iFrameStart = 0;
@@ -215,21 +216,29 @@ void CMyPlayer::KeyInput()
 		m_tInfo.vDir = { 0.f, -1.f, 0.f };
 		m_tInfo.vPos += m_tInfo.vDir * m_fSpeed;
 		m_bPlayerWalk=true;
+
+		m_vScroll.y += 200.f * CTimeMgr::Get_Instance()->Get_TimeDelta();
 	}else if (CKeyMgr::Get_Instance()->Key_Pressing('S')) {
 		m_playerLook = DOWN;
 		m_tInfo.vDir = { 0.f, 1.f, 0.f };
 		m_tInfo.vPos += m_tInfo.vDir * m_fSpeed;
 		m_bPlayerWalk = true;
+
+		m_vScroll.y -= 200.f * CTimeMgr::Get_Instance()->Get_TimeDelta();
 	}else if (CKeyMgr::Get_Instance()->Key_Pressing('A')) {
 		m_playerLook = LEFT;
 		m_tInfo.vDir = { -1.f, 0.f, 0.f };
 		m_tInfo.vPos += m_tInfo.vDir * m_fSpeed;
 		m_bPlayerWalk = true;
+
+		m_vScroll.x += 200.f * CTimeMgr::Get_Instance()->Get_TimeDelta();
 	}else if (CKeyMgr::Get_Instance()->Key_Pressing('D')) {
 		m_playerLook = RIGHT;
 		m_tInfo.vDir = { 1.f, 0.f, 0.f };
 		m_tInfo.vPos += m_tInfo.vDir * m_fSpeed;
 		m_bPlayerWalk = true;
+
+		m_vScroll.x -= 200.f * CTimeMgr::Get_Instance()->Get_TimeDelta();
 	}
 	else {
 		m_bPlayerWalk = false;
