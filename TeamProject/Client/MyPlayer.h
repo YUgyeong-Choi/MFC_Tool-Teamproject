@@ -20,6 +20,7 @@ private:
 	void KeyInput();
 	void LoadPlayerData();
 	void ChangeColor();
+	void Move_Astar();
 private:
 	//플레이어 이미지 데이터
 	map<wstring, CTexture*>		m_playerImage;

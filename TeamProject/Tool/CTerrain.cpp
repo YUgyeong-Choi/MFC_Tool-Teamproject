@@ -33,6 +33,8 @@ HRESULT CTerrain::Initialize()
 			for (int i = OPT_GROUND + 1; i < OPT_END; ++i) pTile->tObject[i].bExist = false;
 			pTile->tObject[OPT_GROUND].byDrawID = 27;
 			pTile->tObject[OPT_GROUND].eTileTerrain = TRN_DIRT;
+			pTile->iIndex = i * TILEX + j;
+			pTile->iParentIndex = 0;
 			m_vecTile.push_back(pTile);
 		}
 	}
