@@ -27,6 +27,9 @@ CMapObjTool::~CMapObjTool()
 void CMapObjTool::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_RADIO2, m_FurnitureSelect[0]);
+	DDX_Control(pDX, IDC_RADIO3, m_FurnitureSelect[1]);
+	DDX_Control(pDX, IDC_RADIO5, m_FurnitureSelect[2]);
 }
 
 void CMapObjTool::OnInitialUpdate()
@@ -40,5 +43,6 @@ END_MESSAGE_MAP()
 
 
 // CMapObjTool 메시지 처리기
+
 
 
