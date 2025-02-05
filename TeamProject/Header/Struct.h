@@ -38,6 +38,18 @@ typedef struct tagTile
 	TILEOBJ		tObject[OPT_END];
 }TILE;
 
+typedef struct tagMapObjectData
+{
+	D3DXVECTOR3	vPos;	
+	D3DXVECTOR2 vSize;	
+	D3DXVECTOR2 vTileSize;		// 가로 세로 몇 칸 짜리 크기 오브젝트인지
+	
+	int			iTileIndex;		// 설치 된 타일 인덱스 번호
+	MAPOBJTYPE	eObjType;		// 오브젝트 종류 (기능성 가구, 생활 가구, 장식 오브젝트)
+	BYTE		byDrawID;		// 오브젝트 번호
+}MAPOBJ;
+
+
 typedef struct PlayerColorData {
 	int iR;
 	int iG;
