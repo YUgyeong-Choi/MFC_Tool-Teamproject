@@ -197,6 +197,7 @@
   <ItemGroup>
     <ClInclude Include="CDevice.h" />
     <ClInclude Include="CFileInfo.h" />
+    <ClInclude Include="CMapObjTool.h" />
     <ClInclude Include="CMapTool.h" />
     <ClInclude Include="CMiniView.h" />
     <ClInclude Include="CMultiTexture.h" />
@@ -218,6 +219,7 @@
   <ItemGroup>
     <ClCompile Include="CDevice.cpp" />
     <ClCompile Include="CFileInfo.cpp" />
+    <ClCompile Include="CMapObjTool.cpp" />
     <ClCompile Include="CMapTool.cpp" />
     <ClCompile Include="CMiniView.cpp" />
     <ClCompile Include="CMultiTexture.cpp" />

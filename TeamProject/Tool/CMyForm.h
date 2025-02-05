@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CMapTool.h"
+#include "CMapObjTool.h"
 #include "CPlayerTool.h"
 
 class CMyForm : public CFormView
@@ -28,6 +29,8 @@ public:
 	//CUnitTool	m_UnitTool;
 	CMapTool	m_MapTool;
 	CPlayerTool m_PlayerTool;
+	CMapObjTool m_MapObjTool;
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
@@ -37,6 +40,7 @@ public:
 	afx_msg void OnPlayerClick();
 	afx_msg void OnMapTool();
 	afx_msg void OnGrid();
+	afx_msg void OnMapObjectTool();
 };
 
 

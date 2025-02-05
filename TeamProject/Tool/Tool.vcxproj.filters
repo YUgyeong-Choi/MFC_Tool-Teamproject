@@ -64,6 +64,9 @@
     <Filter Include="04. Etc\03. Dialog\04.PlayerTool">
       <UniqueIdentifier>{6ebcb019-133e-4955-a46f-dbfa3545541b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Etc\03. Dialog\05. MapObjTool">
+      <UniqueIdentifier>{e890b0e1-6f0e-4459-acea-f7df9639e48d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tool.h">
@@ -123,6 +126,9 @@
     <ClInclude Include="CPlayerTool.h">
       <Filter>04. Etc\03. Dialog\04.PlayerTool</Filter>
     </ClInclude>
+    <ClInclude Include="CMapObjTool.h">
+      <Filter>04. Etc\03. Dialog\05. MapObjTool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tool.cpp">
@@ -172,6 +178,9 @@
     </ClCompile>
     <ClCompile Include="CFileInfo.cpp">
       <Filter>04. Etc\04. FileInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="CMapObjTool.cpp">
+      <Filter>04. Etc\03. Dialog\05. MapObjTool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

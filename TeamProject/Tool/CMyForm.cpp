@@ -32,6 +32,7 @@ BEGIN_MESSAGE_MAP(CMyForm, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON4, &CMyForm::OnPlayerClick)
 	ON_BN_CLICKED(IDC_BUTTON2, &CMyForm::OnMapTool)
 	ON_BN_CLICKED(IDC_CHECK1, &CMyForm::OnGrid)
+	ON_BN_CLICKED(IDC_BUTTON3, &CMyForm::OnMapObjectTool)
 END_MESSAGE_MAP()
 
 
@@ -95,4 +96,15 @@ void CMyForm::OnGrid()
 
 	_view->m_bGrid = !_view->m_bGrid;
 	pMainFrm->Invalidate(FALSE);
+}
+
+
+void CMyForm::OnMapObjectTool()
+{
+	if (nullptr == m_MapObjTool.GetSafeHwnd()) {
+		m_MapObjTool.Create(IDD_CMapObjTool);	// 해당 id에 맞는 다이얼로그 생성
+		m_MapObjTool.OnInitialUpdate();
+	}
+
+	m_MapObjTool.ShowWindow(SW_SHOW);
 }
