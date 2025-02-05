@@ -19,7 +19,7 @@ HRESULT CMyTerrain::Initialize(void)
 	m_vecTile.reserve(TILEX * TILEY);
 
 	// 저장 불러오기 추가할 것***
-	if (FAILED(Load_Tile(L"../Data/Maptest.dat")))
+	if (FAILED(Load_Tile(L"../Data/4381.dat")))
 	{
 		return E_FAIL;
 	}
@@ -178,8 +178,9 @@ void CMyTerrain::Render(void)
 			int			iIndex = i * TILEX + j;
 
 			if (0 > iIndex || (size_t)iIndex >= m_vecTile.size())
+			{
 				continue;
-
+			}
 
 			D3DXMatrixIdentity(&matWorld);
 			D3DXMatrixScaling(&matScale, 1.f, 1.f, 1.f);
@@ -203,8 +204,6 @@ void CMyTerrain::Render(void)
 				switch (iOp) { case 0: i = OPT_GROUND; break; case 1: i = OPT_DECO; break; case 2:i = OPT_WALL; break; case 3: i = OPT_ORE; break; }
 				if (m_vecTile[iIndex]->tObject[i].bExist)
 				{
-					if (iIndex == 132)
-						int a = 1;
 				 // switch 더러우니 접어둘 것
 					switch (i)
 					{
@@ -236,6 +235,7 @@ void CMyTerrain::Render(void)
 					int iDrawID = m_vecTile[iIndex]->tObject[i].byDrawID;
 					if (i == OPT_WALL)
 						 iDrawID = 1;
+
 					const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(szTexTerrain, szTexType, iDrawID);
 
 					if (pTexInfo == nullptr)
@@ -272,7 +272,6 @@ void CMyTerrain::Render(void)
 					}
 					swprintf_s(szBuf, L"%d", iIndex);
 					CDevice::Get_Instance()->Get_Font()->DrawTextW(CDevice::Get_Instance()->Get_Sprite(), szBuf, lstrlen(szBuf), nullptr, 0, D3DCOLOR_ARGB(255, 255, 255, 255));
-					++iIndex;
 				}
 			}
 		}
@@ -381,14 +380,14 @@ void CMyTerrain::Ready_Adjacency()
 			// 40 41 42
 			// 80 81 82
 			//좌 상단 - 1행과 1열 제외
-			if ((0 != i) && (0 != iIndex % (TILEX * 2))){
-				if (!m_vecTile[iIndex - (TILEX-1)]->byOption) {
-					m_vecAdj[iIndex].push_back(m_vecTile[iIndex - (TILEX - 1)]);
+			if ((0 != i) && (0 != iIndex % TILEX)){
+				if (!m_vecTile[iIndex - TILEX -1]->byOption) {
+					m_vecAdj[iIndex].push_back(m_vecTile[iIndex - TILEX - 1]);
 				}
 			}
 
 			//좌 하단 - TILEY-1 행과 1열 제외
-			if ((TILEY - 1 != i) && (0 != iIndex % (TILEX * 2))) {
+			if ((TILEY - 1 != i) && (0 != iIndex % TILEX)) {
 				if (!m_vecTile[iIndex + (TILEX - 1)]->byOption) {
 					m_vecAdj[iIndex].push_back(m_vecTile[iIndex + (TILEX - 1)]);
 				}
@@ -398,17 +397,17 @@ void CMyTerrain::Ready_Adjacency()
 			// 77  78  79
 			// 117 118 119
 			//우 상단 - 1행과 TILEX-1 열 제외
-			if ((0 != i) && ((TILEX * 2 - 1) != iIndex % (TILEX * 2))) {
-				if (!m_vecTile[iIndex - (TILEX-1)]->byOption) {
-					m_vecAdj[iIndex].push_back(m_vecTile[iIndex - (TILEX - 1)]);
+			if ((0 != i) && ((TILEX - 1) != iIndex % TILEX)) {
+				if (!m_vecTile[iIndex - TILEX + 1]->byOption) {
+					m_vecAdj[iIndex].push_back(m_vecTile[iIndex - TILEX + 1]);
 				}
 			}
 
 			// 우 하단 - TILEY-1 행과 TILEX-1 열 제외
-			if ((TILEY - 1 != i) && (TILEX * 2 - 1) != iIndex % (TILEX * 2))
+			if ((TILEY - 1 != i) && (TILEX - 1) != iIndex % (TILEX))
 			{
-				if (!m_vecTile[iIndex + TILEX]->byOption) {
-					m_vecAdj[iIndex].push_back(m_vecTile[iIndex + TILEX]);
+				if (!m_vecTile[iIndex + TILEX + 1]->byOption) {
+					m_vecAdj[iIndex].push_back(m_vecTile[iIndex + TILEX + 1]);
 				}
 			}
 
