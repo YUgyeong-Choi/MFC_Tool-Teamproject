@@ -24,4 +24,6 @@ protected:
 public:
 	void	OnInitialUpdate();
 
+	// // func2, general3, deco5
+	CButton m_FurnitureSelect[3];
 };
