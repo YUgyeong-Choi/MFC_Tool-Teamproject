@@ -6,6 +6,7 @@
 #include "ObjMgr.h"
 #include "TimeMgr.h"
 #include "KeyMgr.h"
+#include "CAstarMgr.h"
 
 CMainGame::CMainGame()
 	: m_pGraphicDev(CDevice::Get_Instance())
@@ -82,5 +83,6 @@ void CMainGame::Release(void)
 	CTextureMgr::Get_Instance()->Destroy_Instance();
 	CSceneMgr::Get_Instance()->Destroy_Instance();
 	CKeyMgr::Get_Instance()->Destroy_Instance();
+	CAstarMgr::Get_Instance()->Destroy_Instance();
 	m_pGraphicDev->Destroy_Instance();
 }

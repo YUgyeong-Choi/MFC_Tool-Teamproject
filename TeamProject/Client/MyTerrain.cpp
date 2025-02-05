@@ -142,6 +142,8 @@ HRESULT CMyTerrain::Initialize(void)
 	//m_wstrObjKey = L"dirt";
 	//m_wstrStateKey = L"ground";
 
+	Ready_Adjacency();
+
 	return S_OK;
 }
 
@@ -268,7 +270,9 @@ void CMyTerrain::Render(void)
 							 nullptr,        // 위치 좌표에 대한 vec3 주소, null인 경우 스크린 상 0, 0 좌표 출력    
 							 D3DCOLOR_ARGB(255, 255, 255, 255)); // 출력할 이미지와 섞을 색상 값, 0xffffffff를 넘겨주면 섞지 않고 원본 색상 유지
 					}
-
+					swprintf_s(szBuf, L"%d", iIndex);
+					CDevice::Get_Instance()->Get_Font()->DrawTextW(CDevice::Get_Instance()->Get_Sprite(), szBuf, lstrlen(szBuf), nullptr, 0, D3DCOLOR_ARGB(255, 255, 255, 255));
+					++iIndex;
 				}
 			}
 		}
@@ -313,6 +317,8 @@ HRESULT CMyTerrain::Load_Tile(const TCHAR * pTilePath)
 		pTiletemp->byOption = pTile.byOption;
 		pTiletemp->vPos = pTile.vPos;
 		pTiletemp->vSize = pTile.vSize;
+		pTiletemp->iIndex = pTile.iIndex;
+		pTiletemp->iParentIndex = pTile.iParentIndex;
 		for (int i = 0; i < OPT_END; ++i)
 		{
 			pTiletemp->tObject[i].bExist = pTile.tObject[i].bExist;
@@ -332,3 +338,80 @@ HRESULT CMyTerrain::Load_Tile(const TCHAR * pTilePath)
 	CloseHandle(hFile);
 }
 
+void CMyTerrain::Ready_Adjacency()
+{
+	m_vecAdj.resize(m_vecTile.size());
+
+	for (int i = 0; i < TILEY; ++i)
+	{
+		for (int j = 0; j < TILEX; ++j)
+		{
+			int	iIndex = i * TILEX + j;
+
+			// 상단 - 1행 제외
+			if (0 != i) {
+				if (!m_vecTile[iIndex - TILEX]->byOption) {
+					m_vecAdj[iIndex].push_back(m_vecTile[iIndex - TILEX]);
+				}
+			}
+
+			// 하단 - TILEY-1행 제외
+			if (TILEY-1 != i) {
+				if (!m_vecTile[iIndex + TILEX]->byOption) {
+					m_vecAdj[iIndex].push_back(m_vecTile[iIndex + TILEX]);
+				}
+			}
+
+			// 좌단 - 1열 제외
+			if (j!=0) {
+				if (!m_vecTile[iIndex - 1]->byOption) {
+					m_vecAdj[iIndex].push_back(m_vecTile[iIndex - 1]);
+				}
+			}
+
+
+			// 우단 - TILEX - 1 열 제외
+			if (TILEX-1 != j) {
+				if (!m_vecTile[iIndex + 1]->byOption) {
+					m_vecAdj[iIndex].push_back(m_vecTile[iIndex + 1]);
+				}
+			}
+
+			// 0  1  2
+			// 40 41 42
+			// 80 81 82
+			//좌 상단 - 1행과 1열 제외
+			if ((0 != i) && (0 != iIndex % (TILEX * 2))){
+				if (!m_vecTile[iIndex - (TILEX-1)]->byOption) {
+					m_vecAdj[iIndex].push_back(m_vecTile[iIndex - (TILEX - 1)]);
+				}
+			}
+
+			//좌 하단 - TILEY-1 행과 1열 제외
+			if ((TILEY - 1 != i) && (0 != iIndex % (TILEX * 2))) {
+				if (!m_vecTile[iIndex + (TILEX - 1)]->byOption) {
+					m_vecAdj[iIndex].push_back(m_vecTile[iIndex + (TILEX - 1)]);
+				}
+			}
+
+			// 37  38  39
+			// 77  78  79
+			// 117 118 119
+			//우 상단 - 1행과 TILEX-1 열 제외
+			if ((0 != i) && ((TILEX * 2 - 1) != iIndex % (TILEX * 2))) {
+				if (!m_vecTile[iIndex - (TILEX-1)]->byOption) {
+					m_vecAdj[iIndex].push_back(m_vecTile[iIndex - (TILEX - 1)]);
+				}
+			}
+
+			// 우 하단 - TILEY-1 행과 TILEX-1 열 제외
+			if ((TILEY - 1 != i) && (TILEX * 2 - 1) != iIndex % (TILEX * 2))
+			{
+				if (!m_vecTile[iIndex + TILEX]->byOption) {
+					m_vecAdj[iIndex].push_back(m_vecTile[iIndex + TILEX]);
+				}
+			}
+
+		}
+	}
+}

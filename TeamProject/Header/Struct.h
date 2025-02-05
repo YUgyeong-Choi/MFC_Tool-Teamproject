@@ -36,6 +36,9 @@ typedef struct tagTile
 
 	BYTE		byOption;			// 0, 1번(장애물)
 	TILEOBJ		tObject[OPT_END];
+
+	int			iIndex = 0;
+	int			iParentIndex = 0;
 }TILE;
 
 typedef struct tagMapObjectData

@@ -61,6 +61,9 @@
     <Filter Include="01. Mgr\KeyMgr">
       <UniqueIdentifier>{0e860a1b-b5ef-4f79-b4d7-29e062009d23}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Mgr\AstarMgr">
+      <UniqueIdentifier>{323e140f-3017-4cf5-b1f9-e18b13a43bf6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -123,6 +126,9 @@
     <ClInclude Include="KeyMgr.h">
       <Filter>01. Mgr\KeyMgr</Filter>
     </ClInclude>
+    <ClInclude Include="CAstarMgr.h">
+      <Filter>01. Mgr\AstarMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -175,6 +181,9 @@
     </ClCompile>
     <ClCompile Include="KeyMgr.cpp">
       <Filter>01. Mgr\KeyMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CAstarMgr.cpp">
+      <Filter>01. Mgr\AstarMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

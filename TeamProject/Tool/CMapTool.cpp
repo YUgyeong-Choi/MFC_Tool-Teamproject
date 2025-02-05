@@ -379,6 +379,8 @@ void CMapTool::OnBnClickedLoad()
 			pTiletemp->byOption = pTile.byOption;
 			pTiletemp->vPos = pTile.vPos;
 			pTiletemp->vSize = pTile.vSize;
+			pTiletemp->iIndex = pTile.iIndex;
+			pTiletemp->iParentIndex = pTile.iParentIndex;
 			for (int i = 0; i < OPT_END; ++i)
 			{
 				pTiletemp->tObject[i].bExist = pTile.tObject[i].bExist;
