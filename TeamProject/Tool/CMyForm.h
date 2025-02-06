@@ -3,6 +3,7 @@
 #include "CMapTool.h"
 #include "CMapObjTool.h"
 #include "CPlayerTool.h"
+#include "CAnimalTool.h"
 
 class CMyForm : public CFormView
 {
@@ -30,7 +31,7 @@ public:
 	CMapTool	m_MapTool;
 	CPlayerTool m_PlayerTool;
 	CMapObjTool m_MapObjTool;
-
+	CAnimalTool m_AnimalTool;
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
@@ -41,6 +42,7 @@ public:
 	afx_msg void OnMapTool();
 	afx_msg void OnGrid();
 	afx_msg void OnMapObjectTool();
+	afx_msg void OnAnimalTool();
 };
 
 
