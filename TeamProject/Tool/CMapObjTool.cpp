@@ -87,15 +87,15 @@ BOOL CMapObjTool::OnInitDialog()
 
 	CImage* pPngImage = new CImage;
 
-	swprintf_s(szFullPath, MAX_PATH, L"../Assets/Map/%s/%s/%s_%s%d.png", pFilePath, szTileOption, pFilePath, szTileOption, i + 1);
-	if (iErr == 0 && FAILED(pPngImage->Load(L"../Assets/Object/")))
-	{
-		AfxMessageBox(lstrcat(szFullPath, L" Load Failed"));
-		iErr = -1;
-		iCnt = iFullCnt;
-	}
+	//swprintf_s(szFullPath, MAX_PATH, L"../Assets/Map/%s/%s/%s_%s%d.png", pFilePath, szTileOption, pFilePath, szTileOption, i + 1);
+	//if (iErr == 0 && FAILED(pPngImage->Load(L"../Assets/Object/")))
+	//{
+	//	AfxMessageBox(lstrcat(szFullPath, L" Load Failed"));
+	//	iErr = -1;
+	//	iCnt = iFullCnt;
+	//}
 
-	m_mapPngImage.insert({ strTileName, pPngImage });
+	//m_mapPngImage.insert({ strTileName, pPngImage });
 
 
 	return TRUE;  // return TRUE unless you set the focus to a control
