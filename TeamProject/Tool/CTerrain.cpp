@@ -301,7 +301,11 @@ void CTerrain::Tile_Change(const D3DXVECTOR3& vPos, TILETYPE byTileType, TILETER
 
 	m_vecTile[iIndex]->tObject[byTileType].bExist = true;
 	m_vecTile[iIndex]->tObject[byTileType].byDrawID = byDrawID;
-	m_vecTile[iIndex]->byOption = byOption;
+	if (byTileType == TILETYPE::OPT_WALL || byTileType == TILETYPE::OPT_ORE)
+		m_vecTile[iIndex]->byOption = OPTION_COLLISION;
+	else
+		m_vecTile[iIndex]->byOption = OPTION_NOCOLLISION;
+
 	m_vecTile[iIndex]->tObject[byTileType].eTileTerrain = byTerrain;
 	
 	if (byTileType == OPT_WALL)

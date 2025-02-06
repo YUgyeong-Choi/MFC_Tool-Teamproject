@@ -391,7 +391,7 @@ void CMyPlayer::LoadPlayerData()
 
 void CMyPlayer::ChangeColor()
 {
-	HANDLE hFile = CreateFile(L"../Data/Player.dat", GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	HANDLE hFile = CreateFile(L"../Data/20250207player.dat", GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
 	DWORD	dwByte(0);
 

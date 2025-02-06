@@ -5,6 +5,7 @@
 #include "MyTerrain.h"
 #include "MyPlayer.h"
 #include "Animal.h"
+#include "CMapObject.h"
 
 CStage::CStage()
 {
@@ -63,7 +64,7 @@ void CStage::Release_Scene()
 
 void CStage::AddAnimal()
 {
-	HANDLE hFile = CreateFile(L"../Data/Animal.dat", GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	HANDLE hFile = CreateFile(L"../Data/20250207animal.dat", GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
 	DWORD	dwByte(0), dwStrByte(0);
 
@@ -101,5 +102,8 @@ void CStage::AddAnimal()
 void CStage::AddMapObject()
 {
 
+	CObj* pMapObj = new CMapObject;
+	pMapObj->Initialize();
+	CObjMgr::Get_Instance()->Add_Object(CObjMgr::MAPOBJ, pMapObj);
 
 }

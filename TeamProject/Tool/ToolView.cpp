@@ -169,14 +169,13 @@ void CToolView::Check_TileSettings(CPoint point)
 		}
 
 		iDrawID = pMyForm->m_MapTool.m_ListBox.GetCurSel();
-		if (iDrawID == -1)
-			return;
-
-		m_pTerrain->Tile_Change(D3DXVECTOR3(float(adjustedPoint.x) + GetScrollPos(0), float(adjustedPoint.y) + GetScrollPos(1), 0.f), // 좌표
-			eType,					// 타일 타입
-			eTerrain,
-			iDrawID,					// 타일 id
-			iOption);		// option(통과 가능 여부)
+		if (iDrawID != -1)
+			m_pTerrain->Tile_Change(D3DXVECTOR3(float(adjustedPoint.x) + GetScrollPos(0), float(adjustedPoint.y) + GetScrollPos(1), 0.f), // 좌표
+				eType,					// 타일 타입
+				eTerrain,
+				iDrawID,					// 타일 id
+				iOption);		// option(통과 가능 여부)
+		
 	}
 	if (nullptr != pMapObjTool.GetSafeHwnd()) // 오브젝트 툴 타일 피킹
 	{
@@ -184,12 +183,12 @@ void CToolView::Check_TileSettings(CPoint point)
 		if (FAILED(m_pTerrain->Set_TileOption(vTemp, OPTION_COLLISION)))
 			return;
 		MAPOBJ* pMapobj = new MAPOBJ;
-		pMapobj->byDrawID = pMapObjTool.m_iImgCurIndex;
+		pMapobj->byDrawID = pMapObjTool.m_iImgCurIndex - 1;
 		pMapobj->eObjType = pMapObjTool.Get_SelectedType();
 		pMapobj->iTileIndex = m_pTerrain->Get_TileIdx(vTemp);
-		pMapobj->vPos = vTemp;
-		pMapobj->vSize = {};
-		pMapobj->vTileSize = {};
+		pMapobj->vPos = D3DXVECTOR3(pMapobj->iTileIndex % TILEX * TILECX + TILECX * 0.5f,
+									pMapobj->iTileIndex / TILEX * TILECX + TILECX, 0.f);
+
 
 		m_pTerrain->Get_ObjVector()->push_back(pMapobj);
 	}

@@ -4,6 +4,9 @@ class CMapObject :
     public CObj
 {
 public:
+    CMapObject();
+    virtual ~CMapObject();
+public:
     HRESULT Initialize(void) override;
     int Update(void) override;
     void Late_Update(void) override;
@@ -14,6 +17,3 @@ private:
     vector<MAPOBJ*> m_vecObject;
     HRESULT Load_Object(const TCHAR* pTilePath);
 };
-
-
-
