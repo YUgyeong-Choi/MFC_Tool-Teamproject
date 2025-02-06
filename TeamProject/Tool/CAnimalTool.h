@@ -19,7 +19,7 @@ public:
 private:
 	enum ACTION{IDLE, WALK, EAT, SLEEP, SLEEPING, WAKEUP, ACTION_END};
 	void OnLoadData();
-	void AddMap(const CString& type, int idleCnt, int walkCnt, int eatCnt, int sleepCnt, int sleepingCnt, int wakeupCnt);
+	void AddAnimalAsset(const CString& type, int idleCnt, int walkCnt, int eatCnt, int sleepCnt, int sleepingCnt, int wakeupCnt);
 	void StopRender(); //애니메이션 멈췄을 때
 private:
 	map<CString, CImage*>	m_animalImage;

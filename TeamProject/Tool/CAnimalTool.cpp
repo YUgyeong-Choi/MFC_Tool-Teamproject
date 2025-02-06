@@ -73,12 +73,12 @@ void CAnimalTool::OnInitialUpdate()
 void CAnimalTool::OnLoadData()
 {
 
-	AddMap(L"dodo",6, 8, 12, 6, 1, 5);
-	AddMap(L"cow",6, 8, 16, 6, 1, 10);
-	AddMap(L"turtle",5, 8, 13, 0, 0, 0);
+	AddAnimalAsset(L"dodo",6, 8, 12, 6, 1, 5);
+	AddAnimalAsset(L"cow",6, 8, 16, 6, 1, 10);
+	AddAnimalAsset(L"turtle",5, 8, 13, 0, 0, 0);
 }
 
-void CAnimalTool::AddMap(const CString& type, int idleCnt, int walkCnt, int eatCnt, int sleepCnt, int sleepingCnt, int wakeupCnt)
+void CAnimalTool::AddAnimalAsset(const CString& type, int idleCnt, int walkCnt, int eatCnt, int sleepCnt, int sleepingCnt, int wakeupCnt)
 {
 	TCHAR szFullPath[MAX_PATH] = L"../Assets/Animal/";
 	TCHAR pFilePathType[6][MAX_STR] = { L"idle", L"walk", L"eat", L"sleep", L"sleeping", L"wakeup" };
