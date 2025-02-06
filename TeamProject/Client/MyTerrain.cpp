@@ -19,10 +19,11 @@ HRESULT CMyTerrain::Initialize(void)
 	m_vecTile.reserve(TILEX * TILEY);
 
 	// 저장 불러오기 추가할 것***
-	if (FAILED(Load_Tile(L"../Data/Maptest.dat")))
+	if (FAILED(Load_Tile(L"../Data/Map_250206.dat")))
 	{
 		return E_FAIL;
 	}
+	m_eRender = R_TERRAIN;
 
 
 	// Initialize_TileTexture
@@ -169,7 +170,7 @@ void CMyTerrain::Render(void)
 	int		iScrollY = int(-m_vScroll.y) / TILECY;
 
 	int		iMaxX = WINCX / TILECX + 1;
-	int		iMaxY = WINCY / TILECY + 1;
+	int		iMaxY = WINCY / TILECY + TILEX;
 
 	for (int i = iScrollY; i < iScrollY + iMaxY; ++i)
 	{
@@ -293,7 +294,7 @@ void CMyTerrain::Render_WallHead(void)
 	int		iScrollY = int(-m_vScroll.y) / TILECY;
 
 	int		iMaxX = WINCX / TILECX + 1;
-	int		iMaxY = WINCY / TILECY + 1;
+	int		iMaxY = WINCY / TILECY + TILEX;
 
 	for (int i = iScrollY; i < iScrollY + iMaxY; ++i)
 	{

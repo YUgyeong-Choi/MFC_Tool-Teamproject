@@ -102,10 +102,10 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 
 	m_MainSplitter.CreateStatic(this, 1, 2);
 	m_MainSplitter.CreateView(0, 0, RUNTIME_CLASS(CToolView), CSize(WINCX, WINCY), pContext);
-	m_MainSplitter.CreateView(0, 1, RUNTIME_CLASS(CMyForm), CSize(300, WINCY), pContext);
+	m_MainSplitter.CreateView(0, 1, RUNTIME_CLASS(CMyForm), CSize(100, WINCY), pContext);
 
 	//SetColumnInfo(열 번호, 열의 크기 지정, 허용 가능한 최소크기)
-	m_MainSplitter.SetColumnInfo(1, 300, 100);
+	m_MainSplitter.SetColumnInfo(1, 100, 100);
 
 
 	//test

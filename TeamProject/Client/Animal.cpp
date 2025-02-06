@@ -32,6 +32,7 @@ HRESULT CAnimal::Initialize(void)
 	default:
 		break;
 	}
+	m_eRender = R_MAPOBJ;
 
 	return E_NOTIMPL;
 }

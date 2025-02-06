@@ -67,6 +67,9 @@
     <Filter Include="01. Mgr\ObjMgr\Obj\Animal">
       <UniqueIdentifier>{2ce47f7b-9973-449c-8e26-2334875ca633}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Mgr\ObjMgr\Obj\MapObject">
+      <UniqueIdentifier>{60ee0f3c-ca4a-4732-a889-6fbd2d050b4c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -135,6 +138,9 @@
     <ClInclude Include="Animal.h">
       <Filter>01. Mgr\ObjMgr\Obj\Animal</Filter>
     </ClInclude>
+    <ClInclude Include="CMapObject.h">
+      <Filter>01. Mgr\ObjMgr\Obj\MapObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -193,6 +199,9 @@
     </ClCompile>
     <ClCompile Include="Animal.cpp">
       <Filter>01. Mgr\ObjMgr\Obj\Animal</Filter>
+    </ClCompile>
+    <ClCompile Include="CMapObject.cpp">
+      <Filter>01. Mgr\ObjMgr\Obj\MapObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

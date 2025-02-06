@@ -17,6 +17,7 @@ public:
 
 private:
 	void AddAnimal();
+	void AddMapObject();
 
 };
 

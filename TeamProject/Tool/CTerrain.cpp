@@ -2,6 +2,8 @@
 #include "CTerrain.h"
 #include "CTextureMgr.h"
 #include "CDevice.h"
+#include "CMapObjTool.h"
+#include "resource.h"
 
 CTerrain::CTerrain():m_bGrid(false), m_pMainView(nullptr)
 {
@@ -31,7 +33,7 @@ HRESULT CTerrain::Initialize()
 			pTile->byOption = 0;
 			pTile->tObject[OPT_GROUND].bExist = true;
 			for (int i = OPT_GROUND + 1; i < OPT_END; ++i) pTile->tObject[i].bExist = false;
-			pTile->tObject[OPT_GROUND].byDrawID = 27;
+			pTile->tObject[OPT_GROUND].byDrawID = 6;
 			pTile->tObject[OPT_GROUND].eTileTerrain = TRN_DIRT;
 			pTile->iIndex = i * TILEX + j;
 			pTile->iParentIndex = 0;
@@ -174,6 +176,61 @@ void CTerrain::Render(float fZoomFactor, const CPoint& zoomCenter)
 		}
 
 	}
+
+	for (auto& pObj : m_vecObj)
+	{
+		D3DXMatrixIdentity(&matWorld);
+		D3DXMatrixScaling(&matScale, zoomFactor, zoomFactor, 1.f);
+		D3DXMatrixTranslation(&matTrans,
+			(pObj->vPos.x - zoomCenter.x)* zoomFactor + zoomCenter.x,
+			(pObj->vPos.y - zoomCenter.y)* zoomFactor + zoomCenter.y,
+			pObj->vPos.z);
+
+		matWorld = matScale * matTrans;
+
+		RECT rc{};
+		GetClientRect(m_pMainView->m_hWnd, &rc);
+
+		float fX = WINCX / float(rc.right - rc.left);
+		float fY = WINCY / float(rc.bottom - rc.top);
+
+		Set_Ratio(&matWorld, fX, fY);
+
+		CDevice::Get_Instance()->Get_Sprite()->SetTransform(&matWorld);
+		auto pMapObjTool = (CMapObjTool*)AfxGetMainWnd()->GetDlgItem(IDD_CMapObjTool);
+
+		TCHAR szTexType[MAX_STR] = L"";
+		switch (pObj->eObjType)
+		{
+		case MAPOBJ_DECO:
+			lstrcpy(szTexType, L"object_deco_"); break;
+			break;
+		case MAPOBJ_FUNCTION:
+			lstrcpy(szTexType, L"object_function_"); break;
+			break;
+		case MAPOBJ_FURNITURE:
+			lstrcpy(szTexType, L"object_furniture_"); break;
+			break;
+		}
+		const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(L"object", szTexType, pObj->byDrawID);
+
+		if (pTexInfo == nullptr)
+		{
+			continue;
+		}
+		float fCenterX = pTexInfo->tImgInfo.Width / 2.f;
+		float fCenterY = pTexInfo->tImgInfo.Height;
+
+		D3DXVECTOR3 vTemp{ fCenterX, fCenterY, 0.f };
+
+		CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture, //출력할 텍스처 컴객체
+			nullptr,        // 출력할 이미지 영역에 대한 Rect 주소, null인 경우 이미지의 0, 0기준으로 출력
+			&vTemp,        // 출력할 이미지의 중심 좌표 vec3 주소, null인 경우 0, 0 이미지 중심
+			nullptr,        // 위치 좌표에 대한 vec3 주소, null인 경우 스크린 상 0, 0 좌표 출력    
+			D3DCOLOR_ARGB(255, 255, 255, 255)); // 출력할 이미지와 섞을 색상 값, 0xffffffff를 넘겨주면 섞지 않고 원본 색상 유지
+	}
+
+
 }
 
 void CTerrain::Release()
@@ -185,6 +242,17 @@ void CTerrain::Release()
 		});
 	m_vecTile.clear();
 	m_vecTile.shrink_to_fit();
+
+	for_each(m_vecObj.begin(), m_vecObj.end(), [](auto& p)
+		{
+			if (p)
+			{
+				delete p; p = nullptr;
+			}
+		});
+	m_vecObj.clear();
+	m_vecObj.shrink_to_fit();
+
 }
 
 // 미니맵 렌더(안쓰는중)
@@ -291,6 +359,27 @@ HRESULT CTerrain::Initialize_TileTexture()
 		TEX_MULTI, L"water", L"ground", 17)))
 	{
 		AfxMessageBox(L"water ground Texture Insert Failed");
+		//return E_FAIL;
+	}
+	if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
+		L"../Assets/Map/object/object_deco_/object_deco_%d.png",
+		TEX_MULTI, L"object", L"object_deco_", 25)))
+	{
+		AfxMessageBox(L"object_deco_ Texture Insert Failed");
+		//return E_FAIL;
+	}
+	if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
+		L"../Assets/Map/object/object_function_/object_function_%d.png",
+		TEX_MULTI, L"object", L"object_function_", 14)))
+	{
+		AfxMessageBox(L"object_function_ Texture Insert Failed");
+		//return E_FAIL;
+	}
+	if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
+		L"../Assets/Map/object/object_furniture_/object_furniture_%d.png",
+		TEX_MULTI, L"object", L"object_furniture_", 4)))
+	{
+		AfxMessageBox(L"object_furniture_ Texture Insert Failed");
 		//return E_FAIL;
 	}
 

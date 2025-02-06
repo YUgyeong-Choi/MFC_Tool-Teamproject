@@ -139,21 +139,22 @@ void CToolView::Check_TileSettings(CPoint point)
 	CMainFrame* pMainFrm = (CMainFrame*)AfxGetMainWnd();
 	CMyForm* pMyForm = dynamic_cast<CMyForm*>(pMainFrm->m_MainSplitter.GetPane(0, 1));
 	int		iOption = OPTION_NOCOLLISION;
+	auto& pMapObjTool = pMyForm->m_MapObjTool;
+	CPoint adjustedPoint;
+	adjustedPoint.x = static_cast<int>((point.x / m_fZoomFactor));
+	adjustedPoint.y = static_cast<int>((point.y / m_fZoomFactor));
 
-	if (nullptr != pMyForm->m_MapTool.GetSafeHwnd() && nullptr != pMyForm->m_MapObjTool.GetSafeHwnd())
-	{
-		AfxMessageBox(L"타일과 오브젝트는 동시에 설치할 수 없습니다.\n");
-		return;
-	}
-	else if (nullptr != pMyForm->m_MapTool.GetSafeHwnd()) // 맵 툴 타일 피킹
+	//if (nullptr != pMyForm->m_MapTool.GetSafeHwnd() && nullptr != pMapObjTool.GetSafeHwnd())
+	//{
+	//	AfxMessageBox(L"타일과 오브젝트는 동시에 설치할 수 없습니다.\n");
+	//	return;
+	//}
+	if (nullptr != pMyForm->m_MapTool.GetSafeHwnd()) // 맵 툴 타일 피킹
 	{
 		TILETERRAIN eTerrain = (TILETERRAIN)(pMyForm->m_MapTool.m_ctrlCMapType.GetCurSel());
 		TILETYPE eType = (TILETYPE)(pMyForm->m_MapTool.m_crtlCType.GetCurSel());
 		int iDrawID = -1;
 		// 확대/축소 비율과 중심을 고려하여 포인트 조정
-		CPoint adjustedPoint;
-		adjustedPoint.x = static_cast<int>((point.x / m_fZoomFactor));
-		adjustedPoint.y = static_cast<int>((point.y / m_fZoomFactor));
 
 		switch (eType)
 		{
@@ -177,9 +178,20 @@ void CToolView::Check_TileSettings(CPoint point)
 			iDrawID,					// 타일 id
 			iOption);		// option(통과 가능 여부)
 	}
-	else if (nullptr != pMyForm->m_MapObjTool.GetSafeHwnd()) // 오브젝트 툴 타일 피킹
+	if (nullptr != pMapObjTool.GetSafeHwnd()) // 오브젝트 툴 타일 피킹
 	{
+		D3DXVECTOR3 vTemp = { float(adjustedPoint.x) + GetScrollPos(0), float(adjustedPoint.y) + GetScrollPos(1), 0.f };
+		if (FAILED(m_pTerrain->Set_TileOption(vTemp, OPTION_COLLISION)))
+			return;
+		MAPOBJ* pMapobj = new MAPOBJ;
+		pMapobj->byDrawID = pMapObjTool.m_iImgCurIndex;
+		pMapobj->eObjType = pMapObjTool.Get_SelectedType();
+		pMapobj->iTileIndex = m_pTerrain->Get_TileIdx(vTemp);
+		pMapobj->vPos = vTemp;
+		pMapobj->vSize = {};
+		pMapobj->vTileSize = {};
 
+		m_pTerrain->Get_ObjVector()->push_back(pMapobj);
 	}
 }
 

@@ -47,17 +47,42 @@ void CObjMgr::Late_Update()
 	for (int i = 0 ; i < END ; ++i)
 	{
 		for (auto& pObject : m_listObject[i])
+		{
 			pObject->Late_Update();
+
+			if (m_listObject[i].empty())
+				break;
+
+			RENDERID	eID = pObject->Get_RenderID();
+			m_RenderList[eID].push_back(pObject);
+		}
 	}
 }
 
 void CObjMgr::Render()
 {
-	for (int i = 0; i < END; ++i)
+	//for (int i = 0; i < END; ++i)
+	//{
+	//	for (auto& pObject : m_listObject[i])
+	//		pObject->Render();
+	//}
+
+	for (size_t i = 0; i < R_END; ++i)
 	{
-		for (auto& pObject : m_listObject[i])
-			pObject->Render();
+		m_RenderList[i].sort([](CObj* pDst, CObj* pSrc)->bool
+			{
+				return pDst->Get_Info().vPos.y < pSrc->Get_Info().vPos.y;
+			});
+
+		for (auto& pObj : m_RenderList[i])
+			pObj->Render();
+
+		m_RenderList[i].clear();
 	}
+
+
+
+
 	static_cast<CMyTerrain*>(m_listObject[ID::TERRAIN].front())->Render_WallHead();
 }
 
