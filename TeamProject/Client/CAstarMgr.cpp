@@ -100,7 +100,53 @@ void CAstarMgr::Make_BestList(int iStartIdx, int iGoalIdx)
 	CObj* pMyTerrain = CObjMgr::Get_Instance()->Get_Terrain();
 	vector<TILE*>& vecTile = dynamic_cast<CMyTerrain*>(pMyTerrain)->Get_VecTile();
 
-	m_BestList.push_front(vecTile[iGoalIdx]);
+	TILEADDLOOK temp;
+	temp.pTile = vecTile[iGoalIdx];
+
+	//상단 이동
+	if (vecTile[iGoalIdx]->iIndex == vecTile[iGoalIdx]->iParentIndex - TILEX) {
+		temp.eLook = UP;
+	}
+
+	//하단 이동
+	if (vecTile[iGoalIdx]->iIndex == vecTile[iGoalIdx]->iParentIndex + TILEX) {
+		temp.eLook = DOWN;
+	}
+
+	//우단 이동
+	if (vecTile[iGoalIdx]->iParentIndex == vecTile[iGoalIdx]->iIndex - 1) {
+		temp.eLook = RIGHT;
+	}
+
+	//좌단 이동
+	if (vecTile[iGoalIdx]->iParentIndex == vecTile[iGoalIdx]->iIndex + 1) {
+		temp.eLook = LEFT;
+	}
+
+	// 좌상단이면
+	if (vecTile[iGoalIdx]->iIndex == vecTile[iGoalIdx]->iParentIndex - (TILEX + 1)) {
+		temp.eLook = LEFT;
+	}
+
+	//좌하단 이면
+	if (vecTile[iGoalIdx]->iIndex == vecTile[iGoalIdx]->iParentIndex + TILEX - 1) {
+		temp.eLook = LEFT;
+	}
+
+	// 우상단이면
+	if (vecTile[iGoalIdx]->iIndex == vecTile[iGoalIdx]->iParentIndex - (TILEX - 1)) {
+		temp.eLook = RIGHT;
+	}
+
+
+	//우하단 이면
+	if (vecTile[iGoalIdx]->iIndex == vecTile[iGoalIdx]->iParentIndex + TILEX + 1) {
+		temp.eLook = RIGHT;
+	}
+
+	//if(vecTile[iGoalIdx]->iIndex = vecTile[iGoalIdx]->iParentIndex - )
+
+	m_BestList.push_front(temp);
 
 	int iRouteIdx = vecTile[iGoalIdx]->iParentIndex;
 
@@ -109,7 +155,53 @@ void CAstarMgr::Make_BestList(int iStartIdx, int iGoalIdx)
 		if (iRouteIdx == iStartIdx)
 			break;
 
-		m_BestList.push_front(vecTile[iRouteIdx]);
+		TILEADDLOOK temp;
+		temp.pTile = vecTile[iRouteIdx];
+		temp.eLook = LEFT;
+
+		//상단 이동
+		if (vecTile[iRouteIdx]->iIndex == vecTile[iRouteIdx]->iParentIndex - TILEX) {
+			temp.eLook = UP;
+		}
+
+		//하단 이동
+		if (vecTile[iRouteIdx]->iIndex == vecTile[iRouteIdx]->iParentIndex + TILEX) {
+			temp.eLook = DOWN;
+		}
+
+		//우단 이동
+		if (vecTile[iRouteIdx]->iParentIndex == vecTile[iRouteIdx]->iIndex - 1) {
+			temp.eLook = RIGHT;
+		}
+
+		//좌단 이동
+		if (vecTile[iRouteIdx]->iParentIndex == vecTile[iRouteIdx]->iIndex + 1) {
+			temp.eLook = LEFT;
+		}
+
+		// 좌상단이면
+		if (vecTile[iRouteIdx]->iIndex == vecTile[iRouteIdx]->iParentIndex - (TILEX + 1)) {
+			temp.eLook = LEFT;
+		}
+
+		//좌하단 이면
+		if (vecTile[iRouteIdx]->iIndex == vecTile[iRouteIdx]->iParentIndex + TILEX - 1) {
+			temp.eLook = LEFT;
+		}
+
+		// 우상단이면
+		if (vecTile[iRouteIdx]->iIndex == vecTile[iRouteIdx]->iParentIndex - (TILEX - 1)) {
+			temp.eLook = RIGHT;
+		}
+
+
+		//우하단 이면
+		if (vecTile[iRouteIdx]->iIndex == vecTile[iRouteIdx]->iParentIndex + TILEX + 1) {
+			temp.eLook = RIGHT;
+		}
+
+
+		m_BestList.push_front(temp);
 		iRouteIdx = vecTile[iRouteIdx]->iParentIndex;
 	}
 }

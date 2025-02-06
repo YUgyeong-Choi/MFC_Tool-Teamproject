@@ -11,7 +11,7 @@ private:
 	~CAstarMgr();
 
 public:
-	list<TILE*>& Get_BestList() { return m_BestList; }
+	list<TILEADDLOOK>& Get_BestList() { return m_BestList; }
 
 public:
 	void		Start_Astar(const D3DXVECTOR3& vStart, const D3DXVECTOR3& vGoal);
@@ -32,7 +32,7 @@ private:
 	list<int>		m_OpenList;
 	list<int>		m_CloseList;
 
-	list<TILE*>		m_BestList;
+	list<TILEADDLOOK>		m_BestList;
 
 	int				m_iStartIdx;
 };

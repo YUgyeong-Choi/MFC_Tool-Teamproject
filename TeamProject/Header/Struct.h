@@ -41,6 +41,12 @@ typedef struct tagTile
 	int			iParentIndex = 0;
 }TILE;
 
+typedef struct tagTileAddLook
+{
+	TILE* pTile;
+	PLAYERLOOK eLook;
+}TILEADDLOOK;
+
 typedef struct tagMapObjectData
 {
 	D3DXVECTOR3	vPos;	
