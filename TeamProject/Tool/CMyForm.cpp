@@ -9,6 +9,7 @@
 #include "CTerrain.h"
 
 
+
 // CMyForm
 
 IMPLEMENT_DYNCREATE(CMyForm, CFormView)
@@ -33,6 +34,7 @@ BEGIN_MESSAGE_MAP(CMyForm, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON2, &CMyForm::OnMapTool)
 	ON_BN_CLICKED(IDC_CHECK1, &CMyForm::OnGrid)
 	ON_BN_CLICKED(IDC_BUTTON3, &CMyForm::OnMapObjectTool)
+	ON_BN_CLICKED(IDC_BUTTON5, &CMyForm::OnAnimalTool)
 END_MESSAGE_MAP()
 
 
@@ -107,4 +109,15 @@ void CMyForm::OnMapObjectTool()
 	}
 
 	m_MapObjTool.ShowWindow(SW_SHOW);
+}
+
+
+void CMyForm::OnAnimalTool()
+{
+	if (nullptr == m_AnimalTool.GetSafeHwnd()) {
+		m_AnimalTool.Create(IDD_CAnimalTool);	// 해당 id에 맞는 다이얼로그 생성
+		m_AnimalTool.OnInitialUpdate();
+	}
+
+	m_AnimalTool.ShowWindow(SW_SHOW);
 }

@@ -195,6 +195,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CAnimalTool.h" />
     <ClInclude Include="CDevice.h" />
     <ClInclude Include="CFileInfo.h" />
     <ClInclude Include="CMapObjTool.h" />
@@ -217,6 +218,7 @@
     <ClInclude Include="ToolView.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CAnimalTool.cpp" />
     <ClCompile Include="CDevice.cpp" />
     <ClCompile Include="CFileInfo.cpp" />
     <ClCompile Include="CMapObjTool.cpp" />
