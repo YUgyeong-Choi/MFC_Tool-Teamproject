@@ -64,6 +64,9 @@
     <Filter Include="01. Mgr\AstarMgr">
       <UniqueIdentifier>{323e140f-3017-4cf5-b1f9-e18b13a43bf6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Mgr\ObjMgr\Obj\Animal">
+      <UniqueIdentifier>{2ce47f7b-9973-449c-8e26-2334875ca633}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -129,6 +132,9 @@
     <ClInclude Include="CAstarMgr.h">
       <Filter>01. Mgr\AstarMgr</Filter>
     </ClInclude>
+    <ClInclude Include="Animal.h">
+      <Filter>01. Mgr\ObjMgr\Obj\Animal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -184,6 +190,9 @@
     </ClCompile>
     <ClCompile Include="CAstarMgr.cpp">
       <Filter>01. Mgr\AstarMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="Animal.cpp">
+      <Filter>01. Mgr\ObjMgr\Obj\Animal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

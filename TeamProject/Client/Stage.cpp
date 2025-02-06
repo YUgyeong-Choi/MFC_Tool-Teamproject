@@ -4,6 +4,7 @@
 #include "ObjMgr.h"
 #include "MyTerrain.h"
 #include "MyPlayer.h"
+#include "Animal.h"
 
 CStage::CStage()
 {
@@ -35,7 +36,8 @@ HRESULT CStage::Ready_Scene()
 	CObj* pPlayer = new CMyPlayer;
 	pPlayer->Initialize();
 	CObjMgr::Get_Instance()->Add_Object(CObjMgr::PLAYER, pPlayer);
-	
+
+	AddAnimal();
 	return S_OK;
 }
 
@@ -56,4 +58,41 @@ void CStage::Render_Scene()
 
 void CStage::Release_Scene()
 {
+}
+
+void CStage::AddAnimal()
+{
+	HANDLE hFile = CreateFile(L"../Data/Animal.dat", GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+	DWORD	dwByte(0), dwStrByte(0);
+
+	while (true)
+	{
+		// key 값 로드
+
+		ReadFile(hFile, &dwStrByte, sizeof(DWORD), &dwByte, nullptr);
+
+		TCHAR* pName = new TCHAR[dwStrByte];
+
+		ReadFile(hFile, pName, dwStrByte, &dwByte, nullptr);
+
+		// value 값 로드
+		ANIMALDATA temp;
+		ReadFile(hFile, &temp, sizeof(ANIMALDATA), &dwByte, nullptr);
+
+		if (0 == dwByte)
+		{
+			delete[] pName;
+			break;
+		}
+		delete[] pName;
+
+		CObj* pAnimal = new CAnimal;
+		dynamic_cast<CAnimal*>(pAnimal)->Set_Data(temp);
+		pAnimal->Initialize();
+		CObjMgr::Get_Instance()->Add_Object(CObjMgr::ANIMAL, pAnimal);
+
+	}
+
+	CloseHandle(hFile);
 }

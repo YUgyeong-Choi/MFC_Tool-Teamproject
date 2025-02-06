@@ -95,4 +95,9 @@ typedef struct tagFrame
 
 }FRAME;
 
-
+typedef struct tagAnimal {
+	ANIMAL eAnimalType;
+	int iSpawnX;
+	int iSpawnY;
+	int iHp;
+}ANIMALDATA;

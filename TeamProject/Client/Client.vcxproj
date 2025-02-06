@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Animal.h" />
     <ClInclude Include="CAstarMgr.h" />
     <ClInclude Include="CDevice.h" />
     <ClInclude Include="KeyMgr.h" />
@@ -165,6 +166,7 @@
     <ClInclude Include="TimeMgr.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Animal.cpp" />
     <ClCompile Include="CAstarMgr.cpp" />
     <ClCompile Include="CDevice.cpp" />
     <ClCompile Include="KeyMgr.cpp" />
