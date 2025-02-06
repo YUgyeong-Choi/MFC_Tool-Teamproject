@@ -61,11 +61,14 @@
     <Filter Include="04. Etc\04. FileInfo">
       <UniqueIdentifier>{f7394afc-9cc8-40f0-82b1-4ba2722b682e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04. Etc\03. Dialog\04.PlayerTool">
-      <UniqueIdentifier>{6ebcb019-133e-4955-a46f-dbfa3545541b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="04. Etc\03. Dialog\05. MapObjTool">
       <UniqueIdentifier>{e890b0e1-6f0e-4459-acea-f7df9639e48d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Etc\03. Dialog\06. AnimalTool">
+      <UniqueIdentifier>{ac2f0f1c-752a-4714-8d4d-25824e287af4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Etc\03. Dialog\04. PlayerTool">
+      <UniqueIdentifier>{6ebcb019-133e-4955-a46f-dbfa3545541b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -121,13 +124,16 @@
       <Filter>04. Etc\03. Dialog\03. MapTool</Filter>
     </ClInclude>
     <ClInclude Include="CPlayerTool.h">
-      <Filter>04. Etc\03. Dialog\04.PlayerTool</Filter>
+      <Filter>04. Etc\03. Dialog\04. PlayerTool</Filter>
     </ClInclude>
     <ClInclude Include="CMapObjTool.h">
       <Filter>04. Etc\03. Dialog\05. MapObjTool</Filter>
     </ClInclude>
     <ClInclude Include="CFileInfo.h">
       <Filter>04. Etc\04. FileInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="CAnimalTool.h">
+      <Filter>04. Etc\03. Dialog\06. AnimalTool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -174,13 +180,16 @@
       <Filter>04. Etc\03. Dialog\03. MapTool</Filter>
     </ClCompile>
     <ClCompile Include="CPlayerTool.cpp">
-      <Filter>04. Etc\03. Dialog\04.PlayerTool</Filter>
+      <Filter>04. Etc\03. Dialog\04. PlayerTool</Filter>
     </ClCompile>
     <ClCompile Include="CFileInfo.cpp">
       <Filter>04. Etc\04. FileInfo</Filter>
     </ClCompile>
     <ClCompile Include="CMapObjTool.cpp">
       <Filter>04. Etc\03. Dialog\05. MapObjTool</Filter>
+    </ClCompile>
+    <ClCompile Include="CAnimalTool.cpp">
+      <Filter>04. Etc\03. Dialog\06. AnimalTool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

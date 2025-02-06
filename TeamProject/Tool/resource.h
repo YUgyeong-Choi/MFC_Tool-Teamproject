@@ -11,6 +11,7 @@
 #define IDD_CMapTool                    312
 #define IDD_CPlayerTool                 313
 #define IDD_CMapObjTool                 314
+#define IDD_CAnimalTool                 315
 #define IDC_BUTTON1                     1000
 #define IDC_EDIT1                       1001
 #define IDC_BUTTON7                     1001
@@ -88,6 +89,6 @@
 #define _APS_NEXT_RESOURCE_VALUE        316
 #define _APS_NEXT_COMMAND_VALUE         32772
 #define _APS_NEXT_CONTROL_VALUE         1072
-#define _APS_NEXT_SYMED_VALUE           315
+#define _APS_NEXT_SYMED_VALUE           316
 #endif
 #endif
