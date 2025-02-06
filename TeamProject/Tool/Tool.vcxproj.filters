@@ -120,14 +120,14 @@
     <ClInclude Include="CMapTool.h">
       <Filter>04. Etc\03. Dialog\03. MapTool</Filter>
     </ClInclude>
-    <ClInclude Include="CFileInfo.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="CPlayerTool.h">
       <Filter>04. Etc\03. Dialog\04.PlayerTool</Filter>
     </ClInclude>
     <ClInclude Include="CMapObjTool.h">
       <Filter>04. Etc\03. Dialog\05. MapObjTool</Filter>
+    </ClInclude>
+    <ClInclude Include="CFileInfo.h">
+      <Filter>04. Etc\04. FileInfo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
