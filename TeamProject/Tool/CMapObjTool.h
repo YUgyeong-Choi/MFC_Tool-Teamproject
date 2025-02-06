@@ -22,8 +22,15 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
+	virtual BOOL OnInitDialog();
 	void	OnInitialUpdate();
+	afx_msg void OnDeltaposSpin3(NMHDR* pNMHDR, LRESULT* pResult);
 
 	// // func2, general3, deco5
 	CButton m_FurnitureSelect[3];
+
+	CSpinButtonCtrl m_spinCtrl;
+	CStatic m_ImgPreview;
+	map<CString, CImage*>		m_mapPngImage;
+	int		m_iImgCurIndex;
 };
