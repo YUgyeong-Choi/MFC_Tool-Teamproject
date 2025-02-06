@@ -16,6 +16,7 @@ public:
 	virtual void Late_Update(void) override;
 	virtual void Render(void) override;
 	virtual void Release(void) override;
+	void	Render_WallHead(void);
 
 private:
 	HRESULT		Load_Tile(const TCHAR* pTilePath);

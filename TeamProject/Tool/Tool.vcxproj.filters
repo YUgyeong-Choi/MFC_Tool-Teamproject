@@ -70,6 +70,12 @@
     <Filter Include="04. Etc\03. Dialog\04. PlayerTool">
       <UniqueIdentifier>{6ebcb019-133e-4955-a46f-dbfa3545541b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Manager\02. ObjectMgr">
+      <UniqueIdentifier>{8bf6ebaa-4730-4d7c-892c-1c7127bd6733}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Manager\02. ObjectMgr\Obj">
+      <UniqueIdentifier>{87b717bf-4618-4a10-a7a5-77b5ce8c0aec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tool.h">
@@ -135,6 +141,12 @@
     <ClInclude Include="CAnimalTool.h">
       <Filter>04. Etc\03. Dialog\06. AnimalTool</Filter>
     </ClInclude>
+    <ClInclude Include="ObjMgr.h">
+      <Filter>03. Manager\02. ObjectMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="Obj.h">
+      <Filter>03. Manager\02. ObjectMgr\Obj</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tool.cpp">
@@ -190,6 +202,12 @@
     </ClCompile>
     <ClCompile Include="CAnimalTool.cpp">
       <Filter>04. Etc\03. Dialog\06. AnimalTool</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjMgr.cpp">
+      <Filter>03. Manager\02. ObjectMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="Obj.cpp">
+      <Filter>03. Manager\02. ObjectMgr\Obj</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

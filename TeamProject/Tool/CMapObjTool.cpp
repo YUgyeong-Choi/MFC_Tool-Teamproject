@@ -42,6 +42,7 @@ void CMapObjTool::OnInitialUpdate()
 
 BEGIN_MESSAGE_MAP(CMapObjTool, CDialog)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN3, &CMapObjTool::OnDeltaposSpin3)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -108,11 +109,6 @@ BOOL CMapObjTool::OnInitDialog()
 			}
 			m_mapPngImage.insert({ szFullPath, pPngImage });
 		}
-		//if (FAILED(pPngImage->Load(pImgPath->wstrPath.c_str())))
-		//{
-		//	AfxMessageBox(L" Load Failed");
-		//}
-		//m_mapPngImage.insert({ pImgPath->wstrStateKey.c_str(), pPngImage});
 	}
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -135,7 +131,7 @@ void CMapObjTool::OnDeltaposSpin3(NMHDR* pNMHDR, LRESULT* pResult)
 	if (ibuttonIndex >= 3 || 0 > ibuttonIndex) return;
 
 
-	int iMaxIndexCnt = (*iter)->iCount - 1;
+	int iMaxIndexCnt = (*iter)->iCount;
 	int newIndex = m_iImgCurIndex + pNMUpDown->iDelta;
 	if (newIndex < 0)
 		newIndex = iMaxIndexCnt;
@@ -145,7 +141,7 @@ void CMapObjTool::OnDeltaposSpin3(NMHDR* pNMHDR, LRESULT* pResult)
 
 
 	TCHAR		szFullPath[MAX_PATH] = L"";
-	swprintf_s(szFullPath, MAX_PATH, (*iter)->wstrPath.c_str(), ibuttonIndex + 1);
+	swprintf_s(szFullPath, MAX_PATH, (*iter)->wstrPath.c_str(), m_iImgCurIndex + 1);
 	auto	iterpngimage = m_mapPngImage.find(szFullPath);
 
 	if (iterpngimage == m_mapPngImage.end())
@@ -154,8 +150,25 @@ void CMapObjTool::OnDeltaposSpin3(NMHDR* pNMHDR, LRESULT* pResult)
 	//선택한 이미지 종류 보여주는 곳
 	m_ImgPreview.SetBitmap(*(iterpngimage->second));
 
-
-
-	//m_ImgPreview.SetBitmap()
 	*pResult = 0;
+}
+
+
+void CMapObjTool::OnDestroy()
+{
+	CDialog::OnDestroy();
+
+	for_each(m_mapPngImage.begin(), m_mapPngImage.end(), [](auto& MyPair)
+		{
+			MyPair.second->Destroy();
+			Safe_Delete(MyPair.second);
+		});
+
+	m_mapPngImage.clear();
+
+	for_each(m_PathInfoList.begin(), m_PathInfoList.end(), Safe_Delete<IMGPATH*>);
+	m_PathInfoList.clear();
+
+
+	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
 }

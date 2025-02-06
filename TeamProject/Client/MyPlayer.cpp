@@ -15,7 +15,7 @@ HRESULT CMyPlayer::Initialize(void)
 	ChangeColor();
 
 	m_fSpeed = 0.5f;
-	m_tInfo.vPos = { 150.f,0.f,0.f };
+	m_tInfo.vPos = { 150.f,150.f,0.f };
 	m_playerLook = DOWN;
 	m_bPlayerWalk = false;
 	m_tFrame.iFrameStart = 0;
@@ -35,7 +35,7 @@ int CMyPlayer::Update(void)
 		D3DXMatrixScaling(&matScale, -1.f, 1.f, 1.f);
 		D3DXMatrixTranslation(&matTrans,
 			m_tInfo.vPos.x + m_vScroll.x,
-			m_tInfo.vPos.y + m_vScroll.y,
+			m_tInfo.vPos.y + m_vScroll.y - 10.f,
 			0.f);
 	}
 	else {
@@ -43,7 +43,7 @@ int CMyPlayer::Update(void)
 		D3DXMatrixScaling(&matScale, 1.f, 1.f, 1.f);
 		D3DXMatrixTranslation(&matTrans,
 			m_tInfo.vPos.x + m_vScroll.x,
-			m_tInfo.vPos.y + m_vScroll.y,
+			m_tInfo.vPos.y + m_vScroll.y - 10.f,
 			0.f);
 	}
 

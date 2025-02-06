@@ -19,7 +19,7 @@ HRESULT CMyTerrain::Initialize(void)
 	m_vecTile.reserve(TILEX * TILEY);
 
 	// 저장 불러오기 추가할 것***
-	if (FAILED(Load_Tile(L"../Data/4381.dat")))
+	if (FAILED(Load_Tile(L"../Data/Maptest.dat")))
 	{
 		return E_FAIL;
 	}
@@ -252,24 +252,24 @@ void CMyTerrain::Render(void)
 						 &vTemp,        // 출력할 이미지의 중심 좌표 vec3 주소, null인 경우 0, 0 이미지 중심
 						 nullptr,        // 위치 좌표에 대한 vec3 주소, null인 경우 스크린 상 0, 0 좌표 출력    
 						 D3DCOLOR_ARGB(255, 255, 255, 255)); // 출력할 이미지와 섞을 색상 값, 0xffffffff를 넘겨주면 섞지 않고 원본 색상 유지
-					if (i == OPT_WALL)
-					{
-						 const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(szTexTerrain, L"wallhead", m_vecTile[iIndex]->tObject[i].byDrawID);
-						 if (pTexInfo == nullptr)
-						 {
-							 continue;
-						 }
-						 float fCenterX = pTexInfo->tImgInfo.Width / 2.f;
-						 float fCenterY = pTexInfo->tImgInfo.Height / 2.f + pTexInfo->tImgInfo.Height;
+					//if (i == OPT_WALL)
+					//{
+					//	 const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(szTexTerrain, L"wallhead", m_vecTile[iIndex]->tObject[i].byDrawID);
+					//	 if (pTexInfo == nullptr)
+					//	 {
+					//		 continue;
+					//	 }
+					//	 float fCenterX = pTexInfo->tImgInfo.Width / 2.f;
+					//	 float fCenterY = pTexInfo->tImgInfo.Height / 2.f + pTexInfo->tImgInfo.Height;
 
-						 D3DXVECTOR3 vTemp{ fCenterX, fCenterY, 0.f };
+					//	 D3DXVECTOR3 vTemp{ fCenterX, fCenterY, 0.f };
 
-						 CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture, //출력할 텍스처 컴객체
-							 nullptr,        // 출력할 이미지 영역에 대한 Rect 주소, null인 경우 이미지의 0, 0기준으로 출력
-							 &vTemp,        // 출력할 이미지의 중심 좌표 vec3 주소, null인 경우 0, 0 이미지 중심
-							 nullptr,        // 위치 좌표에 대한 vec3 주소, null인 경우 스크린 상 0, 0 좌표 출력    
-							 D3DCOLOR_ARGB(255, 255, 255, 255)); // 출력할 이미지와 섞을 색상 값, 0xffffffff를 넘겨주면 섞지 않고 원본 색상 유지
-					}
+					//	 CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture, //출력할 텍스처 컴객체
+					//		 nullptr,        // 출력할 이미지 영역에 대한 Rect 주소, null인 경우 이미지의 0, 0기준으로 출력
+					//		 &vTemp,        // 출력할 이미지의 중심 좌표 vec3 주소, null인 경우 0, 0 이미지 중심
+					//		 nullptr,        // 위치 좌표에 대한 vec3 주소, null인 경우 스크린 상 0, 0 좌표 출력    
+					//		 D3DCOLOR_ARGB(255, 255, 255, 255)); // 출력할 이미지와 섞을 색상 값, 0xffffffff를 넘겨주면 섞지 않고 원본 색상 유지
+					//}
 				}
 			}
 		}
@@ -281,6 +281,83 @@ void CMyTerrain::Release(void)
 	for_each(m_vecTile.begin(), m_vecTile.end(), Safe_Delete<TILE*>);
 	m_vecTile.clear();
 }
+
+void CMyTerrain::Render_WallHead(void)
+{
+	D3DXMATRIX		matWorld, matScale, matTrans;
+
+	TCHAR	szBuf[MIN_STR] = L"";
+	int		iIndex(0);
+
+	int		iScrollX = int(-m_vScroll.x) / TILECX;
+	int		iScrollY = int(-m_vScroll.y) / TILECY;
+
+	int		iMaxX = WINCX / TILECX + 1;
+	int		iMaxY = WINCY / TILECY + 1;
+
+	for (int i = iScrollY; i < iScrollY + iMaxY; ++i)
+	{
+		for (int j = iScrollX; j < iScrollX + iMaxX; ++j)
+		{
+			int			iIndex = i * TILEX + j;
+
+			if (0 > iIndex || (size_t)iIndex >= m_vecTile.size())
+			{
+				continue;
+			}
+
+			D3DXMatrixIdentity(&matWorld);
+			D3DXMatrixScaling(&matScale, 1.f, 1.f, 1.f);
+			D3DXMatrixTranslation(&matTrans,
+				m_vecTile[iIndex]->vPos.x + m_vScroll.x,
+				m_vecTile[iIndex]->vPos.y + m_vScroll.y,
+				0.f);
+
+			matWorld = matScale * matTrans;
+
+			CDevice::Get_Instance()->Get_Sprite()->SetTransform(&matWorld);
+
+			TCHAR szTexTerrain[MAX_STR] = L"";
+			TCHAR szTexType[MAX_STR] = L"";
+
+			if (m_vecTile[iIndex]->tObject[OPT_WALL].bExist)
+			{
+				switch (m_vecTile[iIndex]->tObject[OPT_WALL].eTileTerrain)
+				{
+				case TRN_DIRT:
+					lstrcpy(szTexTerrain, L"dirt"); break;
+				case TRN_SAND:
+					lstrcpy(szTexTerrain, L"sand"); break;
+				case TRN_NATURE:
+					lstrcpy(szTexTerrain, L"nature"); break;
+				case TRN_STONE:
+					lstrcpy(szTexTerrain, L"stone"); break;
+				case TRN_WATER:
+					lstrcpy(szTexTerrain, L"water"); break;
+				default: break;
+				}
+
+				const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(szTexTerrain, L"wallhead", m_vecTile[iIndex]->tObject[OPT_WALL].byDrawID);
+				if (pTexInfo == nullptr)
+				{
+					continue;
+				}
+				float fCenterX = pTexInfo->tImgInfo.Width / 2.f;
+				float fCenterY = pTexInfo->tImgInfo.Height / 2.f + pTexInfo->tImgInfo.Height;
+
+				D3DXVECTOR3 vTemp{ fCenterX, fCenterY, 0.f };
+
+				CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture, //출력할 텍스처 컴객체
+					nullptr,        // 출력할 이미지 영역에 대한 Rect 주소, null인 경우 이미지의 0, 0기준으로 출력
+					&vTemp,        // 출력할 이미지의 중심 좌표 vec3 주소, null인 경우 0, 0 이미지 중심
+					nullptr,        // 위치 좌표에 대한 vec3 주소, null인 경우 스크린 상 0, 0 좌표 출력    
+					D3DCOLOR_ARGB(255, 255, 255, 255)); // 출력할 이미지와 섞을 색상 값, 0xffffffff를 넘겨주면 섞지 않고 원본 색상 유지
+				}
+			
+			}
+		}
+}
+
 
 HRESULT CMyTerrain::Load_Tile(const TCHAR * pTilePath)
 {

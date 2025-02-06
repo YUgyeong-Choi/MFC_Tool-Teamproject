@@ -34,7 +34,7 @@ void CAstarMgr::Start_Astar(const D3DXVECTOR3& vStart, const D3DXVECTOR3& vGoal)
 	if (m_iStartIdx == iGoalIdx)
 		return;
 
-	if (0 != vecTile[iGoalIdx]->byOption)
+	if (OPTION_NOCOLLISION != vecTile[iGoalIdx]->byOption)
 		return;
 
 	if (true == Make_Route(m_iStartIdx, iGoalIdx))
