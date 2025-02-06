@@ -22,8 +22,12 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
+	virtual BOOL OnInitDialog();
 	void	OnInitialUpdate();
 
 	// // func2, general3, deco5
 	CButton m_FurnitureSelect[3];
+
+	CSpinButtonCtrl m_spinCtrl;
+	CStatic m_ImgPreview;
 };
