@@ -427,11 +427,11 @@ void CMyPlayer::Move_Astar()
 
 		D3DXVec3Normalize(&vDir, &vDir);
 
-		m_tInfo.vPos += vDir * 300.f * CTimeMgr::Get_Instance()->Get_TimeDelta();
+		m_tInfo.vPos += vDir * 200.f * CTimeMgr::Get_Instance()->Get_TimeDelta();
 		m_playerLook = BestList.front().eLook;
 		m_bPlayerWalk = true;
 
-		if (3.f >= fDistance)
+		if (1.f >= fDistance)
 			BestList.pop_front();
 	}
 }

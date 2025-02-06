@@ -19,7 +19,7 @@ HRESULT CMyTerrain::Initialize(void)
 	m_vecTile.reserve(TILEX * TILEY);
 
 	// 저장 불러오기 추가할 것***
-	if (FAILED(Load_Tile(L"../Data/Maptest.dat")))
+	if (FAILED(Load_Tile(L"../Data/Map_250206.dat")))
 	{
 		return E_FAIL;
 	}
