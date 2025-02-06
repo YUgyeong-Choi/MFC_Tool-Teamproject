@@ -140,38 +140,47 @@ void CToolView::Check_TileSettings(CPoint point)
 	CMyForm* pMyForm = dynamic_cast<CMyForm*>(pMainFrm->m_MainSplitter.GetPane(0, 1));
 	int		iOption = OPTION_NOCOLLISION;
 
-	if (nullptr == pMyForm->m_MapTool.GetSafeHwnd())
-		return;
-
-	TILETERRAIN eTerrain = (TILETERRAIN)(pMyForm->m_MapTool.m_ctrlCMapType.GetCurSel());
-	TILETYPE eType = (TILETYPE)(pMyForm->m_MapTool.m_crtlCType.GetCurSel());
-	int iDrawID = -1;
-	// 확대/축소 비율과 중심을 고려하여 포인트 조정
-	CPoint adjustedPoint;
-	adjustedPoint.x = static_cast<int>((point.x / m_fZoomFactor));
-	adjustedPoint.y = static_cast<int>((point.y/ m_fZoomFactor));
-
-	switch (eType)
+	if (nullptr != pMyForm->m_MapTool.GetSafeHwnd() && nullptr != pMyForm->m_MapObjTool.GetSafeHwnd())
 	{
-	case OPT_GROUND:
-	case OPT_DECO:
-		iOption = OPTION_NOCOLLISION;
-		break;
-	case OPT_WALL:
-	case OPT_ORE:
-		iOption = OPTION_COLLISION;
-		break;
-	}
-
-	iDrawID = pMyForm->m_MapTool.m_ListBox.GetCurSel();
-	if (iDrawID == -1)
+		AfxMessageBox(L"타일과 오브젝트는 동시에 설치할 수 없습니다.\n");
 		return;
+	}
+	else if (nullptr != pMyForm->m_MapTool.GetSafeHwnd()) // 맵 툴 타일 피킹
+	{
+		TILETERRAIN eTerrain = (TILETERRAIN)(pMyForm->m_MapTool.m_ctrlCMapType.GetCurSel());
+		TILETYPE eType = (TILETYPE)(pMyForm->m_MapTool.m_crtlCType.GetCurSel());
+		int iDrawID = -1;
+		// 확대/축소 비율과 중심을 고려하여 포인트 조정
+		CPoint adjustedPoint;
+		adjustedPoint.x = static_cast<int>((point.x / m_fZoomFactor));
+		adjustedPoint.y = static_cast<int>((point.y / m_fZoomFactor));
 
-	m_pTerrain->Tile_Change(D3DXVECTOR3(float(adjustedPoint.x) + GetScrollPos(0), float(adjustedPoint.y) + GetScrollPos(1), 0.f), // 좌표
-		eType,					// 타일 타입
-		eTerrain,
-		iDrawID,					// 타일 id
-		iOption);		// option(통과 가능 여부)
+		switch (eType)
+		{
+		case OPT_GROUND:
+		case OPT_DECO:
+			iOption = OPTION_NOCOLLISION;
+			break;
+		case OPT_WALL:
+		case OPT_ORE:
+			iOption = OPTION_COLLISION;
+			break;
+		}
+
+		iDrawID = pMyForm->m_MapTool.m_ListBox.GetCurSel();
+		if (iDrawID == -1)
+			return;
+
+		m_pTerrain->Tile_Change(D3DXVECTOR3(float(adjustedPoint.x) + GetScrollPos(0), float(adjustedPoint.y) + GetScrollPos(1), 0.f), // 좌표
+			eType,					// 타일 타입
+			eTerrain,
+			iDrawID,					// 타일 id
+			iOption);		// option(통과 가능 여부)
+	}
+	else if (nullptr != pMyForm->m_MapObjTool.GetSafeHwnd()) // 오브젝트 툴 타일 피킹
+	{
+
+	}
 }
 
 void CToolView::OnDraw(CDC* pDC)

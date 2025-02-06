@@ -34,4 +34,5 @@ public:
 	list<IMGPATH*>			m_PathInfoList;
 	map<CString, CImage*>	m_mapPngImage;
 	int		m_iImgCurIndex;
+	afx_msg void OnDestroy();
 };

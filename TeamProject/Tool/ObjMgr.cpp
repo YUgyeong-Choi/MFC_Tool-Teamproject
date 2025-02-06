@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "ObjMgr.h"
 #include "Obj.h"
-#include "MyTerrain.h"
 
 IMPLEMENT_SINGLETON(CObjMgr)
 
@@ -58,7 +57,6 @@ void CObjMgr::Render()
 		for (auto& pObject : m_listObject[i])
 			pObject->Render();
 	}
-	static_cast<CMyTerrain*>(m_listObject[ID::TERRAIN].front())->Render_WallHead();
 }
 
 void CObjMgr::Release()
