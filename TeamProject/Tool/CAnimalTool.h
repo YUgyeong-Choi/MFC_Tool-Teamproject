@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "afxdialogex.h"
-
+#include "Include.h"
 
 // CAnimalTool 대화 상자
 
@@ -17,7 +17,6 @@ public:
 	enum { IDD = IDD_CAnimalTool };
 #endif
 private:
-	enum ANIMAL{COW, TURTLE, DODO, ANIMAL_END};
 	enum ACTION{IDLE, WALK, EAT, SLEEP, SLEEPING, WAKEUP, ACTION_END};
 	void OnLoadData();
 	void AddMap(const CString& type, int idleCnt, int walkCnt, int eatCnt, int sleepCnt, int sleepingCnt, int wakeupCnt);
@@ -29,6 +28,8 @@ private:
 
 	ANIMAL m_eAnimal;
 	ACTION m_eAction;
+
+	map<CString, ANIMALDATA*>		m_AnimalData;
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 	afx_msg void OnDestroy();
@@ -47,4 +48,12 @@ public:
 	afx_msg void OnClicksleep();
 	afx_msg void OnClicksleeping();
 	afx_msg void OnClickwakeup();
+	CEdit m_SpawnX;
+	CEdit m_SpawnY;
+	CEdit m_SpawnHp;
+	afx_msg void OnAddAnimal();
+	CListBox m_ListBox;
+	afx_msg void OnClickDelete();
+	afx_msg void OnClickSave();
+	afx_msg void OnClickLoad();
 };
