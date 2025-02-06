@@ -38,6 +38,7 @@ HRESULT CStage::Ready_Scene()
 	CObjMgr::Get_Instance()->Add_Object(CObjMgr::PLAYER, pPlayer);
 
 	AddAnimal();
+	AddMapObject();
 	return S_OK;
 }
 
@@ -95,4 +96,10 @@ void CStage::AddAnimal()
 	}
 
 	CloseHandle(hFile);
+}
+
+void CStage::AddMapObject()
+{
+
+
 }

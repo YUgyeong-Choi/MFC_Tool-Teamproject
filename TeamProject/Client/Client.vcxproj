@@ -145,6 +145,7 @@
     <ClInclude Include="Animal.h" />
     <ClInclude Include="CAstarMgr.h" />
     <ClInclude Include="CDevice.h" />
+    <ClInclude Include="CMapObject.h" />
     <ClInclude Include="KeyMgr.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="CMultiTexture.h" />
@@ -169,6 +170,7 @@
     <ClCompile Include="Animal.cpp" />
     <ClCompile Include="CAstarMgr.cpp" />
     <ClCompile Include="CDevice.cpp" />
+    <ClCompile Include="CMapObject.cpp" />
     <ClCompile Include="KeyMgr.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="CMultiTexture.cpp" />

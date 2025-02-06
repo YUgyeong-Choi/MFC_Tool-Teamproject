@@ -43,6 +43,7 @@ void CMapObjTool::OnInitialUpdate()
 BEGIN_MESSAGE_MAP(CMapObjTool, CDialog)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN3, &CMapObjTool::OnDeltaposSpin3)
 	ON_WM_DESTROY()
+	ON_WM_RBUTTONDOWN()
 END_MESSAGE_MAP()
 
 
@@ -96,8 +97,6 @@ BOOL CMapObjTool::OnInitDialog()
 
 	for (auto& pImgPath : m_PathInfoList)
 	{
-		_itow_s(pImgPath->iCount, szBuf, 10);
-
 		for (int i = 0; i < pImgPath->iCount; ++i)
 		{
 			CImage* pPngImage = new CImage;
@@ -110,6 +109,18 @@ BOOL CMapObjTool::OnInitDialog()
 			m_mapPngImage.insert({ szFullPath, pPngImage });
 		}
 	}
+
+	auto& iter = m_PathInfoList.begin();
+
+	TCHAR		szFullPath[MAX_PATH] = L"";
+	swprintf_s(szFullPath, MAX_PATH, (*iter)->wstrPath.c_str(), 1);
+	auto&	iterpngimage = m_mapPngImage.find(szFullPath);
+
+	//선택한 이미지 종류 보여주는 곳
+	m_ImgPreview.SetBitmap(*(iterpngimage->second));
+
+
+
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -133,15 +144,15 @@ void CMapObjTool::OnDeltaposSpin3(NMHDR* pNMHDR, LRESULT* pResult)
 
 	int iMaxIndexCnt = (*iter)->iCount;
 	int newIndex = m_iImgCurIndex + pNMUpDown->iDelta;
-	if (newIndex < 0)
+	if (newIndex < 1)
 		newIndex = iMaxIndexCnt;
 	if (newIndex > iMaxIndexCnt)
-		newIndex = 0;
+		newIndex = 1;
 	m_iImgCurIndex = newIndex;
 
 
 	TCHAR		szFullPath[MAX_PATH] = L"";
-	swprintf_s(szFullPath, MAX_PATH, (*iter)->wstrPath.c_str(), m_iImgCurIndex + 1);
+	swprintf_s(szFullPath, MAX_PATH, (*iter)->wstrPath.c_str(), m_iImgCurIndex);
 	auto	iterpngimage = m_mapPngImage.find(szFullPath);
 
 	if (iterpngimage == m_mapPngImage.end())
@@ -171,4 +182,12 @@ void CMapObjTool::OnDestroy()
 
 
 	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
+}
+
+
+void CMapObjTool::OnRButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+
+	CDialog::OnRButtonDown(nFlags, point);
 }

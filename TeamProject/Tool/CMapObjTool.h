@@ -35,4 +35,13 @@ public:
 	map<CString, CImage*>	m_mapPngImage;
 	int		m_iImgCurIndex;
 	afx_msg void OnDestroy();
+	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
+	MAPOBJTYPE		Get_SelectedType() {
+		for (int i = 0; i < MAPOBJ_END; ++i)
+		{
+			if (m_FurnitureSelect[i].GetCheck())
+				return (MAPOBJTYPE)i;
+		}
+		return MAPOBJ_END;
+	}
 };

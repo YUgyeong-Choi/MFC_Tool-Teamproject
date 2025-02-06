@@ -23,6 +23,7 @@ HRESULT CMyPlayer::Initialize(void)
 	m_tFrame.dwSpeed = 100;
 	m_tFrame.dwTime = GetTickCount64();
 
+	m_eRender = R_MAPOBJ;
 	return E_NOTIMPL;
 }
 
@@ -54,16 +55,16 @@ int CMyPlayer::Update(void)
 
 void CMyPlayer::Late_Update(void)
 {
-	if (0.f > Get_Mouse().x)
+	if (0.f > Get_Mouse().x && m_vScroll.x < 0.f)
 		m_vScroll.x += 200.f * CTimeMgr::Get_Instance()->Get_TimeDelta();
 
-	if (WINCX < Get_Mouse().x)
+	if (WINCX < Get_Mouse().x && m_vScroll.x > -(TILECX * TILEX) + WINCX)
 		m_vScroll.x -= 200.f * CTimeMgr::Get_Instance()->Get_TimeDelta();
 
-	if (0.f > Get_Mouse().y)
+	if (0.f > Get_Mouse().y && m_vScroll.y < 0.f)
 		m_vScroll.y += 200.f * CTimeMgr::Get_Instance()->Get_TimeDelta();
 
-	if (WINCY < Get_Mouse().y)
+	if (WINCY < Get_Mouse().y && m_vScroll.y > -(TILECY * TILEY) + WINCY)
 		m_vScroll.y -= 200.f * CTimeMgr::Get_Instance()->Get_TimeDelta();
 
 	if (GetAsyncKeyState(VK_LBUTTON))

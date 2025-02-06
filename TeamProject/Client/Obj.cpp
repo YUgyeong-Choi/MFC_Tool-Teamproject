@@ -4,7 +4,7 @@
 
 D3DXVECTOR3 CObj::m_vScroll{};
 
-CObj::CObj()
+CObj::CObj() : m_eRender(R_END)
 {
 	ZeroMemory(&m_tInfo, sizeof(INFO));
 	D3DXMatrixIdentity(&m_tInfo.matWorld);

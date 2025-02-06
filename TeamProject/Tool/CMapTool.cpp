@@ -255,7 +255,7 @@ void CMapTool::OnClickedSave()
 	CToolView* pToolView = dynamic_cast<CToolView*>(pMainFrm->m_MainSplitter.GetPane(0, 0));
 	CTerrain* pTerrain = pToolView->m_pTerrain;
 	auto& vecTile = *(pTerrain->Get_TileVector());
-
+	auto& vecObj = *(pTerrain->Get_ObjVector());
 	CFileDialog		Dlg(FALSE,		// TRUE(불러오기), FALSE(다른 이름으로 저장) 모드 지정
 		L"dat",		// default 확장자명
 		L"*.dat",	// 대화 상자에 표시될 최초 파일명
@@ -302,6 +302,33 @@ void CMapTool::OnClickedSave()
 		for (auto& MyTile : vecTile)
 		{
 			WriteFile(hFile, MyTile, sizeof(TILE), &dwByte, nullptr);
+		}
+
+		CloseHandle(hFile);
+	}
+	if (IDOK == Dlg.DoModal())
+	{
+		// GetPathName : 선택된 경로를 반환
+		// GetString : 원시 문자열의 형태로 반환
+
+		CString	str = Dlg.GetPathName().GetString();
+		const TCHAR* pGetPath = str.GetString();
+
+		HANDLE hFile = CreateFile(pGetPath,
+			GENERIC_WRITE,
+			0, 0,
+			CREATE_ALWAYS,
+			FILE_ATTRIBUTE_NORMAL,
+			0);
+
+		if (INVALID_HANDLE_VALUE == hFile)
+			return;
+
+		DWORD	dwByte(0), dwStrByte(0);
+
+		for (auto& MyObj : vecObj)
+		{
+			WriteFile(hFile, MyObj, sizeof(TILE), &dwByte, nullptr);
 		}
 
 		CloseHandle(hFile);

@@ -8,7 +8,11 @@ public:
 	CObj();
 	virtual ~CObj();
 
+protected:
+	RENDERID				m_eRender;
+
 public:
+	RENDERID		Get_RenderID() { return m_eRender; }
 	const wstring&	Get_ObjKey() const { return m_wstrObjKey; }
 
 	const INFO&		Get_Info(void) const { return m_tInfo; }
@@ -28,7 +32,6 @@ public:
 	virtual void		Render(void)PURE;
 	virtual void		Release(void)PURE;
 
-protected:
 
 protected:
 	INFO					m_tInfo;
