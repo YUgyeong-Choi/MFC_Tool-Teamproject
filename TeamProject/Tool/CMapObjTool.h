@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "afxdialogex.h"
-
+#include "Include.h"
 
 // CMapObjTool 대화 상자
 
@@ -29,8 +29,9 @@ public:
 	// // func2, general3, deco5
 	CButton m_FurnitureSelect[3];
 
-	CSpinButtonCtrl m_spinCtrl;
-	CStatic m_ImgPreview;
-	map<CString, CImage*>		m_mapPngImage;
+	CSpinButtonCtrl			m_spinCtrl;
+	CStatic					m_ImgPreview;
+	list<IMGPATH*>			m_PathInfoList;
+	map<CString, CImage*>	m_mapPngImage;
 	int		m_iImgCurIndex;
 };
