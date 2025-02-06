@@ -15,7 +15,7 @@ HRESULT CMyPlayer::Initialize(void)
 	ChangeColor();
 
 	m_fSpeed = 0.5f;
-	m_tInfo.vPos = { 110.f,0.f,0.f };
+	m_tInfo.vPos = { 150.f,0.f,0.f };
 	m_playerLook = DOWN;
 	m_bPlayerWalk = false;
 	m_tFrame.iFrameStart = 0;
@@ -54,7 +54,6 @@ int CMyPlayer::Update(void)
 
 void CMyPlayer::Late_Update(void)
 {
-	//Move_Frame();
 	if (0.f > Get_Mouse().x)
 		m_vScroll.x += 200.f * CTimeMgr::Get_Instance()->Get_TimeDelta();
 
@@ -73,6 +72,7 @@ void CMyPlayer::Late_Update(void)
 	}
 
 	Move_Astar();
+	Move_Frame();
 }
 
 void CMyPlayer::Move_Frame()
@@ -101,7 +101,7 @@ void CMyPlayer::Render(void)
 			wstring strName;
 			switch (m_playerLook)
 			{
-			case CMyPlayer::LEFT:
+			case LEFT:
 				if (i == 1) {
 					strName = wstring(pFilePathType[i]) + to_wstring(m_hairIndex+1)+ L"_walkside_" + to_wstring(m_tFrame.iFrameStart + 1);
 				}
@@ -109,7 +109,7 @@ void CMyPlayer::Render(void)
 					strName = wstring(pFilePathType[i]) + L"_walkside_" + to_wstring(m_tFrame.iFrameStart + 1);
 				}
 				break;
-			case CMyPlayer::RIGHT:
+			case RIGHT:
 				if (i == 1) {
 					strName = wstring(pFilePathType[i]) + to_wstring(m_hairIndex + 1) + L"_walkside_" + to_wstring(m_tFrame.iFrameStart + 1);
 				}
@@ -117,7 +117,7 @@ void CMyPlayer::Render(void)
 					strName = wstring(pFilePathType[i]) + L"_walkside_" + to_wstring(m_tFrame.iFrameStart + 1);
 				}
 				break;
-			case CMyPlayer::UP:
+			case UP:
 				if (i == 4) {
 					continue;
 				}
@@ -128,7 +128,7 @@ void CMyPlayer::Render(void)
 					strName = wstring(pFilePathType[i]) + L"_walkback_" + to_wstring(m_tFrame.iFrameStart + 1);
 				}
 				break;
-			case CMyPlayer::DOWN:
+			case DOWN:
 				if (i == 1) {
 					strName = wstring(pFilePathType[i]) + to_wstring(m_hairIndex + 1) + L"_walkfront_" + to_wstring(m_tFrame.iFrameStart + 1);
 				}
@@ -136,7 +136,7 @@ void CMyPlayer::Render(void)
 					strName = wstring(pFilePathType[i]) + L"_walkfront_" + to_wstring(m_tFrame.iFrameStart + 1);
 				}
 				break;
-			case CMyPlayer::PLAYERLOOK_END:
+			case PLAYERLOOK_END:
 				break;
 			default:
 				break;
@@ -196,7 +196,7 @@ void CMyPlayer::Render(void)
 			wstring strName;
 			switch (m_playerLook)
 			{
-			case CMyPlayer::LEFT:
+			case LEFT:
 				if (i == 1) {
 					strName = wstring(pFilePathType[i]) + to_wstring(m_hairIndex + 1) + L"_idleside_1";
 				}
@@ -204,7 +204,7 @@ void CMyPlayer::Render(void)
 					strName = wstring(pFilePathType[i]) + L"_idleside_1";
 				}
 				break;
-			case CMyPlayer::RIGHT:
+			case RIGHT:
 				if (i == 1) {
 					strName = wstring(pFilePathType[i]) + to_wstring(m_hairIndex + 1) + L"_idleside_1";
 				}
@@ -212,7 +212,7 @@ void CMyPlayer::Render(void)
 					strName = wstring(pFilePathType[i]) + L"_idleside_1";
 				}
 				break;
-			case CMyPlayer::UP:
+			case UP:
 				if (i == 4) {
 					continue;
 				}
@@ -223,7 +223,7 @@ void CMyPlayer::Render(void)
 					strName = wstring(pFilePathType[i]) + L"_idleback_1";
 				}
 				break;
-			case CMyPlayer::DOWN:
+			case DOWN:
 				if (i == 1) {
 					strName = wstring(pFilePathType[i]) + to_wstring(m_hairIndex + 1) + L"_idlefront_1";
 				}
@@ -231,7 +231,7 @@ void CMyPlayer::Render(void)
 					strName = wstring(pFilePathType[i]) + L"_idlefront_1";
 				}
 				break;
-			case CMyPlayer::PLAYERLOOK_END:
+			case PLAYERLOOK_END:
 				break;
 			default:
 				break;
@@ -416,17 +416,20 @@ void CMyPlayer::ChangeColor()
 
 void CMyPlayer::Move_Astar()
 {
-	list<TILE*>& BestList = CAstarMgr::Get_Instance()->Get_BestList();
+	m_bPlayerWalk = false;
+	list<TILEADDLOOK>& BestList = CAstarMgr::Get_Instance()->Get_BestList();
 
 	if (!BestList.empty())
 	{
-		D3DXVECTOR3 vDir = BestList.front()->vPos - m_tInfo.vPos;
+		D3DXVECTOR3 vDir = BestList.front().pTile->vPos - m_tInfo.vPos;
 
 		float       fDistance = D3DXVec3Length(&vDir);
 
 		D3DXVec3Normalize(&vDir, &vDir);
 
 		m_tInfo.vPos += vDir * 300.f * CTimeMgr::Get_Instance()->Get_TimeDelta();
+		m_playerLook = BestList.front().eLook;
+		m_bPlayerWalk = true;
 
 		if (3.f >= fDistance)
 			BestList.pop_front();

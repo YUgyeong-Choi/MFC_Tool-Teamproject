@@ -4,8 +4,6 @@
 #include "CSingleTexture.h"
 class CMyPlayer :public CObj
 {
-private:
-	enum PLAYERLOOK{LEFT, RIGHT, UP, DOWN, PLAYERLOOK_END };
 public:
 	CMyPlayer();
 	virtual ~CMyPlayer() { Release(); }
