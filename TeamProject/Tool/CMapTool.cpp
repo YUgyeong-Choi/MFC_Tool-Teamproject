@@ -306,12 +306,36 @@ void CMapTool::OnClickedSave()
 
 		CloseHandle(hFile);
 	}
-	if (IDOK == Dlg.DoModal())
+
+	CFileDialog		Dlg2(FALSE,		// TRUE(불러오기), FALSE(다른 이름으로 저장) 모드 지정
+		L"dat",		// default 확장자명
+		L"*.dat",	// 대화 상자에 표시될 최초 파일명
+		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,	// 읽기 전용 체크 박스 숨김 | 중복된 이름으로 파일 저장 시 경고 메세지 띄움
+		L"Data Files(*.dat) | *.dat ||", // 대화 상자에 표시될 파일 형식
+		this);	// 부모 윈도우 주소
+
+	// DoModal : 대화 상자를 실행
+
+
+	// 현재 프로젝트의 경로를 얻어오는 함수(절대 경로)
+	GetCurrentDirectory(MAX_PATH, szPath);
+
+	// PathRemoveFileSpec : 전체 경로에서 파일 이름만 잘라주는 함수
+	// 경로 상에 파일 이름이 없을 경우엔 마지막 폴더명을 잘라낸다.
+
+	PathRemoveFileSpec(szPath);
+
+	lstrcat(szPath, L"\\Data");
+
+	Dlg2.m_ofn.lpstrInitialDir = szPath;
+
+
+	if (IDOK == Dlg2.DoModal())
 	{
 		// GetPathName : 선택된 경로를 반환
 		// GetString : 원시 문자열의 형태로 반환
 
-		CString	str = Dlg.GetPathName().GetString();
+		CString	str = Dlg2.GetPathName().GetString();
 		const TCHAR* pGetPath = str.GetString();
 
 		HANDLE hFile = CreateFile(pGetPath,
@@ -328,7 +352,7 @@ void CMapTool::OnClickedSave()
 
 		for (auto& MyObj : vecObj)
 		{
-			WriteFile(hFile, MyObj, sizeof(TILE), &dwByte, nullptr);
+			WriteFile(hFile, MyObj, sizeof(MAPOBJ), &dwByte, nullptr);
 		}
 
 		CloseHandle(hFile);
@@ -343,6 +367,7 @@ void CMapTool::OnBnClickedLoad()
 	CToolView* pToolView = dynamic_cast<CToolView*>(pMainFrm->m_MainSplitter.GetPane(0, 0));
 	CTerrain* pTerrain = pToolView->m_pTerrain;
 	auto& vecTile = *(pTerrain->Get_TileVector());
+	auto& vecObj = *(pTerrain->Get_ObjVector());
 
 	UpdateData(TRUE);
 
@@ -420,8 +445,74 @@ void CMapTool::OnBnClickedLoad()
 
 		CloseHandle(hFile);
 	}
-	else
-		return;
+
+	CFileDialog		Dlg2(TRUE,		// TRUE(불러오기), FALSE(다른 이름으로 저장) 모드 지정
+		L"dat",		// default 확장자명
+		L"*.dat",	// 대화 상자에 표시될 최초 파일명
+		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,	// 읽기 전용 체크 박스 숨김 | 중복된 이름으로 파일 저장 시 경고 메세지 띄움
+		L"Data Files(*.dat) | *.dat ||", // 대화 상자에 표시될 파일 형식
+		this);	// 부모 윈도우 주소
+
+	// DoModal : 대화 상자를 실행
+
+	// 현재 프로젝트의 경로를 얻어오는 함수(절대 경로)
+	GetCurrentDirectory(MAX_PATH, szPath);
+
+	// PathRemoveFileSpec : 전체 경로에서 파일 이름만 잘라주는 함수
+	// 경로 상에 파일 이름이 없을 경우엔 마지막 폴더명을 잘라낸다.
+
+	PathRemoveFileSpec(szPath);
+
+	lstrcat(szPath, L"\\Data");
+
+	Dlg2.m_ofn.lpstrInitialDir = szPath;
+
+
+
+	if (IDOK == Dlg2.DoModal())
+	{
+		for (auto& MyObj : vecObj)
+			delete MyObj;
+		vecObj.clear();
+
+		CString	str = Dlg2.GetPathName().GetString();
+		const TCHAR* pGetPath = str.GetString();
+
+		HANDLE hFile = CreateFile(pGetPath,
+			GENERIC_READ,
+			0, 0,
+			OPEN_EXISTING,
+			FILE_ATTRIBUTE_NORMAL,
+			0);
+
+		if (INVALID_HANDLE_VALUE == hFile)
+			return;
+
+		DWORD	dwByte(0), dwStrByte(0);
+
+		MAPOBJ pMapObj;
+		ZeroMemory(&pMapObj, sizeof(MAPOBJ));
+
+		while (true)
+		{
+			ReadFile(hFile, &pMapObj, sizeof(MAPOBJ), &dwByte, nullptr);
+
+			if (0 == dwByte)
+			{
+				break;
+			}
+			MAPOBJ* pMObjtemp = new MAPOBJ;
+
+			pMObjtemp->byDrawID   = pMapObj.byDrawID;
+			pMObjtemp->eObjType   = pMapObj.eObjType;
+			pMObjtemp->iTileIndex = pMapObj.iTileIndex;
+			pMObjtemp->vPos		  = pMapObj.vPos;
+
+			vecObj.push_back(pMObjtemp);
+		}
+
+		CloseHandle(hFile);
+	}
 	pToolView->Invalidate(FALSE);
 
 	UpdateData(FALSE);

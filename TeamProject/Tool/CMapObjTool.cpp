@@ -15,7 +15,7 @@
 IMPLEMENT_DYNAMIC(CMapObjTool, CDialog)
 
 CMapObjTool::CMapObjTool(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_CMapObjTool, pParent), m_iImgCurIndex(0)
+	: CDialog(IDD_CMapObjTool, pParent), m_iImgCurIndex(1)
 {
 
 }

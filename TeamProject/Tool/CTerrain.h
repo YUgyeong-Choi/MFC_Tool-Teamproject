@@ -21,7 +21,7 @@ public:
 	void	Set_MainView(CToolView* pMainView) { m_pMainView = pMainView;  }
 	void	Set_Ratio(D3DXMATRIX* pOut, float _fX, float _fY);
 	
-	HRESULT	Set_TileOption(const D3DXVECTOR3& vPos, const int byOption) { int iIndex = Get_TileIdx(vPos); if (iIndex == -1) return E_FAIL; m_vecTile[iIndex]->byOption = byOption; }
+	HRESULT	Set_TileOption(const D3DXVECTOR3& vPos, const int byOption) { int iIndex = Get_TileIdx(vPos); if (iIndex == -1 || m_vecTile[iIndex]->byOption == OPTION_COLLISION) return E_FAIL; m_vecTile[iIndex]->byOption = byOption; }
 	auto	Get_TileVector() { return &m_vecTile; }
 	auto	Get_ObjVector() { return &m_vecObj; }
 	int		Get_TileIdx(const D3DXVECTOR3& vPos);
